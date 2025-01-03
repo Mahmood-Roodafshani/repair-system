@@ -24,7 +24,7 @@ const HeaderWrapper = styled(Box)(
         height: ${theme.header.height};
         color: ${theme.header.textColor};
         padding: ${theme.spacing(0, 2)};
-        right: 0;
+        left: 0;
         z-index: 6;
         background-color: ${alpha(theme.header.background, 0.95)};
         backdrop-filter: blur(3px);
@@ -32,7 +32,7 @@ const HeaderWrapper = styled(Box)(
         justify-content: space-between;
         width: 100%;
         @media (min-width: ${theme.breakpoints.values.lg}px) {
-            left: ${theme.sidebar.width};
+            right: ${theme.sidebar.width};
             width: auto;
         }
 `

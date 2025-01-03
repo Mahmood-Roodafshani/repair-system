@@ -1,11 +1,29 @@
 import { Suspense, lazy } from 'react';
-import { Navigate } from 'react-router-dom';
 import { RouteObject } from 'react-router';
+import { Navigate } from 'react-router-dom';
 
-import SidebarLayout from 'src/layouts/SidebarLayout';
 import BaseLayout from 'src/layouts/BaseLayout';
+import SidebarLayout from 'src/layouts/SidebarLayout';
 
 import SuspenseLoader from 'src/components/SuspenseLoader';
+import {
+  BorrowedItems,
+  Cartable,
+  Commission,
+  Companies,
+  ContentReport,
+  Dashboard,
+  GroupPerformanceReport,
+  GroupPropertyCode,
+  IndividualPerformanceReport,
+  ItemsList,
+  LoginPage,
+  MissingRequest,
+  PrintCheckout,
+  RepairRequest,
+  SystemProcess,
+  TechnicalInterface
+} from './content';
 
 const Loader = (Component) => (props) =>
   (
@@ -41,9 +59,6 @@ const UserSettings = Loader(
 
 const Buttons = Loader(
   lazy(() => import('src/content/pages/Components/Buttons'))
-);
-const Modals = Loader(
-  lazy(() => import('src/content/pages/Components/Modals'))
 );
 const Accordions = Loader(
   lazy(() => import('src/content/pages/Components/Accordions'))
@@ -83,7 +98,11 @@ const routes: RouteObject[] = [
     children: [
       {
         path: '/',
-        element: <Overview />
+        element: <Navigate to="dashboard" replace />
+      },
+      {
+        path: '/login',
+        element: <LoginPage />
       },
       {
         path: 'overview',
@@ -121,97 +140,68 @@ const routes: RouteObject[] = [
     ]
   },
   {
-    path: 'dashboards',
+    path: 'dashboard',
     element: <SidebarLayout />,
     children: [
       {
         path: '',
-        element: <Navigate to="crypto" replace />
+        element: <Dashboard />
       },
       {
-        path: 'crypto',
-        element: <Crypto />
+        path: 'cartable',
+        element: <Cartable />
       },
       {
-        path: 'messenger',
-        element: <Messenger />
-      }
-    ]
-  },
-  {
-    path: 'management',
-    element: <SidebarLayout />,
-    children: [
-      {
-        path: '',
-        element: <Navigate to="transactions" replace />
+        path: 'repair-request',
+        element: <RepairRequest />
       },
       {
-        path: 'transactions',
-        element: <Transactions />
+        path: 'content-report',
+        element: <ContentReport />
       },
       {
-        path: 'profile',
-        children: [
-          {
-            path: '',
-            element: <Navigate to="details" replace />
-          },
-          {
-            path: 'details',
-            element: <UserProfile />
-          },
-          {
-            path: 'settings',
-            element: <UserSettings />
-          }
-        ]
-      }
-    ]
-  },
-  {
-    path: '/components',
-    element: <SidebarLayout />,
-    children: [
-      {
-        path: '',
-        element: <Navigate to="buttons" replace />
+        path: 'group-performance-report',
+        element: <GroupPerformanceReport />
       },
       {
-        path: 'buttons',
-        element: <Buttons />
+        path: 'individual-performance-report',
+        element: <IndividualPerformanceReport />
       },
       {
-        path: 'modals',
-        element: <Modals />
+        path: 'technical-interface',
+        element: <TechnicalInterface />
       },
       {
-        path: 'accordions',
-        element: <Accordions />
+        path: 'commission',
+        element: <Commission />
       },
       {
-        path: 'tabs',
-        element: <Tabs />
+        path: 'borrowed-items',
+        element: <BorrowedItems />
       },
       {
-        path: 'badges',
-        element: <Badges />
+        path: 'items-list',
+        element: <ItemsList />
       },
       {
-        path: 'tooltips',
-        element: <Tooltips />
+        path: 'companies',
+        element: <Companies />
       },
       {
-        path: 'avatars',
-        element: <Avatars />
+        path: 'group-property-code',
+        element: <GroupPropertyCode />
       },
       {
-        path: 'cards',
-        element: <Cards />
+        path: 'missing-request',
+        element: <MissingRequest />
       },
       {
-        path: 'forms',
-        element: <Forms />
+        path: 'print-checkout',
+        element: <PrintCheckout />
+      },
+      {
+        path: 'system-process',
+        element: <SystemProcess />
       }
     ]
   }

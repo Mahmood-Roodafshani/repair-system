@@ -14,6 +14,7 @@ const Scrollbar: FC<ScrollbarProps> = ({ className, children, ...rest }) => {
 
   return (
     <Scrollbars
+      className="my-sidebar-class"
       autoHide
       renderThumbVertical={() => {
         return (

@@ -51,11 +51,11 @@ const SidebarLayout: FC<SidebarLayoutProps> = () => {
             flex: 1,
             pt: `${theme.header.height}`,
             [theme.breakpoints.up('lg')]: {
-              ml: `${theme.sidebar.width}`
+              mr: `${theme.sidebar.width}`
             }
           }}
         >
-          <Box display="block">
+          <Box display="block" mt={'25px'}>
             <Outlet />
           </Box>
         </Box>

@@ -1,36 +1,10 @@
 import { useContext } from 'react';
 
-import {
-  ListSubheader,
-  alpha,
-  Box,
-  List,
-  styled,
-  Button,
-  ListItem
-} from '@mui/material';
+import { alpha, Box, Button, List, ListItem, styled } from '@mui/material';
 import { NavLink as RouterLink } from 'react-router-dom';
 import { SidebarContext } from 'src/contexts/SidebarContext';
 
-import DesignServicesTwoToneIcon from '@mui/icons-material/DesignServicesTwoTone';
 import BrightnessLowTwoToneIcon from '@mui/icons-material/BrightnessLowTwoTone';
-import MmsTwoToneIcon from '@mui/icons-material/MmsTwoTone';
-import TableChartTwoToneIcon from '@mui/icons-material/TableChartTwoTone';
-import AccountCircleTwoToneIcon from '@mui/icons-material/AccountCircleTwoTone';
-import BallotTwoToneIcon from '@mui/icons-material/BallotTwoTone';
-import BeachAccessTwoToneIcon from '@mui/icons-material/BeachAccessTwoTone';
-import EmojiEventsTwoToneIcon from '@mui/icons-material/EmojiEventsTwoTone';
-import FilterVintageTwoToneIcon from '@mui/icons-material/FilterVintageTwoTone';
-import HowToVoteTwoToneIcon from '@mui/icons-material/HowToVoteTwoTone';
-import LocalPharmacyTwoToneIcon from '@mui/icons-material/LocalPharmacyTwoTone';
-import RedeemTwoToneIcon from '@mui/icons-material/RedeemTwoTone';
-import SettingsTwoToneIcon from '@mui/icons-material/SettingsTwoTone';
-import TrafficTwoToneIcon from '@mui/icons-material/TrafficTwoTone';
-import CheckBoxTwoToneIcon from '@mui/icons-material/CheckBoxTwoTone';
-import ChromeReaderModeTwoToneIcon from '@mui/icons-material/ChromeReaderModeTwoTone';
-import WorkspacePremiumTwoToneIcon from '@mui/icons-material/WorkspacePremiumTwoTone';
-import CameraFrontTwoToneIcon from '@mui/icons-material/CameraFrontTwoTone';
-import DisplaySettingsTwoToneIcon from '@mui/icons-material/DisplaySettingsTwoTone';
 
 const MenuWrapper = styled(Box)(
   ({ theme }) => `
@@ -95,6 +69,7 @@ const SubMenuWrapper = styled(Box)(
             color: ${theme.colors.alpha.trueWhite[30]};
             font-size: ${theme.typography.pxToRem(20)};
             margin-right: ${theme.spacing(1)};
+            margin-left: ${theme.spacing(1)};
           }
           
           .MuiButton-endIcon {
@@ -188,34 +163,10 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to="/overview"
-                  startIcon={<DesignServicesTwoToneIcon />}
-                >
-                  Overview
-                </Button>
-              </ListItem>
-            </List>
-          </SubMenuWrapper>
-        </List>
-        <List
-          component="div"
-          subheader={
-            <ListSubheader component="div" disableSticky>
-              Dashboards
-            </ListSubheader>
-          }
-        >
-          <SubMenuWrapper>
-            <List component="div">
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/dashboards/crypto"
+                  to="/dashboard/"
                   startIcon={<BrightnessLowTwoToneIcon />}
                 >
-                  Cryptocurrency
+                  سامانه تعمیرات
                 </Button>
               </ListItem>
               <ListItem component="div">
@@ -223,58 +174,10 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to="/dashboards/messenger"
-                  startIcon={<MmsTwoToneIcon />}
+                  to="/dashboard/cartable"
+                  startIcon={<BrightnessLowTwoToneIcon />}
                 >
-                  Messenger
-                </Button>
-              </ListItem>
-            </List>
-          </SubMenuWrapper>
-        </List>
-        <List
-          component="div"
-          subheader={
-            <ListSubheader component="div" disableSticky>
-              Management
-            </ListSubheader>
-          }
-        >
-          <SubMenuWrapper>
-            <List component="div">
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/management/transactions"
-                  startIcon={<TableChartTwoToneIcon />}
-                >
-                  Transactions List
-                </Button>
-              </ListItem>
-            </List>
-          </SubMenuWrapper>
-        </List>
-        <List
-          component="div"
-          subheader={
-            <ListSubheader component="div" disableSticky>
-              Accounts
-            </ListSubheader>
-          }
-        >
-          <SubMenuWrapper>
-            <List component="div">
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/management/profile/details"
-                  startIcon={<AccountCircleTwoToneIcon />}
-                >
-                  User Profile
+                  کارتابل
                 </Button>
               </ListItem>
               <ListItem component="div">
@@ -282,34 +185,10 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to="/management/profile/settings"
-                  startIcon={<DisplaySettingsTwoToneIcon />}
+                  to="/dashboard/repair-request"
+                  startIcon={<BrightnessLowTwoToneIcon />}
                 >
-                  Account Settings
-                </Button>
-              </ListItem>
-            </List>
-          </SubMenuWrapper>
-        </List>
-        <List
-          component="div"
-          subheader={
-            <ListSubheader component="div" disableSticky>
-              Components
-            </ListSubheader>
-          }
-        >
-          <SubMenuWrapper>
-            <List component="div">
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/components/buttons"
-                  startIcon={<BallotTwoToneIcon />}
-                >
-                  Buttons
+                  درخواست تعمیر
                 </Button>
               </ListItem>
               <ListItem component="div">
@@ -317,10 +196,10 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to="/components/modals"
-                  startIcon={<BeachAccessTwoToneIcon />}
+                  to="/dashboard/content-report"
+                  startIcon={<BrightnessLowTwoToneIcon />}
                 >
-                  Modals
+                  گزارش محتوا
                 </Button>
               </ListItem>
               <ListItem component="div">
@@ -328,10 +207,10 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to="/components/accordions"
-                  startIcon={<EmojiEventsTwoToneIcon />}
+                  to="/dashboard/group-performance-report"
+                  startIcon={<BrightnessLowTwoToneIcon />}
                 >
-                  Accordions
+                  گزارش عملکرد یگانی
                 </Button>
               </ListItem>
               <ListItem component="div">
@@ -339,10 +218,10 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to="/components/tabs"
-                  startIcon={<FilterVintageTwoToneIcon />}
+                  to="/dashboard/individual-performance-report"
+                  startIcon={<BrightnessLowTwoToneIcon />}
                 >
-                  Tabs
+                  گزارش عملکرد فردی
                 </Button>
               </ListItem>
               <ListItem component="div">
@@ -350,10 +229,10 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to="/components/badges"
-                  startIcon={<HowToVoteTwoToneIcon />}
+                  to="/dashboard/technical-interface"
+                  startIcon={<BrightnessLowTwoToneIcon />}
                 >
-                  Badges
+                  رابط فنی
                 </Button>
               </ListItem>
               <ListItem component="div">
@@ -361,10 +240,10 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to="/components/tooltips"
-                  startIcon={<LocalPharmacyTwoToneIcon />}
+                  to="/dashboard/commission"
+                  startIcon={<BrightnessLowTwoToneIcon />}
                 >
-                  Tooltips
+                  کمیسیون
                 </Button>
               </ListItem>
               <ListItem component="div">
@@ -372,10 +251,10 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to="/components/avatars"
-                  startIcon={<RedeemTwoToneIcon />}
+                  to="/dashboard/borrowed-items"
+                  startIcon={<BrightnessLowTwoToneIcon />}
                 >
-                  Avatars
+                  اقلام امانی
                 </Button>
               </ListItem>
               <ListItem component="div">
@@ -383,10 +262,10 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to="/components/cards"
-                  startIcon={<SettingsTwoToneIcon />}
+                  to="/dashboard/items-list"
+                  startIcon={<BrightnessLowTwoToneIcon />}
                 >
-                  Cards
+                  لیست اقلام
                 </Button>
               </ListItem>
               <ListItem component="div">
@@ -394,34 +273,10 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to="/components/forms"
-                  startIcon={<TrafficTwoToneIcon />}
+                  to="/dashboard/companies"
+                  startIcon={<BrightnessLowTwoToneIcon />}
                 >
-                  Forms
-                </Button>
-              </ListItem>
-            </List>
-          </SubMenuWrapper>
-        </List>
-        <List
-          component="div"
-          subheader={
-            <ListSubheader component="div" disableSticky>
-              Extra Pages
-            </ListSubheader>
-          }
-        >
-          <SubMenuWrapper>
-            <List component="div">
-              <ListItem component="div">
-                <Button
-                  disableRipple
-                  component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/status/404"
-                  startIcon={<CheckBoxTwoToneIcon />}
-                >
-                  Error 404
+                  شرکت ها
                 </Button>
               </ListItem>
               <ListItem component="div">
@@ -429,10 +284,10 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to="/status/500"
-                  startIcon={<CameraFrontTwoToneIcon />}
+                  to="/dashboard/group-property-code"
+                  startIcon={<BrightnessLowTwoToneIcon />}
                 >
-                  Error 500
+                  اتصال کد اموال به گروه
                 </Button>
               </ListItem>
               <ListItem component="div">
@@ -440,10 +295,10 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to="/status/coming-soon"
-                  startIcon={<ChromeReaderModeTwoToneIcon />}
+                  to="/dashboard/missing-request"
+                  startIcon={<BrightnessLowTwoToneIcon />}
                 >
-                  Coming Soon
+                  درخواست مفقودی
                 </Button>
               </ListItem>
               <ListItem component="div">
@@ -451,10 +306,21 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to="/status/maintenance"
-                  startIcon={<WorkspacePremiumTwoToneIcon />}
+                  to="/dashboard/print-checkout"
+                  startIcon={<BrightnessLowTwoToneIcon />}
                 >
-                  Maintenance
+                  چاپ برگه خروج
+                </Button>
+              </ListItem>
+              <ListItem component="div">
+                <Button
+                  disableRipple
+                  component={RouterLink}
+                  onClick={closeSidebar}
+                  to="/dashboard/system-process"
+                  startIcon={<BrightnessLowTwoToneIcon />}
+                >
+                  فرآیند سامانه
                 </Button>
               </ListItem>
             </List>

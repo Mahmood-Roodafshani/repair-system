@@ -3,20 +3,18 @@ import Scrollbar from 'src/components/Scrollbar';
 import { SidebarContext } from 'src/contexts/SidebarContext';
 
 import {
-  Box,
-  Drawer,
   alpha,
-  styled,
-  Divider,
-  useTheme,
-  Button,
-  lighten,
+  Box,
   darken,
-  Tooltip
+  Divider,
+  Drawer,
+  lighten,
+  styled,
+  useTheme
 } from '@mui/material';
 
-import SidebarMenu from './SidebarMenu';
 import Logo from 'src/components/LogoSign';
+import SidebarMenu from './SidebarMenu';
 
 const SidebarWrapper = styled(Box)(
   ({ theme }) => `
@@ -44,7 +42,7 @@ function Sidebar() {
             lg: 'inline-block'
           },
           position: 'fixed',
-          left: 0,
+          right: 0,
           top: 0,
           background:
             theme.palette.mode === 'dark'
@@ -74,24 +72,6 @@ function Sidebar() {
           />
           <SidebarMenu />
         </Scrollbar>
-        <Divider
-          sx={{
-            background: theme.colors.alpha.trueWhite[10]
-          }}
-        />
-        <Box p={2}>
-          <Button
-            href="https://bloomui.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            variant="contained"
-            color="warning"
-            size="small"
-            fullWidth
-          >
-            Upgrade to PRO
-          </Button>
-        </Box>
       </SidebarWrapper>
       <Drawer
         sx={{

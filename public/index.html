@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="rtl">
   <head>
     <meta charset="utf-8" />
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
@@ -9,19 +9,57 @@
     />
     <meta name="theme-color" content="#1975ff" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <link
+    <!-- <link
       href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400&display=swap"
       rel="stylesheet"
-    />
-    <title>Tokyo Free White React Typescript Admin Dashboard</title>
-    <meta
-      name="description"
-      content="High performance React template built with lots of powerful Material-UI components across multiple product niches for fast & perfect apps development processes."
-    />
-    <meta
-      name="keywords"
-      content="material-ui, admin dashboard, admin template, react, react template, react admin template, react dashboard, react admin panel"
-    />
+    /> -->
+
+    <link rel="stylesheet" href="%PUBLIC_URL%/static/styles/font-face.css" />
+    <title>نرم افزار کنترل پروژه</title>
+
+    <style>
+      .MuiFormControl-root label {
+        left: unset;
+        right: 30px;
+      }
+      .MuiFormControl-root legend {
+        text-align: right;
+        margin-right: 15px;
+      }
+      .my-sidebar-class > div {
+        margin-right: unset !important;
+        margin-left: -17px !important;
+      }
+      .MuiFormHelperText-root {
+        text-align: right !important;
+        direction: rtl;
+      }
+      .MuiDialog-container > div {
+        width: 450px;
+        padding: 10px;
+      }
+      body,
+      .MuiTableCell-head,
+      .MuiTypography-root,
+      .Toastify__toast-body div {
+        font-family: IRANSans !important;
+      }
+      input::-webkit-input-placeholder {
+        font-family: IRANSans !important;
+      }
+
+      input:-ms-input-placeholder {
+        font-family: IRANSans !important;
+      }
+
+      input:-moz-placeholder {
+        font-family: IRANSans !important;
+      }
+
+      input::-moz-placeholder {
+        font-family: IRANSans !important;
+      }
+    </style>
   </head>
 
   <body>

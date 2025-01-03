@@ -229,6 +229,8 @@ declare module '@mui/material/styles' {
       background: React.CSSProperties['color'];
       boxShadow: React.CSSProperties['color'];
       width: string;
+      right: string;
+      left: string;
       textColor: React.CSSProperties['color'];
       dividerBg: React.CSSProperties['color'];
       menuItemColor: React.CSSProperties['color'];
