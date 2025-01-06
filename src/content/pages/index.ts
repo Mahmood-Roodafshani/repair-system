@@ -12,3 +12,4 @@ export * from './printCheckout';
 export * from './itemsList';
 export * from './borrowedItems';
 export * from './groupPropertyCode';
+export * from './userManagement';

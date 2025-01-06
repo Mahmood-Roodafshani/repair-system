@@ -7,11 +7,14 @@ import SidebarLayout from 'src/layouts/SidebarLayout';
 
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import {
+  AccessControl,
   BorrowedItems,
   Cartable,
+  ChooseReplacement,
   Commission,
   Companies,
   ContentReport,
+  CreateGroupAccess,
   Dashboard,
   GroupPerformanceReport,
   GroupPropertyCode,
@@ -20,10 +23,15 @@ import {
   LoginPage,
   MissingRequest,
   PrintCheckout,
+  PublicAnnouncements,
   RepairRequest,
+  RoleManagement,
+  SecurityAnnouncements,
   SystemProcess,
-  TechnicalInterface
+  TechnicalInterface,
+  UserManagementHomePage
 } from './content';
+import { UserManagementSidebarLayout } from './layouts/userManagementSidebarLayout';
 
 const Loader = (Component) => (props) =>
   (
@@ -202,6 +210,40 @@ const routes: RouteObject[] = [
       {
         path: 'system-process',
         element: <SystemProcess />
+      }
+    ]
+  },
+  {
+    path: 'usermanagement',
+    element: <UserManagementSidebarLayout />,
+    children: [
+      {
+        path: '',
+        element: <UserManagementHomePage />
+      },
+      {
+        path: 'accessControl',
+        element: <AccessControl />
+      },
+      {
+        path: 'roleManagement',
+        element: <RoleManagement />
+      },
+      {
+        path: 'create-group-access',
+        element: <CreateGroupAccess />
+      },
+      {
+        path: 'security-announcement',
+        element: <SecurityAnnouncements />
+      },
+      {
+        path: 'public-announcement',
+        element: <PublicAnnouncements />
+      },
+      {
+        path: 'choose-replacement',
+        element: <ChooseReplacement />
       }
     ]
   }
