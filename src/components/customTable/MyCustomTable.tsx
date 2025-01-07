@@ -36,7 +36,9 @@ function MyCustomTable({
       columns={columns}
       localization={{
         actions: 'عملیات',
-        rowNumber: 'ردیف'
+        rowNumber: 'ردیف',
+        showHideSearch: 'نمایش/مخفی سازی جست و جو',
+        showHideFilters: 'نمایش/مخفی سازی فیلترها'
       }}
     />
   );

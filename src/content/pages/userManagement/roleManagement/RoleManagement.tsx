@@ -1,19 +1,34 @@
 import { Add, Delete, Edit, PersonAdd } from '@mui/icons-material';
 import CloseTwoToneIcon from '@mui/icons-material/CloseTwoTone';
 import { LoadingButton } from '@mui/lab';
-import { Button, Grid, IconButton, TextField, Typography } from '@mui/material';
-import { useMemo, useState } from 'react';
+import {
+  Button,
+  CircularProgress,
+  Grid,
+  IconButton,
+  TextField,
+  Typography
+} from '@mui/material';
+import { useCallback, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router';
 import { MyCustomTable } from 'src/components';
-import { searchRoleBySystemTitle } from 'src/service/userManagement/roleManagementService';
+import { removeRole, searchRoleBySystemTitle } from 'src/service';
 import { SystemRolesResponse } from 'src/types';
+import CreateNewRoleDialog from './components/CreateNewRoleDialog';
+import CreateNewSystemDialog from './components/CreateNewSystemDialog';
+import { toast } from 'react-toastify';
 
 function RoleManagement() {
   const [title, setTitle] = useState<string>();
   const [systemsRoles, setSystemsRoles] = useState<SystemRolesResponse[]>();
+  const [selectedSystemId, setSelectedSystemId] = useState<string | number>();
   const [loading, setLoading] = useState(false);
+  const [removing, setRemoving] = useState(false);
   const navigate = useNavigate();
+  const [showCreateNewRoleDialog, setShowCreateNewRoleDialog] = useState(false);
+  const [showCreateNewSystemDialog, setShowCreateNewSystemDialog] =
+    useState(false);
   const columns = useMemo(
     () => [
       {
@@ -76,6 +91,16 @@ function RoleManagement() {
     []
   );
 
+  const fetchData = useCallback(() => {
+    setLoading(true);
+    setSystemsRoles(undefined);
+    searchRoleBySystemTitle({ title: title })
+      .then((res) => {
+        if (res.statusCode === 200) setSystemsRoles(res.content);
+      })
+      .finally(() => setLoading(false));
+  }, [title]);
+
   return (
     <>
       <Helmet>
@@ -97,15 +122,7 @@ function RoleManagement() {
         <Grid display={'flex'} flexDirection={'row'} gap={'10px'}>
           <LoadingButton
             loading={loading}
-            onClick={async () => {
-              setLoading(true);
-              setSystemsRoles(undefined);
-              searchRoleBySystemTitle({ title: title })
-                .then((res) => {
-                  if (res.statusCode === 200) setSystemsRoles(res.content);
-                })
-                .finally(() => setLoading(false));
-            }}
+            onClick={async () => fetchData()}
             variant="contained"
           >
             جستجو
@@ -117,8 +134,12 @@ function RoleManagement() {
           >
             پاک
           </Button>
-          <Button color="secondary" variant="contained">
-            نقش جدید
+          <Button
+            onClick={() => setShowCreateNewSystemDialog(true)}
+            color="secondary"
+            variant="contained"
+          >
+            سامانه جدید
           </Button>
           <Button
             color="error"
@@ -130,17 +151,32 @@ function RoleManagement() {
           </Button>
         </Grid>
       </Grid>
-      {systemsRoles && (
+      {removing && (
+        <Grid display={'flex'} flexDirection={'row'} justifyContent={'center'}>
+          <CircularProgress color="secondary" size="30px" />
+        </Grid>
+      )}
+      {systemsRoles && !removing && (
         <MyCustomTable
           enableRowActions={true}
-          rowActions={({ row }) => (
+          rowActions={({
+            row
+          }: {
+            row: { original: { id: string | number } };
+          }) => (
             <Grid
               display={'flex'}
               flexDirection={'row'}
               gap={'10px'}
               justifyContent={'start'}
             >
-              <IconButton color="primary" onClick={() => console.info('Edit')}>
+              <IconButton
+                onClick={() => {
+                  setSelectedSystemId(row.original.id);
+                  setShowCreateNewRoleDialog(true);
+                }}
+                color="primary"
+              >
                 <PersonAdd />
               </IconButton>
               <IconButton
@@ -149,7 +185,22 @@ function RoleManagement() {
               >
                 <Edit />
               </IconButton>
-              <IconButton color="error" onClick={() => console.info('Delete')}>
+              <IconButton
+                color="error"
+                onClick={async () => {
+                  setRemoving(true);
+                  removeRole({ roleId: row.original.id })
+                    .then((res) => {
+                      if (res.statusCode === 200) {
+                        setSystemsRoles(
+                          systemsRoles.filter((e) => e.id !== row.original.id)
+                        );
+                        toast.success('سامانه مورد نظر با موفقیت حذف گردید');
+                      }
+                    })
+                    .finally(() => setRemoving(false));
+                }}
+              >
                 <Delete />
               </IconButton>
             </Grid>
@@ -158,6 +209,23 @@ function RoleManagement() {
           data={systemsRoles}
         />
       )}
+      <CreateNewRoleDialog
+        systemId={selectedSystemId}
+        open={showCreateNewRoleDialog}
+        onClose={() => setShowCreateNewRoleDialog(false)}
+        onAdd={() => {
+          setShowCreateNewRoleDialog(false);
+          fetchData();
+        }}
+      />
+      <CreateNewSystemDialog
+        open={showCreateNewSystemDialog}
+        onClose={() => setShowCreateNewSystemDialog(false)}
+        onAdd={() => {
+          setShowCreateNewSystemDialog(false);
+          fetchData();
+        }}
+      />
     </>
   );
 }
