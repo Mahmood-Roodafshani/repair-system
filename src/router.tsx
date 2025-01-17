@@ -3,7 +3,6 @@ import { RouteObject } from 'react-router';
 import { Navigate } from 'react-router-dom';
 
 import BaseLayout from 'src/layouts/BaseLayout';
-import SidebarLayout from 'src/layouts/SidebarLayout';
 
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import {
@@ -11,6 +10,8 @@ import {
   BorrowedItems,
   Cartable,
   ChooseReplacement,
+  CodingAccess,
+  CodingHomePage,
   Commission,
   Companies,
   ContentReport,
@@ -20,18 +21,38 @@ import {
   GroupPropertyCode,
   IndividualPerformanceReport,
   ItemsList,
+  JobsHomePage,
+  JobsList,
+  JobsTree,
   LoginPage,
   MissingRequest,
   PrintCheckout,
   PublicAnnouncements,
+  RepairPanelHomePage,
   RepairRequest,
   RoleManagement,
   SecurityAnnouncements,
   SystemProcess,
   TechnicalInterface,
+  Tracking,
+  TrackingHomePage,
   UserManagementHomePage
 } from './content';
-import { UserManagementSidebarLayout } from './layouts/userManagementSidebarLayout';
+import {
+  CodingPanelSidebarLayout,
+  DashboardSidebarLayout,
+  JobsPanelSidebarLayout,
+  RepairPanelSidebarLayout,
+  TrackingPanelSidebarLayout,
+  UserManagementSidebarLayout
+} from './layouts';
+import { BaseInfoPanelSidebarLayout } from './layouts/baseInfoPanelSidebarLayout';
+import {
+  BaseInfoHomePage,
+  FamilyInfo,
+  OtherInfo,
+  StaffInfo
+} from './content/pages/baseInfoPanel';
 
 const Loader = (Component) => (props) =>
   (
@@ -149,11 +170,21 @@ const routes: RouteObject[] = [
   },
   {
     path: 'dashboard',
-    element: <SidebarLayout />,
+    element: <DashboardSidebarLayout />,
     children: [
       {
         path: '',
         element: <Dashboard />
+      }
+    ]
+  },
+  {
+    path: 'repair-panel',
+    element: <RepairPanelSidebarLayout />,
+    children: [
+      {
+        path: '',
+        element: <RepairPanelHomePage />
       },
       {
         path: 'cartable',
@@ -210,6 +241,78 @@ const routes: RouteObject[] = [
       {
         path: 'system-process',
         element: <SystemProcess />
+      }
+    ]
+  },
+  {
+    path: 'jobs-panel',
+    element: <JobsPanelSidebarLayout />,
+    children: [
+      {
+        path: '',
+        element: <JobsHomePage />
+      },
+      {
+        path: 'list',
+        element: <JobsList />
+      },
+      {
+        path: 'tree',
+        element: <JobsTree />
+      }
+    ]
+  },
+  {
+    path: 'tracking-panel',
+    element: <TrackingPanelSidebarLayout />,
+    children: [
+      {
+        path: '',
+        element: <TrackingHomePage />
+      },
+      {
+        path: 'tracking',
+        element: <Tracking />
+      }
+    ]
+  },
+  {
+    path: 'base-info-panel',
+    element: <BaseInfoPanelSidebarLayout />,
+    children: [
+      {
+        path: '',
+        element: <BaseInfoHomePage />
+      },
+      {
+        path: 'staff-info',
+        element: <StaffInfo />
+      },
+      {
+        path: 'family-info',
+        element: <FamilyInfo />
+      },
+      {
+        path: 'other-info',
+        element: <OtherInfo />
+      }
+    ]
+  },
+  {
+    path: 'coding-panel',
+    element: <CodingPanelSidebarLayout />,
+    children: [
+      {
+        path: '',
+        element: <CodingHomePage />
+      },
+      {
+        path: 'coding',
+        element: <CodingHomePage />
+      },
+      {
+        path: 'access',
+        element: <CodingAccess />
       }
     ]
   },

@@ -97,6 +97,11 @@ declare module '@mui/material/styles' {
         main: string;
         dark: string;
       };
+      custom: {
+        darkBlue: string;
+        lightBlue: string;
+        pink: string;
+      };
     };
     general: {
       reactFrameworkColor: React.CSSProperties['color'];
@@ -215,6 +220,11 @@ declare module '@mui/material/styles' {
         light: string;
         main: string;
         dark: string;
+      };
+      custom: {
+        darkBlue: string;
+        lightBlue: string;
+        pink: string;
       };
     };
 

@@ -10,7 +10,10 @@ const themeColors = {
   info: '#33C2FF',
   black: '#223354',
   white: '#ffffff',
-  primaryAlt: '#000C57'
+  primaryAlt: '#000C57',
+  darkBlue: '#3c80cc',
+  lightBlue: '#5bbfde',
+  pink: '#ffcccc'
 };
 
 const colors = {
@@ -126,6 +129,11 @@ const colors = {
     light: lighten(themeColors.info, 0.3),
     main: themeColors.info,
     dark: darken(themeColors.info, 0.2)
+  },
+  custom: {
+    darkBlue: themeColors.darkBlue,
+    lightBlue: themeColors.lightBlue,
+    pink: themeColors.pink
   }
 };
 
@@ -218,6 +226,11 @@ export const PureLightTheme = createTheme({
       light: lighten(themeColors.info, 0.3),
       main: themeColors.info,
       dark: darken(themeColors.info, 0.2)
+    },
+    custom: {
+      darkBlue: themeColors.darkBlue,
+      lightBlue: themeColors.lightBlue,
+      pink: themeColors.pink
     }
   },
   general: {

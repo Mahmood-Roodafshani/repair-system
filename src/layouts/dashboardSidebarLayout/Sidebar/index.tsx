@@ -14,7 +14,6 @@ import {
 } from '@mui/material';
 
 import Logo from 'src/components/LogoSign';
-import SidebarMenu from './SidebarMenu';
 
 const SidebarWrapper = styled(Box)(
   ({ theme }) => `
@@ -70,7 +69,6 @@ function Sidebar() {
               background: theme.colors.alpha.trueWhite[10]
             }}
           />
-          <SidebarMenu />
         </Scrollbar>
       </SidebarWrapper>
       <Drawer
@@ -109,7 +107,6 @@ function Sidebar() {
                 background: theme.colors.alpha.trueWhite[10]
               }}
             />
-            <SidebarMenu />
           </Scrollbar>
         </SidebarWrapper>
       </Drawer>

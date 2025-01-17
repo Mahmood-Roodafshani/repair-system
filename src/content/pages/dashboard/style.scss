@@ -1,0 +1,53 @@
+@import './../../../theme/schemes/theme.scss';
+
+.dashboard-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  font-weight: bolder;
+  font-size: x-large;
+  & .notif-counter {
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    font-size: larger;
+    background-color: rgb(99, 98, 98);
+    padding: 3px 17px;
+    border-radius: 10px;
+    color: red;
+    font-weight: bolder;
+  }
+}
+
+.top-cards,
+.bottom-card {
+  justify-content: center;
+  align-items: stretch;
+  direction: row;
+  flex-wrap: wrap;
+}
+
+.top-cards {
+  color: $theme_color_dark_blue;
+  .dashboard-card {
+    background-color: $theme_color_pink;
+    border: 3px solid $theme_color_dark_blue;
+    height: 100px;
+  }
+}
+
+.bottom-cards {
+  margin: 20px 20px 0 20px;
+  width: calc(100% - 40px);
+  color: white;
+  > div {
+    row-gap: 20px;
+  }
+  .dashboard-card {
+    background-color: $theme_color_light_blue;
+    height: 140px;
+  }
+}
