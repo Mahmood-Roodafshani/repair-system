@@ -32,6 +32,8 @@
 
 .top-cards {
   color: $theme_color_dark_blue;
+  margin: 20px 20px 0 20px;
+  width: calc(100% - 40px);
   .dashboard-card {
     background-color: $theme_color_pink;
     border: 3px solid $theme_color_dark_blue;
@@ -48,6 +50,6 @@
   }
   .dashboard-card {
     background-color: $theme_color_light_blue;
-    height: 140px;
+    height: 100px;
   }
 }
