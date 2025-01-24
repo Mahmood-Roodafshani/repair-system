@@ -9,7 +9,7 @@
   },
   "private": false,
   "dependencies": {
-    "i18next": "^21.7.1", // TODO MAHMOOD check if needed
+    "i18next": "^21.7.1",
     "@emotion/react": "11.9.0",
     "@emotion/styled": "11.8.1",
     "@mui/icons-material": "5.8.2",
