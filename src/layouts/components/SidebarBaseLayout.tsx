@@ -40,7 +40,7 @@ function SidebarBaseLayout({ children }: { children: ReactNode }) {
             zIndex: 5,
             display: 'block',
             flex: 1,
-            pt: `${theme.header.height}`,
+            padding: '10px',
             [theme.breakpoints.up('lg')]: {
               mr: `${theme.sidebar.width}`
             }

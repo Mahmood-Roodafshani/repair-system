@@ -4,3 +4,4 @@ export * from './accessControl';
 export * from './homePage';
 export * from './chooseReplacement';
 export * from './createGroupAccess';
+export * from './signiture';

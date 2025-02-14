@@ -1,4 +1,4 @@
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
@@ -8,7 +8,11 @@ import { SidebarProvider } from './contexts/SidebarContext';
 import { ToastContainer } from 'react-toastify';
 // import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(
+const root = ReactDOM.createRoot(
+  document.getElementById('root') as HTMLElement
+);
+
+root.render(
   <HelmetProvider>
     <SidebarProvider>
       <BrowserRouter>
@@ -16,8 +20,7 @@ ReactDOM.render(
       </BrowserRouter>
     </SidebarProvider>
     <ToastContainer position="bottom-right" />
-  </HelmetProvider>,
-  document.getElementById('root')
+  </HelmetProvider>
 );
 
 // serviceWorker.unregister();

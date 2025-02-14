@@ -25,6 +25,11 @@ function MyCustomTable({
           size: 100
         }
       }}
+      muiTableBodyCellProps={{
+        sx: {
+          textAlign: 'right'
+        }
+      }}
       renderRowActions={rowActions}
       enableColumnActions={enableColumnActions}
       enableRowNumbers={enableRowNumbers}

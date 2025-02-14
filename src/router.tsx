@@ -32,6 +32,7 @@ import {
   RepairRequest,
   RoleManagement,
   SecurityAnnouncements,
+  Signiture,
   SystemProcess,
   TechnicalInterface,
   Tracking,
@@ -347,6 +348,10 @@ const routes: RouteObject[] = [
       {
         path: 'choose-replacement',
         element: <ChooseReplacement />
+      },
+      {
+        path: 'signiture',
+        element: <Signiture />
       }
     ]
   }

@@ -41,8 +41,15 @@
       body,
       .MuiTableCell-head,
       .MuiTypography-root,
-      .Toastify__toast-body div {
+      .MuiTableCell-root,
+      .Toastify__toast-body div,
+      button,
+      a {
         font-family: IRANSans !important;
+      }
+      button > .MuiButton-icon,
+      button .material-icons {
+        font-family: unset !important;
       }
       input::-webkit-input-placeholder {
         font-family: IRANSans !important;
@@ -55,9 +62,12 @@
       input:-moz-placeholder {
         font-family: IRANSans !important;
       }
-
-      input::-moz-placeholder {
-        font-family: IRANSans !important;
+      .cusorm-dropzone-container > .MuiDropzoneArea-textContainer {
+        margin-top: 50px;
+      }
+      .rmdp-input {
+        padding: 20px !important;
+        font-family: IRANSans;
       }
     </style>
   </head>

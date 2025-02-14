@@ -1,6 +1,7 @@
-import { Card, Grid, GridSize, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { useNavigate } from 'react-router';
 import './style.scss';
+import { GridSize } from '@mui/material/Grid';
 
 function DashboardCard({
   title,
