@@ -3,143 +3,56 @@ import Icon from '../Icon/Icon';
 import MaterialIconType from '../Icon/MaterialIconType';
 
 export default class ButtonType {
-  static readonly SEARCH = new ButtonType(
-    <Icon type={MaterialIconType.SEARCH} />,
-    null,
-    'search'
-  );
 
-  static readonly CREATE = new ButtonType(
-    <Icon type={MaterialIconType.ADD} />,
-    null,
-    'create'
-  );
+	static readonly SEARCH = new ButtonType(<Icon type={MaterialIconType.SEARCH}/>, null, 'search');
 
-  static readonly SHOW_ALL = new ButtonType(
-    <Icon type={MaterialIconType.AUTORENEW} />,
-    null,
-    'showAll'
-  );
+	static readonly CREATE = new ButtonType(<Icon type={MaterialIconType.ADD}/>, null, 'create');
 
-  static readonly ADD = new ButtonType(
-    <Icon type={MaterialIconType.ADD} />,
-    null,
-    'add'
-  );
+	static readonly SHOW_ALL = new ButtonType(<Icon type={MaterialIconType.AUTORENEW}/>, null, 'showAll');
 
-  static readonly DELETE = new ButtonType(
-    <Icon type={MaterialIconType.DELETE} />,
-    null,
-    'delete'
-  );
+	static readonly ADD = new ButtonType(<Icon type={MaterialIconType.ADD}/>, null, 'add');
 
-  static readonly REPORT = new ButtonType(
-    <Icon type={MaterialIconType.FILE_DOWNLOAD} />,
-    null,
-    'report'
-  );
+	static readonly DELETE = new ButtonType(<Icon type={MaterialIconType.DELETE}/>, null, 'delete');
 
-  static readonly SAVE = new ButtonType(
-    <Icon type={MaterialIconType.SAVE} />,
-    null,
-    'save'
-  );
+	static readonly REPORT = new ButtonType(<Icon type={MaterialIconType.FILE_DOWNLOAD}/>, null, 'report');
 
-  static readonly CREATEOREDIT = new ButtonType(
-    <Icon type={MaterialIconType.EDIT} />,
-    null,
-    'create/edit'
-  );
+	static readonly SAVE = new ButtonType(<Icon type={MaterialIconType.SAVE}/>, null, 'save');
 
-  static readonly EDIT = new ButtonType(
-    <Icon type={MaterialIconType.EDIT} />,
-    null,
-    'edit'
-  );
+	static readonly EDIT = new ButtonType(<Icon type={MaterialIconType.EDIT}/>, null, 'edit');
 
-  static readonly DISPLAY = new ButtonType(
-    <Icon type={MaterialIconType.VISIBILITY} />,
-    null,
-    'display'
-  );
+	static readonly DISPLAY = new ButtonType(<Icon type={MaterialIconType.VISIBILITY}/>, null, 'display');
 
-  static readonly PRINT = new ButtonType(
-    <Icon type={MaterialIconType.PRINT} />,
-    null,
-    'print'
-  );
+	static readonly PRINT = new ButtonType(<Icon type={MaterialIconType.PRINT}/>, null, 'print');
 
-  static readonly ACCEPT = new ButtonType(
-    <Icon type={MaterialIconType.DONE} />,
-    null,
-    'ok'
-  );
+	static readonly ACCEPT = new ButtonType(<Icon type={MaterialIconType.DONE}/>, null, 'ok');
 
-  static readonly REJECT = new ButtonType(
-    <Icon type={MaterialIconType.CANCEL} />,
-    null,
-    'reject'
-  );
+	static readonly REJECT = new ButtonType(<Icon type={MaterialIconType.CANCEL}/>, null, 'reject');
 
-  static readonly YES = new ButtonType(
-    <Icon type={MaterialIconType.DONE} />,
-    null,
-    'yes'
-  );
+	static readonly YES = new ButtonType(<Icon type={MaterialIconType.DONE}/>, null, 'yes');
 
-  static readonly NO = new ButtonType(
-    <Icon type={MaterialIconType.CANCEL} />,
-    null,
-    'no'
-  );
+	static readonly NO = new ButtonType(<Icon type={MaterialIconType.CANCEL}/>, null, 'no');
 
-  static readonly CANCEL = new ButtonType(
-    <Icon type={MaterialIconType.CANCEL} />,
-    null,
-    'cancel'
-  );
+	static readonly CANCEL = new ButtonType(<Icon type={MaterialIconType.CANCEL}/>, null, 'cancel');
 
-  static readonly CLOSE = new ButtonType(
-    <Icon type={MaterialIconType.CLOSE} />,
-    null,
-    'close'
-  );
+	static readonly CLOSE = new ButtonType(<Icon type={MaterialIconType.CLOSE}/>, null, 'close');
 
-  static readonly DOWNLOAD = new ButtonType(
-    <Icon type={MaterialIconType.FILE_DOWNLOAD} />,
-    null,
-    'download'
-  );
+	static readonly DOWNLOAD = new ButtonType(<Icon type={MaterialIconType.FILE_DOWNLOAD}/>, null, 'download');
 
-  static readonly UPLOAD = new ButtonType(
-    <Icon type={MaterialIconType.FILE_UPLOAD} />,
-    null,
-    'upload'
-  );
+	static readonly UPLOAD = new ButtonType(<Icon type={MaterialIconType.FILE_UPLOAD}/>, null, 'upload');
 
-  static readonly REFRESH = new ButtonType(
-    <Icon type={MaterialIconType.REFRESH} />,
-    null,
-    'update'
-  );
+	static readonly REFRESH = new ButtonType(<Icon type={MaterialIconType.REFRESH}/>, null, 'update');
 
-  static readonly CLEAR = new ButtonType(
-    <Icon type={MaterialIconType.CLEAR_ALL} />,
-    null,
-    'clear'
-  );
+	static readonly CLEAR = new ButtonType(<Icon type={MaterialIconType.CLEAR_ALL}/>, null, 'clear');
 
-  static readonly UNDO = new ButtonType(
-    <Icon type={MaterialIconType.UNDO} />,
-    null,
-    'cancel'
-  );
+	static readonly UNDO = new ButtonType(<Icon type={MaterialIconType.UNDO}/>, null, 'cancel');
 
-  icon: React.ReactElement<typeof Icon>;
+	static readonly CREATE_OR_EDIT = new ButtonType(<Icon type={MaterialIconType.EDIT} />, null, 'create/edit');
 
-  text: string | React.ReactNode;
+	icon: React.ReactElement<typeof Icon>;
 
-  defaultMessage: string | null;
+	text: string | React.ReactNode;
+
+	defaultMessage: string | null;
 
   constructor(
     icon: React.ReactElement<typeof Icon>,

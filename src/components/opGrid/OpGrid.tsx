@@ -30,7 +30,7 @@ function OpGrid({
         <Button
           variant="outlined"
           color="primary"
-          buttonType={ButtonType.CREATEOREDIT}
+          buttonType={ButtonType.CREATE_OR_EDIT}
           showIcon={false}
           onClick={onCreateOrEdit}
         />
