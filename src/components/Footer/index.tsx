@@ -18,7 +18,7 @@ function Footer() {
       >
         <Box>
           <Typography variant="subtitle1">
-            &copy; 2022 - Repair System
+            &copy; 2025 - Repair System
           </Typography>
         </Box>
         <Typography
@@ -29,11 +29,11 @@ function Footer() {
         >
           Crafted by{' '}
           <Link
-            href="https://bloomui.com"
+            href="https://mahmood_change_later.com"
             target="_blank"
             rel="noopener noreferrer"
           >
-            BloomUI.com
+            mahmood.ir
           </Link>
         </Typography>
       </Box>
