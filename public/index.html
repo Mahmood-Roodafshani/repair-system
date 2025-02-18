@@ -44,12 +44,31 @@
       .MuiTableCell-root,
       .Toastify__toast-body div,
       button,
-      a {
+      a,
+      label {
         font-family: IRANSans !important;
       }
       button > .MuiButton-icon,
       button .material-icons {
         font-family: unset !important;
+      }
+      input[type='text'] {
+        font-family: IRANSans !important;
+      }
+      ::-webkit-input-placeholder {
+        font-family: IRANSans !important;
+      }
+      ::-moz-placeholder {
+        font-family: IRANSans !important;
+      }
+      :-ms-input-placeholder {
+        font-family: IRANSans !important;
+      }
+      ::placeholder {
+        font-family: IRANSans !important;
+      }
+      input::placeholder {
+        font-family: IRANSans !important;
       }
       input::-webkit-input-placeholder {
         font-family: IRANSans !important;
@@ -68,6 +87,25 @@
       .rmdp-input {
         padding: 20px !important;
         font-family: IRANSans;
+      }
+      .MuiRichTreeView-root {
+        text-align: left;
+        border: 1px solid;
+      }
+      .MuiRichTreeView-root .MuiTreeItem-label {
+        font-size: 12px !important;
+      }
+      .MuiRichTreeView-root .MuiTreeItem-content {
+        flex-direction: row-reverse;
+        padding-top: 1.5px !important;
+        padding-bottom: 1.5px !important;
+        gap: 3px;
+      }
+      .MuiRichTreeView-root .MuiTreeItem-label {
+        font-family: IRANSans !important;
+      }
+      .MuiRichTreeView-root .MuiTreeItem-groupTransition {
+        padding-left: 25px;
       }
     </style>
   </head>

@@ -2,49 +2,55 @@ import { OrganizationUnitResponseType, RoleResponseType } from 'src/types';
 
 const RolesMock: RoleResponseType[] = [
   {
-    id: 1,
-    name: 'سامانه تعمیرات',
-    childs: [
+    id: '1',
+    label: 'سامانه تعمیرات',
+    children: [
       {
-        id: 11,
-        name: 'مدیر'
+        id: '11',
+        label: 'مدیر'
       },
       {
-        id: 12,
-        name: 'کاربران عمومی'
+        id: '12',
+        label: 'کاربران عمومی'
       },
       {
-        id: 13,
-        name: 'کارشناس تعمیر'
+        id: '13',
+        label: 'کارشناس تعمیر'
       }
     ]
   },
   {
-    id: 2,
-    name: 'سامانه مدیریت کاربران'
+    id: '2',
+    label: 'سامانه مدیریت کاربران'
   }
 ];
 
 const OrganizationUnitsMock: OrganizationUnitResponseType[] = [
   {
-    id: 1,
-    name: 'مدیریت فناوری',
-    childs: [
+    id: '1',
+    label: 'مدیریت فناوری',
+    children: [
       {
-        id: 11,
-        name: 'اداره شبکه',
-        childs: [
+        id: '11',
+        label: 'اداره شبکه',
+        children: [
           {
-            id: 111,
-            name: 'اداره رایانه'
+            id: '111',
+            label: 'اداره رایانه',
+            children: [
+              {
+                id: '1111',
+                label: 'اداره بانک اطلاعاتی'
+              }
+            ]
           }
         ]
       }
     ]
   },
   {
-    id: 2,
-    name: 'حوزه ریاست'
+    id: '2',
+    label: 'حوزه ریاست'
   }
 ];
 

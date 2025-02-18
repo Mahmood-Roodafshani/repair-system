@@ -1,4 +1,5 @@
 import { MaterialReactTable } from 'material-react-table';
+import { i18n } from 'src/i18n';
 
 function MyCustomTable({
   data,
@@ -7,6 +8,9 @@ function MyCustomTable({
   enablePagination = false,
   enableRowNumbers = false,
   enableColumnActions = false,
+  enableHiding = true,
+  enableFilters = true,
+  isLoading = false,
   rowActions = undefined
 }: {
   data: object[];
@@ -15,6 +19,9 @@ function MyCustomTable({
   enablePagination?: boolean;
   enableRowNumbers?: boolean;
   enableColumnActions?: boolean;
+  enableHiding?: boolean;
+  enableFilters?: boolean;
+  isLoading?: boolean;
   rowActions?: any;
 }) {
   return (
@@ -37,13 +44,16 @@ function MyCustomTable({
       enablePagination={enablePagination}
       enableFullScreenToggle={false}
       enableDensityToggle={false}
+      enableHiding={enableHiding}
+      enableFilters={enableFilters}
       data={data}
       columns={columns}
+      state={{ isLoading: isLoading }}
       localization={{
-        actions: 'عملیات',
-        rowNumber: 'ردیف',
-        showHideSearch: 'نمایش/مخفی سازی جست و جو',
-        showHideFilters: 'نمایش/مخفی سازی فیلترها'
+        actions: i18n.t('operation'),
+        rowNumber: i18n.t('row_number'),
+        showHideSearch: i18n.t('show_hide_search'),
+        showHideFilters: i18n.t('show_hide_filters')
       }}
     />
   );

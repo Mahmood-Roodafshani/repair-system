@@ -1,5 +1,5 @@
 export type RoleResponseType = {
   id: string | number;
-  name: string;
-  childs?: RoleResponseType[];
+  label: string;
+  children?: RoleResponseType[];
 };

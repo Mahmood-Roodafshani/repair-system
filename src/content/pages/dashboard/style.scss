@@ -14,7 +14,7 @@
     top: 10px;
     left: 20px;
     font-size: larger;
-    background-color: rgb(99, 98, 98);
+    background-color: $theme_color_military_yellow;
     padding: 3px 17px;
     border-radius: 10px;
     color: red;
@@ -35,8 +35,11 @@
   margin: 20px 20px 0 20px;
   width: calc(100% - 40px);
   .dashboard-card {
-    background-color: $theme_color_pink;
-    border: 3px solid $theme_color_dark_blue;
+    // background-color: $theme_color_pink;
+    // border: 3px solid $theme_color_dark_blue;
+    background-color: $theme_color_military_green;
+    border: 3px solid $theme_color_military_yellow;
+    color: $theme_color_military_yellow;
     height: 100px;
   }
 }
@@ -49,7 +52,8 @@
     row-gap: 20px;
   }
   .dashboard-card {
-    background-color: $theme_color_light_blue;
+    // background-color: $theme_color_light_blue;
+    background-color: $theme_color_military_light_green;
     height: 100px;
   }
 }

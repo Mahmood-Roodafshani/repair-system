@@ -8,6 +8,7 @@ const ROUTES = {
   STORE_NEW_SYSTEM: `${BASE_URL}system`,
   STORE_NEW_ROLE: `${BASE_URL}system/`,
   REMOVE_ROLE: `${BASE_URL}role/`,
+  REMOVE_SYSTEM: `${BASE_URL}system/`,
   // ########## USER MANAGEMENT ##########
   // ACCESS CONTROL
   ACCESS_CONTROL_FETCH_LIST: `${BASE_URL}fetchList/`,

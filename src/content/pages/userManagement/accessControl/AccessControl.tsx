@@ -1,18 +1,19 @@
-import { LoadingButton } from '@mui/lab';
 import {
   Checkbox,
   FormControlLabel,
   Grid,
   IconButton,
   InputAdornment,
-  Button as MButton,
   TextField,
   Typography
 } from '@mui/material';
+import { RichTreeView } from '@mui/x-tree-view';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Loader, MyCustomTable } from 'src/components';
+import { useNavigate } from 'react-router';
+import { Loader, MyCustomTable, OpGrid } from 'src/components';
+import i18n from 'src/i18n/i18n';
 import { Button, ButtonType, TextFieldFormik } from 'src/mahmood-components';
 import {
   accessControlFetchList,
@@ -25,15 +26,11 @@ import {
   OrganizationUnitResponseType,
   RoleResponseType
 } from 'src/types';
-import { filterListValidationSchema } from './validationSchema';
-import i18n from 'src/i18n/i18n';
-import { useNavigate } from 'react-router';
 import Grants from './Grants';
-// import Visibility from '@material-ui/icons/Visibility';
-// import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import { filterListValidationSchema } from './validationSchema';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 function AccessControl() {
-  const [filter, setFilter] = useState<AccessControlFilterType>();
   const [roles, setRoles] = useState<RoleResponseType[]>();
   const [organizationUnits, setOrganizationUnits] =
     useState<OrganizationUnitResponseType[]>();
@@ -43,14 +40,26 @@ function AccessControl() {
   const [selectedUserGrants, setSelectedUserGrants] = useState<
     string | number
   >();
+  const [expandedOrganizationItems, setExpandedOrganizationItems] = useState<
+    string[]
+  >([]);
+  const [expandedRoleItems, setExpandedRoleItems] = useState<string[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     setLoading(true);
     Promise.all([fetchRoles(), fetchOrganizationUnits()])
       .then((res) => {
-        if (res[0].statusCode === 200) setRoles(res[0].content);
-        if (res[1].statusCode === 200) setOrganizationUnits(res[1].content);
+        if (res[0].statusCode === 200) {
+          setRoles(res[0].content);
+          setExpandedRoleItems(res[0].content.map((e) => 'role_' + e.id));
+        }
+        if (res[1].statusCode === 200) {
+          setOrganizationUnits(res[1].content);
+          setExpandedOrganizationItems(
+            res[1].content.map((e) => 'organization_' + e.id)
+          );
+        }
       })
       .finally(() => setLoading(false));
   }, []);
@@ -111,29 +120,29 @@ function AccessControl() {
               justifyContent={'center'}
             >
               <TextField
-                // InputProps={{
-                //   endAdornment: (
-                //     <InputAdornment position="end">
-                //       <IconButton
-                //         onClick={() =>
-                //           setList(
-                //             list.map((e) => {
-                //               if (e.id === row.original.id)
-                //                 e.showPassword = true;
-                //               return e;
-                //             })
-                //           )
-                //         }
-                //       >
-                //         {row.original.showPassword ? (
-                //           <Visibility />
-                //         ) : (
-                //           <VisibilityOff />
-                //         )}
-                //       </IconButton>
-                //     </InputAdornment>
-                //   )
-                // }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() =>
+                          setList(
+                            list.map((e) => {
+                              if (e.id === row.original.id)
+                                e.showPassword = true;
+                              return e;
+                            })
+                          )
+                        }
+                      >
+                        {row.original.showPassword ? (
+                          <Visibility />
+                        ) : (
+                          <VisibilityOff />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
                 onChange={(event) =>
                   setList(
                     list.map((e) => {
@@ -181,63 +190,89 @@ function AccessControl() {
           >
             {({ setValues, isSubmitting, submitForm, resetForm }) => (
               <Form>
-                <Grid display={'flex'} flexDirection={'row'} gap={'20px'}>
+                <Grid
+                  display={'flex'}
+                  flexDirection={'row'}
+                  gap={'20px'}
+                  flexWrap={'wrap'}
+                >
                   <TextFieldFormik
+                    sx={{ width: '250px' }}
                     name="staffCode"
                     label={i18n.t('staff_code').toString()}
                     type="number"
                   />
                   <TextFieldFormik
+                    sx={{ width: '250px' }}
                     name="nationalCode"
                     label={i18n.t('national_code').toString()}
                     type="number"
                   />
                   <TextFieldFormik
+                    sx={{ width: '250px' }}
                     name="firstname"
                     label={i18n.t('firstname').toString()}
                   />
                   <TextFieldFormik
+                    sx={{ width: '250px' }}
                     name="lastname"
                     label={i18n.t('lastname').toString()}
                   />
+                  {roles && (
+                    <RichTreeView
+                      sx={{
+                        mt: '10px',
+                        width: '500px'
+                      }}
+                      expandedItems={expandedRoleItems}
+                      onExpandedItemsChange={(
+                        event: React.SyntheticEvent,
+                        itemIds: string[]
+                      ) => {
+                        setExpandedRoleItems(itemIds);
+                      }}
+                      items={roles.map((e) => ({
+                        id: 'role_' + e.id,
+                        label: e.label,
+                        children: e.children
+                      }))}
+                      // onSelectedItemsChange={(event, itemIds) => setSelectedRole(itemIds[0])}
+                    />
+                  )}
+                  {organizationUnits && (
+                    <RichTreeView
+                      sx={{
+                        mt: '10px',
+                        width: '500px'
+                      }}
+                      expandedItems={expandedOrganizationItems}
+                      onExpandedItemsChange={(
+                        event: React.SyntheticEvent,
+                        itemIds: string[]
+                      ) => {
+                        setExpandedOrganizationItems(itemIds);
+                      }}
+                      items={organizationUnits.map((e) => ({
+                        id: 'organization_' + e.id,
+                        label: e.label,
+                        children: e.children
+                      }))}
+                      // onSelectedItemsChange={(event, itemIds) => setSelectedRole(itemIds[0])}
+                    />
+                  )}
                 </Grid>
-                <Grid
-                  ml={'20px'}
-                  mt={'20px'}
-                  display={'flex'}
-                  flexDirection={'row'}
-                  gap={'10px'}
-                >
-                  <LoadingButton
-                    loading={isSubmitting}
-                    variant="contained"
-                    onClick={() => submitForm()}
-                  >
-                    {i18n.t('search').toString()}
-                  </LoadingButton>
-                  <Button
-                    color="warning"
-                    onClick={() => {
-                      setValues({});
-                      resetForm();
-                    }}
-                    showIcon={false}
-                    buttonType={ButtonType.CLEAR}
-                  />
-                  <MButton
-                    variant="contained"
-                    color="success"
-                    onClick={() => setAddNewUser(true)}
-                  >
-                    {i18n.t('new_user').toString()}
-                  </MButton>
-                  <Button
-                    color="error"
-                    variant="contained"
-                    onClick={() => navigate('/usermanagement')}
-                    buttonType={ButtonType.CLOSE}
-                  />
-                </Grid>
+                <OpGrid
+                  sx={{ marginTop: '10px' }}
+                  onSearch={submitForm}
+                  onClear={() => {
+                    setValues({});
+                    resetForm();
+                  }}
+                  onCreateOrEdit={() => setAddNewUser(true)}
+                  onCreateOrEditLabel={i18n.t('new_user').toString()}
+                  onClose={() => navigate('/usermanagement')}
+                />
+                {isSubmitting && <Loader />}
               </Form>
             )}
           </Formik>

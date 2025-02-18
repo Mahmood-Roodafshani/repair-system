@@ -1,2 +1,2 @@
-export { SystemRolesMock } from './systemRolesMock';
+export * from './systemRolesMock';
 export * from './accessControlMock';

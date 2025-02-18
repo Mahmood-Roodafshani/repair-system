@@ -1,5 +1,7 @@
 import { LoadingButton } from '@mui/lab';
-import { Button, Dialog, DialogTitle, Grid } from '@mui/material';
+import { Dialog, DialogTitle, Grid } from '@mui/material';
+import { i18n } from 'src/i18n';
+import { Button, ButtonType } from 'src/mahmood-components';
 
 function ConfirmationModal({
   onClose,
@@ -23,16 +25,19 @@ function ConfirmationModal({
         gap={'10px'}
         justifyContent={'end'}
       >
-        <Button variant="outlined" color="error" onClick={onClose}>
-          انصراف
-        </Button>
+        <Button
+          buttonType={ButtonType.CANCEL}
+          showIcon={false}
+          onClick={onClose}
+          color="error"
+        />
         <LoadingButton
           loading={loading}
           variant="contained"
           color="success"
           onClick={onRemove}
         >
-          بله
+          {i18n.t('yes').toString()}
         </LoadingButton>
       </Grid>
     </Dialog>

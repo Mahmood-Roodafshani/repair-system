@@ -1,6 +1,6 @@
 import { Box, CircularProgress } from '@mui/material';
 
-function Loader() {
+function Loader({ size = 64 }: { size?: number }) {
   return (
     <Box
       sx={{
@@ -14,7 +14,7 @@ function Loader() {
       alignItems="center"
       justifyContent="center"
     >
-      <CircularProgress size={64} disableShrink thickness={3} />
+      <CircularProgress size={size} disableShrink thickness={3} />
     </Box>
   );
 }

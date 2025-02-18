@@ -1,4 +1,7 @@
-import { SystemRolesMock } from 'src/mock';
+import {
+  SystemRolesMock,
+  SystemsMock
+} from 'src/mock/userManagement/systemRolesMock';
 import ROUTES from '../routes';
 import { get, post, remove } from '../service';
 import { timeout } from 'src/utils/helper';
@@ -8,11 +11,25 @@ const searchRoleBySystemTitle = async ({ title }: { title: string }) => {
     await timeout(1000);
     return {
       statusCode: 200,
-      content: SystemRolesMock
+      content: SystemsMock
     };
   }
   const response = await get({
     url: ROUTES.SEARCH_ROLE_BY_SYSTEM_TITLE
+  });
+  return response;
+};
+
+const getSystemRoles = async ({ systemId }: { systemId: string | number }) => {
+  if (process.env.REACT_APP_WORK_WITH_MOCK) {
+    await timeout(1000);
+    return {
+      statusCode: 200,
+      content: SystemRolesMock
+    };
+  }
+  const response = await get({
+    url: ROUTES.STORE_NEW_SYSTEM + systemId
   });
   return response;
 };
@@ -35,9 +52,11 @@ const storeNewSystem = async ({ title }: { title: string }) => {
 
 const storeNewRole = async ({
   systemId,
+  roleId,
   title
 }: {
   systemId: string | number;
+  roleId: string | number;
   title: string;
 }) => {
   if (process.env.REACT_APP_WORK_WITH_MOCK) {
@@ -55,6 +74,19 @@ const storeNewRole = async ({
   return response;
 };
 
+const removeSystem = async ({ systemId }: { systemId: string | number }) => {
+  if (process.env.REACT_APP_WORK_WITH_MOCK) {
+    await timeout(1000);
+    return {
+      statusCode: 200
+    };
+  }
+  const response = await remove({
+    url: ROUTES.REMOVE_ROLE + systemId
+  });
+  return response;
+};
+
 const removeRole = async ({ roleId }: { roleId: string | number }) => {
   if (process.env.REACT_APP_WORK_WITH_MOCK) {
     await timeout(1000);
@@ -68,4 +100,11 @@ const removeRole = async ({ roleId }: { roleId: string | number }) => {
   return response;
 };
 
-export { searchRoleBySystemTitle, storeNewSystem, storeNewRole, removeRole };
+export {
+  searchRoleBySystemTitle,
+  storeNewSystem,
+  storeNewRole,
+  removeRole,
+  removeSystem,
+  getSystemRoles
+};

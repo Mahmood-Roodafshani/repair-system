@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router';
 import Logo from 'src/components/LogoSign';
 import Scrollbar from 'src/components/Scrollbar';
 import { SidebarContext } from 'src/contexts/SidebarContext';
+import { i18n } from 'src/i18n';
 
 function SidebarWrapper({ children }: { children: ReactNode }) {
   const theme = useTheme();
@@ -57,11 +58,12 @@ function SidebarWrapper({ children }: { children: ReactNode }) {
             sx={{
               width: '100%',
               borderRadius: 0,
-              backgroundColor: theme.colors.custom.lightBlue
+              backgroundColor: theme.colors.custom.lightBlue,
+              color: theme.colors.custom.darkBlue
             }}
             variant="contained"
           >
-            داشبورد
+            {i18n.t('dashboard').toString()}
           </Button>
           {/*<Box mt={3}> */}
           {/*  <Box*/}
