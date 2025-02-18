@@ -62,30 +62,6 @@ const Loader = (Component) => (props) =>
     </Suspense>
   );
 
-// Pages
-
-const Overview = Loader(lazy(() => import('src/content/overview')));
-
-// Dashboards
-
-const Crypto = Loader(lazy(() => import('src/content/dashboards/Crypto')));
-
-// Applications
-
-const Messenger = Loader(
-  lazy(() => import('src/content/applications/Messenger'))
-);
-const Transactions = Loader(
-  lazy(() => import('src/content/applications/Transactions'))
-);
-const UserProfile = Loader(
-  lazy(() => import('src/content/applications/Users/profile'))
-);
-const UserSettings = Loader(
-  lazy(() => import('src/content/applications/Users/settings'))
-);
-
-// Components
 
 const Buttons = Loader(
   lazy(() => import('src/content/pages/Components/Buttons'))

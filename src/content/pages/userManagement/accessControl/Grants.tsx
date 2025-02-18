@@ -41,7 +41,7 @@ function Grants({
         <Grid display={'flex'} flexDirection={'row'} gap={'10px'}>
           <Button
             onClick={() => console.log('')}
-            buttonType={ButtonType.CREATEOREDIT}
+            buttonType={ButtonType.CREATE_OR_EDIT}
             color="warning"
             variant="contained"
             showIcon={false}
