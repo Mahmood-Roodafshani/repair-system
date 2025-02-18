@@ -62,22 +62,6 @@ const Loader = (Component) => (props) =>
     </Suspense>
   );
 
-// Applications
-
-const Messenger = Loader(
-  lazy(() => import('src/content/applications/Messenger'))
-);
-const Transactions = Loader(
-  lazy(() => import('src/content/applications/Transactions'))
-);
-const UserProfile = Loader(
-  lazy(() => import('src/content/applications/Users/profile'))
-);
-const UserSettings = Loader(
-  lazy(() => import('src/content/applications/Users/settings'))
-);
-
-// Components
 
 const Buttons = Loader(
   lazy(() => import('src/content/pages/Components/Buttons'))
