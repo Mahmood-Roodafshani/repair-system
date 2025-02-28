@@ -1,4 +1,8 @@
-import { OrganizationUnitResponseType, RoleResponseType } from 'src/types';
+import {
+  OrganizationUnitResponseType,
+  RichViewType,
+  RoleResponseType
+} from 'src/types';
 
 const RolesMock: RoleResponseType[] = [
   {
@@ -54,4 +58,29 @@ const OrganizationUnitsMock: OrganizationUnitResponseType[] = [
   }
 ];
 
-export { RolesMock, OrganizationUnitsMock };
+const CitiesMock: RichViewType[] = [
+  {
+    id: '2',
+    label: 'تهران'
+  },
+  {
+    id: '1',
+    label: 'زنجان',
+    children: [
+      {
+        id: '11',
+        label: 'طارم'
+      },
+      {
+        id: '12',
+        label: 'ابهر'
+      }
+    ]
+  },
+  {
+    id: '3',
+    label: 'اصفهان'
+  }
+];
+
+export { RolesMock, OrganizationUnitsMock, CitiesMock };

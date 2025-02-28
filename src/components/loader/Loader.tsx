@@ -8,7 +8,9 @@ function Loader({ size = 64 }: { size?: number }) {
         left: 0,
         top: 0,
         width: '100%',
-        height: '100%'
+        height: '100%',
+        backgroundColor: 'rgba(0, 7, 52, 0.2)',
+        zIndex: '999'
       }}
       display="flex"
       alignItems="center"

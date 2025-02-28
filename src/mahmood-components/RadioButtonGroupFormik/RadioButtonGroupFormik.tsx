@@ -5,10 +5,10 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { RadioGroupProps as MRadioGroupProps } from '@mui/material/RadioGroup/RadioGroup';
 import { useField, useFormikContext } from 'formik';
-import OptionsModel from '../../model/OptionsModel';
+import { OptionType } from 'src/models';
 
 interface s extends MRadioGroupProps {
-  options: OptionsModel[];
+  options: OptionType[];
   name: string;
   legend?: string;
 }
@@ -45,7 +45,7 @@ const RadioButtonGroupFormik = (props: s) => {
             key={option.id}
             value={String(option.id)}
             control={<Radio />}
-            label={option.title}
+            label={option.label}
           />
         ))}
       </RadioGroup>

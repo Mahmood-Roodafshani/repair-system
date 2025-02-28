@@ -174,14 +174,12 @@ function RoleManagement() {
                   </IconButton>
                   <IconButton
                     color="secondary"
-                    onClick={() => console.info('Edit')}
+                    onClick={() => {
+                      setSelectedSystemId(row.original.id);
+                      setShowSystemEditPanel(true);
+                    }}
                   >
-                    <Edit
-                      onClick={() => {
-                        setSelectedSystemId(row.original.id);
-                        setShowSystemEditPanel(true);
-                      }}
-                    />
+                    <Edit />
                   </IconButton>
                   <IconButton
                     color="error"

@@ -30,7 +30,7 @@ const TextFieldWithFormik = (props: LocalTextFieldProps) => {
 
   // meta object containes
   // submitForm, isSubmitting, touched, errors
-  if (meta && meta.touched && meta.error) {
+  if (meta && meta.error) {
     // @ts-ignore
     configTextField.error = true;
     // @ts-ignore

@@ -7,7 +7,7 @@ function OpGrid({
   onSearch,
   onClear,
   onCreateOrEdit,
-  onCreateOrEditLabel,
+  createOrEditLabel,
   onClose,
   additionalBtn
 }: {
@@ -15,7 +15,7 @@ function OpGrid({
   onSearch?: () => void;
   onClear?: () => void;
   onCreateOrEdit?: () => void;
-  onCreateOrEditLabel?: string;
+  createOrEditLabel?: string;
   onClose?: () => void;
   additionalBtn?: React.ReactNode;
 }) {
@@ -45,6 +45,7 @@ function OpGrid({
           color="primary"
           buttonType={ButtonType.CREATE_OR_EDIT}
           showIcon={false}
+          text={createOrEditLabel}
           onClick={onCreateOrEdit}
         />
       )}

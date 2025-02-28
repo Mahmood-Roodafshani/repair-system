@@ -269,7 +269,7 @@ function AccessControl() {
                     resetForm();
                   }}
                   onCreateOrEdit={() => setAddNewUser(true)}
-                  onCreateOrEditLabel={i18n.t('new_user').toString()}
+                  createOrEditLabel={i18n.t('new_user').toString()}
                   onClose={() => navigate('/usermanagement')}
                 />
                 {isSubmitting && <Loader />}

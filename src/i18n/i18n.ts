@@ -15,6 +15,8 @@ i18next
           dashboard: 'داشبورد',
           createGroupAccess: 'ایجاد گروه دسترسی',
           chooseReplacement: 'انتخاب جایگزین',
+          staffInfo: 'اطلاعات پرسنل',
+          otherInfo: 'اطلاعات غیر پرسنل',
           // BUTTONS
           add: 'افزودن',
           delete: 'حذف',
@@ -56,6 +58,10 @@ i18next
           title: 'عنوان',
           status: 'وضعیت',
           name: 'نام',
+          mobile: 'شماره موبایل',
+          gender: 'جنسیت',
+          religion: 'مذهب',
+          address: 'آدرس',
           group_access: 'گروه دسترسی',
           group_name: 'نام گروه',
           created_groups: 'گروه‌های ایجاد شده',
@@ -71,6 +77,8 @@ i18next
           role_replacement: 'انتخاب نقش جایگزین',
           available_grants: 'مجوزهای موجود',
           taken_grants: 'مجوزهای عطا شده',
+          new_staff: 'پرسنل جدید',
+          new_person: 'شخص جدید',
           // TABLE
           operation: 'عملیات',
           row_number: 'ردیف',
@@ -79,16 +87,54 @@ i18next
           // FILTER
           from: 'تاریخ شروع',
           to: 'تاریخ پایان',
+          id_number: 'شماره شناسنامه',
+          father_name: 'نام پدر',
+          hire_date: 'تاریخ استخدام',
+          service_status: 'وضعیت خدمتی',
+          martial_status: 'وضعیت تاهل',
+          military_degree: 'درجه/رتبه',
+          degree: 'مدرک',
+          work_location: 'محل خدمت',
+          educational_field: 'رشته تحصیلی',
+          birth_location: 'محل تولد',
+          // DEGREE
+          phd: 'دکترا',
+          master: 'کارشناسی ارشد',
+          bachelor: 'کارشناسی',
+          // GENDER
+          gender_male: 'مرد',
+          gender_female: 'زن',
+          // MILITARY SERVICE
+          military_service_done_status: 'اتمام خدمت',
+          military_service_exempt_status: 'معاف از خدمت',
+          // SERVICE STATUS
+          service_in_progress_status: 'در حال خدمت',
+          service_retried_status: 'بازنشسته',
+          // MARITAL STATUS
+          marital_single_status: 'مجرد',
+          marital_married_status: 'متاهل',
+          // RELIGION
+          religion_shia: 'شیعه',
+          religion_sunni: 'سنی',
           // MESSAGES
           op_done_successfully: 'عملیات موردنظر با موفقیت انجام شد',
           ckeditor_placeholder: 'متن پیام را وارد نمایید',
           confirm_remove: 'آیا از حذف آیتم مدنظر اطمینان دارید؟',
+          user_removed: 'کاربر مورد نظر با موفقیت حذف گردید',
           // ERRORS
           please_fill_req_fields: 'لطفا تمام موارد لازم را پر نمایید',
+          firstname_is_req: 'لطفا فیلد نام را وارد نمایید',
           firstname_min_length: 'نام باید حداقل 2 کاراکتر باشد',
           firstname_max_length: 'نام باید حداکثر 50 کاراکتر باشد',
+          lastname_is_req: 'لطفا فیلد نام خانوادگی را وارد نمایید',
           lastname_min_length: 'نام خانوادگی باید حداقل 2 کاراکتر باشد',
           lastname_max_length: 'نام خانوادگی باید حداکثر 50 کاراکتر باشد',
+          father_name_is_req: 'لطفا فیلد نام پدر را وارد نمایید',
+          father_name_min_length: 'نام پدر باید حداقل 2 کاراکتر باشد',
+          father_name_max_length: 'نام پدر باید حداکثر 50 کاراکتر باشد',
+          address_is_req: 'لطفا فیلد آدرس را وارد نمایید',
+          address_min_length: 'آدرس باید حداقل 2 کاراکتر باشد',
+          address_max_length: 'آدرس باید حداکثر 200 کاراکتر باشد',
           title_min_length: 'عنوان باید حداقل 2 کاراکتر باشد',
           title_max_length: 'عنوان باید حداکثر 50 کاراکتر باشد',
           title_is_req: 'لطفا عنوان را وارد نمایید',
@@ -98,7 +144,23 @@ i18next
           from_is_req: 'لطفا تاریخ شروع را وارد نمایید',
           to_is_req: 'لطفا تاریخ پایان را وارد نمایید',
           invalid_national_code: 'کدملی وارد شده نامعتبر است',
-          invalid_staff_code: 'شماره پرسنلی وارد شده نامعتبر است'
+          national_code_is_req: 'لطفا فیلد کدملی را وارد نمایید',
+          invalid_staff_code: 'شماره پرسنلی وارد شده نامعتبر است',
+          staff_code_is_req: 'لطفا شماره پرسنلی را وارد نمایید',
+          id_number_is_req: 'لطفا فیلد شماره شناسنامه را وارد نمایید',
+          invalid_id_number: 'شماره شناسنامه وارد شده اشتباه است',
+          mobile_is_req: 'لطفا فیلد شماره موبایل را وارد نمایید',
+          invalid_mobile: 'شماره موبایل وارد شده اشتباه است',
+          religion_is_req: 'لطفا فیلد مذهب را وارد نمایید',
+          degree_is_req: 'لطفا فیلد مدرک را وارد نمایید',
+          service_status_is_req: 'لطفا فیلد وضعیت خدمتی را وارد نمایید',
+          gender_is_req: 'لطفا فیلد جنسیت را وارد نمایید',
+          military_degree_is_req: 'لطفا فیلد درجه/رتبه را وارد نمایید',
+          martial_status_is_req: 'لطفا فیلد وضعیت تاهل را وارد نمایید',
+          birth_location_is_req: 'لطفا فیلد محل تولد را وارد نمایید',
+          educational_field_is_req: 'لطفا فیلد رشته تحصیلی را وارد نمایید',
+          work_location_is_req: 'لطفا فیلد محل خدمت را وارد نمایید',
+          hire_date_is_req: 'لطفا فیلد تاریخ استخدام را وارد نمایید'
         }
       }
     }
