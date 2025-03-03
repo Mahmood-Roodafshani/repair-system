@@ -1,0 +1,9 @@
+export enum FamilyRelation {
+  WIFE_HUSBAND = 'WIFE_HUSBAND',
+  FATHER = 'FATHER',
+  MOTHER = 'MOTHER',
+  SON = 'SON',
+  DAUGHTER = 'DAUGHTER',
+  SISTER = 'SISTER',
+  BROTHER = 'BROTHER'
+}

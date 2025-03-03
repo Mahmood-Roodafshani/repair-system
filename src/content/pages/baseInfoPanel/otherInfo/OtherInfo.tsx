@@ -4,30 +4,24 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router';
+import { toast } from 'react-toastify';
 import { InlineLoader, Loader, MyCustomTable, OpGrid } from 'src/components';
 import { i18n } from 'src/i18n';
 import { ConfirmationDialog, TextFieldFormik } from 'src/mahmood-components';
+import { EducationalFieldMock } from 'src/mock';
+import { Degree, Gender, MaritalStatus, Religion } from 'src/models';
+import {
+  fetchCities,
+  fetchNonStaffInfoList,
+  removeNonStaff
+} from 'src/service';
 import {
   RichViewType,
   StaffInfoRequestType,
   StaffInfoResponseType
 } from 'src/types';
 import CreateOrEditForm from '../common/CreateOrEditForm';
-import {
-  Degree,
-  Gender,
-  MaritalStatus,
-  Religion,
-  ServiceStatus
-} from 'src/models';
-import { toast } from 'react-toastify';
 import { filterValidationSchema } from '../common/validationSchema';
-import {
-  fetchCities,
-  fetchNonStaffInfoList,
-  removeNonStaff
-} from 'src/service';
-import { EducationalFieldMock } from 'src/mock';
 
 function OtherInfo() {
   const navigate = useNavigate();
@@ -109,7 +103,7 @@ function OtherInfo() {
   return (
     <>
       <Helmet>
-        <title>{i18n.t('otherInfo').toString()}</title>
+        <title>{i18n.t('other_info').toString()}</title>
       </Helmet>
       {!selectedStaffForEdit && !showCreateForm && (
         <Grid display={'flex'} flexDirection={'column'} gap={'20px'}>
@@ -247,20 +241,16 @@ function OtherInfo() {
                   lastname: selectedStaffForEdit.name.split(' ')[1],
                   fatherName: selectedStaffForEdit.fatherName,
                   nationalCode: selectedStaffForEdit.nationalCode,
-                  staffCode: selectedStaffForEdit.staffCode,
                   idNumber: selectedStaffForEdit.idNumber,
                   address: selectedStaffForEdit.address,
                   mobile: selectedStaffForEdit.mobile,
                   degree: Degree[selectedStaffForEdit.degree],
                   birthLocation: selectedStaffForEdit.birthLocation,
-                  serviceStatus:
-                    ServiceStatus[selectedStaffForEdit.serviceStatus],
+                  educationalField: selectedStaffForEdit.educationalField,
                   gender: Gender[selectedStaffForEdit.gender as string],
-                  militaryDegree: selectedStaffForEdit.militaryDegree,
                   martialStatus:
                     MaritalStatus[selectedStaffForEdit.maritalStatus],
-                  religion: Religion[selectedStaffForEdit.religion],
-                  hireDate: selectedStaffForEdit.hireDate
+                  religion: Religion[selectedStaffForEdit.religion]
                 }
           }
           setStaffInfo={setStaffInfo}

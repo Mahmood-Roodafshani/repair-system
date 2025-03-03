@@ -4,3 +4,4 @@ export { ServiceStatus } from './serviceStatus';
 export { MaritalStatus } from './maritalStatus';
 export { Religion } from './religion';
 export { Gender } from './gender';
+export { FamilyRelation } from './familyRelation';

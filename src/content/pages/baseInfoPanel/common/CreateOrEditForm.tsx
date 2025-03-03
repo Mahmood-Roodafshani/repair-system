@@ -7,6 +7,7 @@ import { SelectFormik, TextFieldFormik } from 'src/mahmood-components';
 import { MilitaryDegreeMock } from 'src/mock';
 import {
   DegreeOptions,
+  FamilyRelationOptions,
   GenderOptions,
   MaritalStatusOptions,
   ReligionOptions,
@@ -19,7 +20,11 @@ import {
   StaffInfoResponseType
 } from 'src/types';
 import CustomDatePicker from 'src/components/customDatePicker/CustomDatePicker';
-import { createValidationSchema } from './validationSchema';
+import {
+  createFamilyMemberValidationSchema,
+  createNonStaffValidationSchema,
+  createStaffValidationSchema
+} from './validationSchema';
 
 function CreateOrEditForm({
   initialValues,
@@ -36,7 +41,7 @@ function CreateOrEditForm({
   workLocations?: RichViewType[];
   setStaffInfo: Dispatch<SetStateAction<StaffInfoResponseType[]>>;
   onClose: () => void;
-  mode: 'staff' | 'nonStaff';
+  mode: 'staff' | 'nonStaff' | 'family';
 }) {
   const [isInEditMode, setIsInEditMode] = useState(false);
   useEffect(() => {
@@ -61,7 +66,13 @@ function CreateOrEditForm({
     <Formik
       onSubmit={onSubmit}
       initialValues={initialValues}
-      validationSchema={createValidationSchema}
+      validationSchema={
+        mode === 'staff'
+          ? createStaffValidationSchema
+          : mode === 'nonStaff'
+          ? createNonStaffValidationSchema
+          : createFamilyMemberValidationSchema
+      }
       validateOnBlur={false}
       validateOnChange={false}
       validateOnMount={false}
@@ -103,12 +114,14 @@ function CreateOrEditForm({
                   label={i18n.t('national_code').toString()}
                   type="number"
                 />
-                <TextFieldFormik
-                  sx={{ width: '250px' }}
-                  name="staffCode"
-                  label={i18n.t('staff_code').toString()}
-                  type="number"
-                />
+                {mode === 'staff' && (
+                  <TextFieldFormik
+                    sx={{ width: '250px' }}
+                    name="staffCode"
+                    label={i18n.t('staff_code').toString()}
+                    type="number"
+                  />
+                )}
                 {mode === 'staff' && (
                   <CustomDatePicker
                     label={i18n.t('hire_date')}
@@ -122,12 +135,22 @@ function CreateOrEditForm({
                     error={errors.hireDate}
                   />
                 )}
-                <TextFieldFormik
-                  sx={{ width: '250px' }}
-                  name="mobile"
-                  label={i18n.t('mobile').toString()}
-                  type="number"
-                />
+                {(mode === 'staff' || mode === 'nonStaff') && (
+                  <TextFieldFormik
+                    sx={{ width: '250px' }}
+                    name="mobile"
+                    label={i18n.t('mobile').toString()}
+                    type="number"
+                  />
+                )}
+                {mode === 'family' && (
+                  <TextFieldFormik
+                    sx={{ width: '250px' }}
+                    name="supervisorNationalCode"
+                    label={i18n.t('supervisor_national_code').toString()}
+                    type="number"
+                  />
+                )}
                 <SelectFormik
                   sx={{ width: '250px' }}
                   options={ReligionOptions}
@@ -168,6 +191,14 @@ function CreateOrEditForm({
                   name="martialStatus"
                   label={i18n.t('martial_status').toString()}
                 />
+                {mode === 'family' && (
+                  <SelectFormik
+                    sx={{ width: '250px' }}
+                    options={FamilyRelationOptions}
+                    name="familyRelation"
+                    label={i18n.t('family_relation').toString()}
+                  />
+                )}
               </Grid>
 
               <Grid display={'flex'} flexDirection={'row'} gap={'20px'}>
@@ -233,24 +264,26 @@ function CreateOrEditForm({
                   />
                 )}
               </Grid>
-              <Grid
-                display={'flex'}
-                flexDirection={'row'}
-                gap={'20px'}
-                alignItems={'end'}
-                alignContent={'end'}
-                justifyItems={'end'}
-              >
-                <TextFieldFormik
-                  sx={{ width: '400px' }}
-                  name="address"
-                  label={i18n.t('address').toString()}
-                  type="text"
-                  multiline={true}
-                  minRows={2}
-                  maxRows={3}
-                />
-              </Grid>
+              {(mode === 'staff' || mode === 'nonStaff') && (
+                <Grid
+                  display={'flex'}
+                  flexDirection={'row'}
+                  gap={'20px'}
+                  alignItems={'end'}
+                  alignContent={'end'}
+                  justifyItems={'end'}
+                >
+                  <TextFieldFormik
+                    sx={{ width: '400px' }}
+                    name="address"
+                    label={i18n.t('address').toString()}
+                    type="text"
+                    multiline={true}
+                    minRows={2}
+                    maxRows={3}
+                  />
+                </Grid>
+              )}
             </Grid>
             {isSubmitting && <InlineLoader />}
             {!isSubmitting && (

@@ -394,7 +394,8 @@ function StaffInfo() {
                   martialStatus:
                     MaritalStatus[selectedStaffForEdit.maritalStatus],
                   religion: Religion[selectedStaffForEdit.religion],
-                  hireDate: selectedStaffForEdit.hireDate
+                  hireDate: selectedStaffForEdit.hireDate,
+                  educationalField: selectedStaffForEdit.educationalField
                 }
           }
           workLocations={workLocations}

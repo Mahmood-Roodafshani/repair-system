@@ -1,6 +1,7 @@
 import { DateObject } from 'react-multi-date-picker';
 import {
   Degree,
+  FamilyRelation,
   Gender,
   MaritalStatus,
   Religion,
@@ -27,4 +28,6 @@ export type StaffInfoRequestType = {
   religion?: Religion;
   birthLocation?: string | number;
   gender?: Gender;
+  supervisorNationalCode?: string;
+  familyRelation?: FamilyRelation;
 };

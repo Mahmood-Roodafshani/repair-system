@@ -1,5 +1,6 @@
 import {
   Degree,
+  FamilyRelation,
   Gender,
   MaritalStatus,
   OptionType,
@@ -111,7 +112,9 @@ const StaffInfoMock: StaffInfoResponseType[] = [
     gender: Gender.MALE,
     religion: Religion.SHIA,
     maritalStatus: MaritalStatus.SINGLE,
-    militaryDegree: '20'
+    militaryDegree: '20',
+    supervisorNationalCode: '4400231132',
+    familyRelation: FamilyRelation.FATHER
   },
   {
     id: 2,

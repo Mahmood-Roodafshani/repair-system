@@ -18,4 +18,7 @@ export type StaffInfoResponseType = {
   serviceStatus?: string;
   militaryDegree?: string;
   maritalStatus?: string;
+  supervisorNationalCode?: string;
+  familyRelation?: string;
+  educationalField?: string;
 };

@@ -16,7 +16,8 @@ i18next
           createGroupAccess: 'ایجاد گروه دسترسی',
           chooseReplacement: 'انتخاب جایگزین',
           staffInfo: 'اطلاعات پرسنل',
-          otherInfo: 'اطلاعات غیر پرسنل',
+          other_info: 'اطلاعات غیر پرسنل',
+          family_info: 'اطلاعات عائله',
           // BUTTONS
           add: 'افزودن',
           delete: 'حذف',
@@ -46,6 +47,9 @@ i18next
           access_control: 'مدیریت دسترسی',
           staff_code: 'شماره پرسنلی',
           national_code: 'کدملی',
+          supervisor_national_code: 'کدملی سرپرست',
+          supervisor: 'سرپرست',
+          relation: 'نسبت',
           firstname: 'نام',
           lastname: 'نام خانوادگی',
           grants: 'مجوزهای عطا شده',
@@ -79,6 +83,7 @@ i18next
           taken_grants: 'مجوزهای عطا شده',
           new_staff: 'پرسنل جدید',
           new_person: 'شخص جدید',
+          new_family_member: 'عائله جدید',
           // TABLE
           operation: 'عملیات',
           row_number: 'ردیف',
@@ -97,6 +102,15 @@ i18next
           work_location: 'محل خدمت',
           educational_field: 'رشته تحصیلی',
           birth_location: 'محل تولد',
+          family_relation: 'نسبت با سرپرست',
+          // FAMILY RELATION
+          family_relation_wife_husband: 'همسر',
+          family_relation_father: 'پدر',
+          family_relation_mother: 'مادر',
+          family_relation_son: 'پسر',
+          family_relation_daughter: 'دختر',
+          family_relation_sister: 'خواهر',
+          family_relation_brother: 'برادر',
           // DEGREE
           phd: 'دکترا',
           master: 'کارشناسی ارشد',
@@ -160,7 +174,12 @@ i18next
           birth_location_is_req: 'لطفا فیلد محل تولد را وارد نمایید',
           educational_field_is_req: 'لطفا فیلد رشته تحصیلی را وارد نمایید',
           work_location_is_req: 'لطفا فیلد محل خدمت را وارد نمایید',
-          hire_date_is_req: 'لطفا فیلد تاریخ استخدام را وارد نمایید'
+          hire_date_is_req: 'لطفا فیلد تاریخ استخدام را وارد نمایید',
+          invalid_supervisor_national_code: 'کدملی سرپرست وارد شده نامعتبر است',
+          supervisor_national_code_is_req:
+            'لطفا فیلد کدملی سرپرست را وارد نمایید',
+          family_relation_field_is_req:
+            'لطفا فیلد نسبت با سرپرست را وارد نمایید'
         }
       }
     }
