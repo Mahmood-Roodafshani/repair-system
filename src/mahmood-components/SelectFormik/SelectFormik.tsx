@@ -2,7 +2,7 @@ import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import { OutlinedTextFieldProps } from '@mui/material/TextField/TextField';
 import { useField, useFormikContext } from 'formik';
-import { OptionType } from 'src/models';
+import { OptionType } from 'src/constants';
 
 interface SelectProps extends Partial<OutlinedTextFieldProps> {
   name: string;

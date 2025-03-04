@@ -9,7 +9,7 @@ import { i18n } from 'src/i18n';
 import { SelectFormik, TextFieldFormik } from 'src/mahmood-components';
 import { Grid } from '@mui/material';
 import { CustomRichTreeView, InlineLoader, OpGrid } from 'src/components';
-import { JobLevelOptions, JobStatusOptions } from 'src/models';
+import { JobLevelOptions, JobStatusOptions } from 'src/constants';
 import { CKEditorToolbar, mapAllIdsInNestedArray } from 'src/utils/helper';
 import { toast } from 'react-toastify';
 

@@ -1,4 +1,4 @@
-import { JobLevel, JobStatus } from 'src/models';
+import { JobLevel, JobStatus } from 'src/constants';
 import { JobResponseType } from 'src/types';
 
 const JobsFullInfoMock: JobResponseType[] = [

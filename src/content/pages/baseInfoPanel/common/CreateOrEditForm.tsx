@@ -16,7 +16,7 @@ import {
   MaritalStatusOptions,
   ReligionOptions,
   ServiceStatusOptions
-} from 'src/models';
+} from 'src/constants';
 import { createStaff, updateStaff } from 'src/service';
 import {
   RichViewType,

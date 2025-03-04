@@ -6,7 +6,7 @@ import {
   OptionType,
   Religion,
   ServiceStatus
-} from 'src/models';
+} from 'src/constants';
 import { RichViewType, StaffInfoResponseType } from 'src/types';
 
 const PositionDegreeMock: OptionType[] = [

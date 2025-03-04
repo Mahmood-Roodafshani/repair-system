@@ -32,7 +32,7 @@ import {
   Religion,
   ServiceStatus,
   ServiceStatusOptions
-} from 'src/models';
+} from 'src/constants';
 import {
   fetchCities,
   fetchPositionDegree,

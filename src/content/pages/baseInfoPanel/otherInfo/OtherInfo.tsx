@@ -9,7 +9,7 @@ import { InlineLoader, Loader, MyCustomTable, OpGrid } from 'src/components';
 import { i18n } from 'src/i18n';
 import { ConfirmationDialog, TextFieldFormik } from 'src/mahmood-components';
 import { EducationalFieldMock } from 'src/mock';
-import { Degree, Gender, MaritalStatus, Religion } from 'src/models';
+import { Degree, Gender, MaritalStatus, Religion } from 'src/constants';
 import {
   fetchCities,
   fetchNonStaffInfoList,

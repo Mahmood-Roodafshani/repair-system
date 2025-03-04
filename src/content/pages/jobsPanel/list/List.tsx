@@ -12,7 +12,7 @@ import {
   OpGrid
 } from 'src/components';
 import { i18n } from 'src/i18n';
-import { JobLevel, JobStatus } from 'src/models';
+import { JobLevel, JobStatus } from 'src/constants';
 import {
   fetchCourses,
   fetchFields,

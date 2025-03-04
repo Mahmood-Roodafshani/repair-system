@@ -20,7 +20,7 @@ import {
   Gender,
   MaritalStatus,
   Religion
-} from 'src/models';
+} from 'src/constants';
 import { toast } from 'react-toastify';
 import { Delete, Edit } from '@mui/icons-material';
 import {

@@ -5,7 +5,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { RadioGroupProps as MRadioGroupProps } from '@mui/material/RadioGroup/RadioGroup';
 import { useField, useFormikContext } from 'formik';
-import { OptionType } from 'src/models';
+import { OptionType } from 'src/constants';
 
 interface s extends MRadioGroupProps {
   options: OptionType[];
