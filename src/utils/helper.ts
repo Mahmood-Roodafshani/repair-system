@@ -99,6 +99,23 @@ export function findAllParents(nodeId: string, tree: RichViewType[]) {
   return [];
 }
 
+function getIdsWithNonZeroChildren(objects: RichViewType[]) {
+  let result = [];
+
+  objects.forEach((obj) => {
+    if (obj.children && obj.children.length > 0) {
+      result.push(obj.id);
+      result = result.concat(getIdsWithNonZeroChildren(obj.children));
+    }
+  });
+
+  return result;
+}
+
+export function findAllNodesWithChild(tree: RichViewType[]) {
+  return getIdsWithNonZeroChildren(tree);
+}
+
 export function mapAllIdsInNestedArray(prefix: string, tree: RichViewType[]) {
   if (tree === undefined) return [];
   return tree.map((e) => ({

@@ -2,7 +2,7 @@ import { Grid, Stack, Typography } from '@mui/material';
 import { RichTreeView } from '@mui/x-tree-view';
 import { useEffect, useState } from 'react';
 import { RichViewType } from 'src/types';
-import { findAllParents } from 'src/utils/helper';
+import { findAllNodesWithChild, findAllParents } from 'src/utils/helper';
 
 function CustomRichTreeView({
   sx,
@@ -13,21 +13,30 @@ function CustomRichTreeView({
   error,
   justSelectLeaf = false,
   multiSelect = false,
-  checkboxSelection = false
+  checkboxSelection = false,
+  expandAllItems = false
 }: {
   sx?: any;
   label: string;
   items: RichViewType[];
   defaultValue?: string[];
-  onSelectedItemsChange: (event: React.SyntheticEvent, itemIds: any) => void;
+  onSelectedItemsChange?: (event: React.SyntheticEvent, itemIds: any) => void;
   error?: string;
   justSelectLeaf?: boolean;
   multiSelect?: boolean;
   checkboxSelection?: boolean;
+  expandAllItems?: boolean;
 }) {
   const [expandedItems, setExpandedItems] = useState<string[]>();
 
   useEffect(() => {
+    if (expandAllItems) {
+      setExpandedItems(findAllNodesWithChild(items));
+    }
+  }, [expandAllItems]);
+
+  useEffect(() => {
+    if (expandAllItems) return;
     if (defaultValue === undefined || defaultValue.length === 0) {
       setExpandedItems([]);
       return;
@@ -44,18 +53,19 @@ function CustomRichTreeView({
       }
     }
     setExpandedItems(allParents);
-  }, [defaultValue]);
+  }, [defaultValue, expandAllItems]);
 
   useEffect(() => {
     if (
       expandedItems === undefined ||
       expandedItems.length > 0 ||
-      items?.length > 1
+      items?.length > 1 ||
+      expandAllItems
     )
       return;
 
     setExpandedItems([items[0].id]);
-  }, [items, expandedItems]);
+  }, [items, expandedItems, expandAllItems]);
 
   return (
     <Grid display={'flex'} flexDirection={'column'}>
@@ -75,6 +85,7 @@ function CustomRichTreeView({
           checkboxSelection={checkboxSelection}
           multiSelect={multiSelect}
           expandedItems={expandedItems}
+          disableSelection={onSelectedItemsChange === undefined}
           onExpandedItemsChange={(
             _: React.SyntheticEvent,
             itemIds: string[]

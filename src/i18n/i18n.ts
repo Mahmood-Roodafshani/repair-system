@@ -19,6 +19,7 @@ i18next
           other_info: 'اطلاعات غیر پرسنل',
           family_info: 'اطلاعات عائله',
           create_jobs: 'تعریف مشاغل',
+          jobs_tree: 'درختواره مشاغل',
           // BUTTONS
           add: 'افزودن',
           delete: 'حذف',
