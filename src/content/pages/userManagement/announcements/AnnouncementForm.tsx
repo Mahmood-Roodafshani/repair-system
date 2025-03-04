@@ -9,6 +9,7 @@ import { AnnouncementRequestType } from 'src/types';
 import persian from 'react-date-object/calendars/persian';
 import persian_fa from 'react-date-object/locales/persian_fa';
 import { TextFieldFormik } from 'src/mahmood-components';
+import { CKEditorToolbar } from 'src/utils/helper';
 
 function AnnouncementForm({
   announcementRequest,
@@ -19,55 +20,6 @@ function AnnouncementForm({
   setAnnouncementRequest: Dispatch<SetStateAction<AnnouncementRequestType>>;
   errors: FormikErrors<AnnouncementRequestType>;
 }) {
-  const CKEditorToolbar = {
-    toolbar: {
-      items: [
-        'heading',
-        '|',
-        'style',
-        'bold',
-        'italic',
-        'strikethrough',
-        'underline',
-        'alignment',
-        'fontColor',
-        'fontSize',
-        'fontFamily',
-        'fontBackgroundColor',
-        'highlight',
-        'link',
-        'bulletedList',
-        'numberedList',
-        '|',
-        'outdent',
-        'indent',
-        '|',
-        'uploadImage',
-        'blockQuote',
-        'insertTable',
-        'mediaEmbed',
-        'undo',
-        'redo'
-      ]
-    },
-    image: {
-      toolbar: [
-        'imageStyle:inline',
-        'imageStyle:block',
-        'imageStyle:side',
-        '|',
-        'linkImage',
-        'toggleImageCaption',
-        'imageTextAlternative',
-        'imageResize'
-      ]
-    },
-    table: {
-      toolbar: ['tableProperties', 'tableColumnResize'],
-      contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
-    }
-  };
-
   return (
     <>
       <TextFieldFormik

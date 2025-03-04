@@ -115,14 +115,7 @@ function OtherInfo() {
             validateOnChange={false}
             validateOnMount={false}
           >
-            {({
-              values,
-              setValues,
-              isSubmitting,
-              submitForm,
-              resetForm,
-              errors
-            }) => (
+            {({ isSubmitting, submitForm, resetForm }) => (
               <Form>
                 <Grid display={'flex'} flexDirection={'column'} gap={'30px'}>
                   <Grid display={'flex'} flexDirection={'column'} gap={'10px'}>

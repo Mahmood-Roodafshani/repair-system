@@ -22,7 +22,7 @@ export type StaffInfoRequestType = {
   martialStatus?: MaritalStatus;
   educationalField?: string | number;
   workLocation?: string | number;
-  militaryDegree?: string | number;
+  positionDegree?: string | number;
   address?: string;
   mobile?: string;
   religion?: Religion;

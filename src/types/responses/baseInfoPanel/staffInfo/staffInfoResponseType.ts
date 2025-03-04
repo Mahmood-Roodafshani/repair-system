@@ -16,7 +16,7 @@ export type StaffInfoResponseType = {
   gender?: string | boolean;
   birthLocation?: string | number;
   serviceStatus?: string;
-  militaryDegree?: string;
+  positionDegree?: string;
   maritalStatus?: string;
   supervisorNationalCode?: string;
   familyRelation?: string;

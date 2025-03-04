@@ -24,11 +24,6 @@ import {
   TextFieldFormik
 } from 'src/mahmood-components';
 import {
-  EducationalFieldMock,
-  MilitaryDegreeMock,
-  WorkLocationsMock
-} from 'src/mock';
-import {
   Degree,
   DegreeOptions,
   Gender,
@@ -38,7 +33,12 @@ import {
   ServiceStatus,
   ServiceStatusOptions
 } from 'src/models';
-import { fetchCities, fetchStaffInfoList, removeStaff } from 'src/service';
+import {
+  fetchCities,
+  fetchPositionDegree,
+  fetchStaffInfoList,
+  removeStaff
+} from 'src/service';
 import {
   RichViewType,
   StaffInfoRequestType,
@@ -49,10 +49,9 @@ import CreateOrEditForm from '../common/CreateOrEditForm';
 
 function StaffInfo() {
   const [cities, setCities] = useState<RichViewType[]>();
-  const [educationalFields, setEducationalFields] =
-    useState<RichViewType[]>(EducationalFieldMock);
-  const [workLocations, setWorkLocations] =
-    useState<RichViewType[]>(WorkLocationsMock);
+  const [educationalFields, setEducationalFields] = useState<RichViewType[]>();
+  const [workLocations, setWorkLocations] = useState<RichViewType[]>();
+  const [positionDegrees, setPositionDegrees] = useState<RichViewType[]>();
 
   const [staffInfo, setStaffInfo] = useState<StaffInfoResponseType[]>();
   const [selectedStaffForEdit, setSelectedStaffForEdit] =
@@ -73,6 +72,13 @@ function StaffInfo() {
         .finally(() => setLoading(false));
     }
   }, [selectedStaffForEdit, showCreateForm]);
+
+  useEffect(() => {
+    setLoading(true);
+    Promise.all([fetchPositionDegree()]).then((res) => {
+      if (res[0].statusCode === 200) setPositionDegrees(res[0].content);
+    });
+  }, []);
 
   const onSubmit = async (
     values: StaffInfoRequestType,
@@ -264,9 +270,9 @@ function StaffInfo() {
                     >
                       <SelectFormik
                         sx={{ width: '250px' }}
-                        options={MilitaryDegreeMock}
-                        name="militaryDegree"
-                        label={i18n.t('military_degree').toString()}
+                        options={positionDegrees}
+                        name="positionDegree"
+                        label={i18n.t('position_degree').toString()}
                       />
                       <SelectFormik
                         sx={{ width: '250px' }}
@@ -390,7 +396,7 @@ function StaffInfo() {
                   serviceStatus:
                     ServiceStatus[selectedStaffForEdit.serviceStatus],
                   gender: Gender[selectedStaffForEdit.gender as string],
-                  militaryDegree: selectedStaffForEdit.militaryDegree,
+                  positionDegree: selectedStaffForEdit.positionDegree,
                   martialStatus:
                     MaritalStatus[selectedStaffForEdit.maritalStatus],
                   religion: Religion[selectedStaffForEdit.religion],
@@ -398,6 +404,7 @@ function StaffInfo() {
                   educationalField: selectedStaffForEdit.educationalField
                 }
           }
+          positionDegrees={positionDegrees}
           workLocations={workLocations}
           educationalFields={educationalFields}
           setStaffInfo={setStaffInfo}

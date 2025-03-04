@@ -57,7 +57,7 @@ const createStaffValidationSchema = Yup.object().shape({
   degree: Yup.string().required(i18n.t('degree_is_req')),
   gender: Yup.string().required(i18n.t('gender_is_req')),
   serviceStatus: Yup.string().required(i18n.t('service_status_is_req')),
-  militaryDegree: Yup.string().required(i18n.t('military_degree_is_req')),
+  positionDegree: Yup.string().required(i18n.t('position_degree_is_req')),
   martialStatus: Yup.string().required(i18n.t('martial_status_is_req')),
   birthLocation: Yup.string().required(i18n.t('birth_location_is_req')),
   educationalField: Yup.string().required(i18n.t('educational_field_is_req')),

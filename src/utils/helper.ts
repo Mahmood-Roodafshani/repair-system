@@ -1,3 +1,5 @@
+import { RichViewType } from 'src/types';
+
 export function timeout(delay: number) {
   return new Promise((res) => setTimeout(res, delay));
 }
@@ -17,4 +19,91 @@ export function extractIds(obj) {
   }
 
   return ids;
+}
+
+export const CKEditorToolbar = {
+  toolbar: {
+    items: [
+      'heading',
+      '|',
+      'style',
+      'bold',
+      'italic',
+      'strikethrough',
+      'underline',
+      'alignment',
+      'fontColor',
+      'fontSize',
+      'fontFamily',
+      'fontBackgroundColor',
+      'highlight',
+      'link',
+      'bulletedList',
+      'numberedList',
+      '|',
+      'outdent',
+      'indent',
+      '|',
+      'uploadImage',
+      'blockQuote',
+      'insertTable',
+      'mediaEmbed',
+      'undo',
+      'redo'
+    ]
+  },
+  image: {
+    toolbar: [
+      'imageStyle:inline',
+      'imageStyle:block',
+      'imageStyle:side',
+      '|',
+      'linkImage',
+      'toggleImageCaption',
+      'imageTextAlternative',
+      'imageResize'
+    ]
+  },
+  table: {
+    toolbar: ['tableProperties', 'tableColumnResize'],
+    contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells']
+  }
+};
+
+// Function to find the node in the tree by ID and keep track of the parent chain
+export function findNodeWithParents(
+  node: RichViewType,
+  targetId: string,
+  parentChain = []
+) {
+  if (node.id === targetId) {
+    return { node, parents: parentChain };
+  }
+  if (!node.children || node.children.length === 0) {
+    return null;
+  }
+  for (const child of node.children) {
+    const result = findNodeWithParents(child, targetId, [...parentChain, node]);
+    if (result) return result;
+  }
+  return null;
+}
+
+// Function to find all parents of a node, bottom to top
+export function findAllParents(nodeId: string, tree: RichViewType[]) {
+  for (const node of tree) {
+    const result = findNodeWithParents(node, nodeId);
+    if (result) return result.parents;
+  }
+
+  return [];
+}
+
+export function mapAllIdsInNestedArray(prefix: string, tree: RichViewType[]) {
+  if (tree === undefined) return [];
+  return tree.map((e) => ({
+    id: prefix + e.id,
+    label: e.label,
+    children: mapAllIdsInNestedArray(prefix, e.children)
+  }));
 }

@@ -9,7 +9,7 @@ import {
 } from 'src/models';
 import { RichViewType, StaffInfoResponseType } from 'src/types';
 
-const MilitaryDegreeMock: OptionType[] = [
+const PositionDegreeMock: OptionType[] = [
   {
     id: '20',
     label: 'رتبه 20'
@@ -112,7 +112,7 @@ const StaffInfoMock: StaffInfoResponseType[] = [
     gender: Gender.MALE,
     religion: Religion.SHIA,
     maritalStatus: MaritalStatus.SINGLE,
-    militaryDegree: '20',
+    positionDegree: '20',
     supervisorNationalCode: '4400231132',
     familyRelation: FamilyRelation.FATHER
   },
@@ -130,7 +130,7 @@ const StaffInfoMock: StaffInfoResponseType[] = [
 ];
 
 export {
-  MilitaryDegreeMock,
+  PositionDegreeMock,
   EducationalFieldMock,
   WorkLocationsMock,
   StaffInfoMock

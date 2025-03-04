@@ -1,4 +1,11 @@
-import { CitiesMock, OrganizationUnitsMock, RolesMock } from 'src/mock';
+import {
+  CitiesMock,
+  CoursesMock,
+  FieldsMock,
+  OrganizationUnitsMock,
+  PositionDegreeMock,
+  RolesMock
+} from 'src/mock';
 import { timeout } from 'src/utils/helper';
 import { get } from '../service';
 import ROUTES from '../routes';
@@ -45,4 +52,53 @@ const fetchOrganizationUnits = async () => {
   return response;
 };
 
-export { fetchRoles, fetchOrganizationUnits, fetchCities };
+const fetchFields = async () => {
+  if (process.env.REACT_APP_WORK_WITH_MOCK) {
+    await timeout(1000);
+    return {
+      statusCode: 200,
+      content: FieldsMock
+    };
+  }
+  const response = await get({
+    url: ROUTES.FETCH_ORGANIZATION_UNITS
+  });
+  return response;
+};
+
+const fetchCourses = async () => {
+  if (process.env.REACT_APP_WORK_WITH_MOCK) {
+    await timeout(1000);
+    return {
+      statusCode: 200,
+      content: CoursesMock
+    };
+  }
+  const response = await get({
+    url: ROUTES.FETCH_ORGANIZATION_UNITS
+  });
+  return response;
+};
+
+const fetchPositionDegree = async () => {
+  if (process.env.REACT_APP_WORK_WITH_MOCK) {
+    await timeout(1000);
+    return {
+      statusCode: 200,
+      content: PositionDegreeMock
+    };
+  }
+  const response = await get({
+    url: ROUTES.FETCH_ORGANIZATION_UNITS
+  });
+  return response;
+};
+
+export {
+  fetchRoles,
+  fetchOrganizationUnits,
+  fetchCities,
+  fetchFields,
+  fetchCourses,
+  fetchPositionDegree
+};

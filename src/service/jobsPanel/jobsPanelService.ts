@@ -1,19 +1,19 @@
-import { StaffInfoMock } from 'src/mock';
-import { StaffInfoRequestType } from 'src/types';
+import { JobsFullInfoMock } from 'src/mock/jobsPanel';
+import { JobRequestType } from 'src/types';
 import { timeout } from 'src/utils/helper';
 import ROUTES from '../routes';
 import { get, post, put, remove } from '../service';
 
-const fetchStaffInfoList = async ({
-  filter
+const fetchJobsList = async ({
+  organizationUnit
 }: {
-  filter: StaffInfoRequestType;
+  organizationUnit?: string | number;
 }) => {
   if (process.env.REACT_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
       statusCode: 200,
-      content: StaffInfoMock
+      content: JobsFullInfoMock
     };
   }
   //todo: build query params from filter
@@ -23,7 +23,7 @@ const fetchStaffInfoList = async ({
   return response;
 };
 
-const removeStaff = async ({ staffId }: { staffId: string | number }) => {
+const removeJob = async ({ jobId }: { jobId: string | number }) => {
   if (process.env.REACT_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
@@ -31,17 +31,17 @@ const removeStaff = async ({ staffId }: { staffId: string | number }) => {
     };
   }
   const response = await remove({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST + staffId
+    url: ROUTES.ACCESS_CONTROL_FETCH_LIST + jobId
   });
   return response;
 };
 
-const updateStaff = async ({
-  staffId,
-  staffInfo
+const updateJob = async ({
+  jobId,
+  jobInfo
 }: {
-  staffId: string | number;
-  staffInfo: StaffInfoRequestType;
+  jobId: string | number;
+  jobInfo: JobRequestType;
 }) => {
   if (process.env.REACT_APP_WORK_WITH_MOCK) {
     await timeout(1000);
@@ -50,17 +50,13 @@ const updateStaff = async ({
     };
   }
   const response = await put({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST + staffId,
-    data: staffInfo
+    url: ROUTES.ACCESS_CONTROL_FETCH_LIST + jobId,
+    data: jobInfo
   });
   return response;
 };
 
-const createStaff = async ({
-  staffInfo
-}: {
-  staffInfo: StaffInfoRequestType;
-}) => {
+const createJob = async ({ jobInfo }: { jobInfo: JobRequestType }) => {
   if (process.env.REACT_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
@@ -69,9 +65,9 @@ const createStaff = async ({
   }
   const response = await post({
     url: ROUTES.ACCESS_CONTROL_FETCH_LIST,
-    data: staffInfo
+    data: jobInfo
   });
   return response;
 };
 
-export { createStaff, fetchStaffInfoList, removeStaff, updateStaff };
+export { createJob, fetchJobsList, removeJob, updateJob };

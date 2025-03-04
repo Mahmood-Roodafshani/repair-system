@@ -58,6 +58,11 @@ const SelectWithFormik = (props: SelectProps) => {
       {...configSelect}
       onChange={handleChange}
       variant={variant}
+      defaultValue={
+        props.defaultValue === undefined && props.value === undefined
+          ? ''
+          : props.defaultValue
+      }
     >
       {addEmptyEntry ? (
         <MenuItem key={'select'} value={''}>

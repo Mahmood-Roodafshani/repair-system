@@ -5,3 +5,5 @@ export { MaritalStatus } from './maritalStatus';
 export { Religion } from './religion';
 export { Gender } from './gender';
 export { FamilyRelation } from './familyRelation';
+export { JobLevel } from './jobLevel';
+export { JobStatus } from './jobStatus';

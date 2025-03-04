@@ -1,10 +1,14 @@
 import { Grid } from '@mui/material';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { InlineLoader, OpGrid, CustomRichTreeView } from 'src/components';
+import {
+  CustomDatePicker,
+  CustomRichTreeView,
+  InlineLoader,
+  OpGrid
+} from 'src/components';
 import { i18n } from 'src/i18n';
 import { SelectFormik, TextFieldFormik } from 'src/mahmood-components';
-import { MilitaryDegreeMock } from 'src/mock';
 import {
   DegreeOptions,
   FamilyRelationOptions,
@@ -19,7 +23,6 @@ import {
   StaffInfoRequestType,
   StaffInfoResponseType
 } from 'src/types';
-import CustomDatePicker from 'src/components/customDatePicker/CustomDatePicker';
 import {
   createFamilyMemberValidationSchema,
   createNonStaffValidationSchema,
@@ -31,6 +34,7 @@ function CreateOrEditForm({
   cities,
   educationalFields,
   workLocations,
+  positionDegrees,
   setStaffInfo,
   onClose,
   mode
@@ -39,6 +43,7 @@ function CreateOrEditForm({
   cities: RichViewType[];
   educationalFields: RichViewType[];
   workLocations?: RichViewType[];
+  positionDegrees?: RichViewType[];
   setStaffInfo: Dispatch<SetStateAction<StaffInfoResponseType[]>>;
   onClose: () => void;
   mode: 'staff' | 'nonStaff' | 'family';
@@ -180,9 +185,9 @@ function CreateOrEditForm({
                 {mode === 'staff' && (
                   <SelectFormik
                     sx={{ width: '250px' }}
-                    options={MilitaryDegreeMock}
-                    name="militaryDegree"
-                    label={i18n.t('military_degree').toString()}
+                    options={positionDegrees}
+                    name="positionDegree"
+                    label={i18n.t('position_degree').toString()}
                   />
                 )}
                 <SelectFormik
@@ -259,7 +264,6 @@ function CreateOrEditForm({
                         birthLocation: itemIds[0]
                       }))
                     }
-                    selectedItems={[values.birthLocation?.toString()]}
                     error={errors.birthLocation}
                   />
                 )}

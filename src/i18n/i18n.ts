@@ -18,6 +18,7 @@ i18next
           staffInfo: 'اطلاعات پرسنل',
           other_info: 'اطلاعات غیر پرسنل',
           family_info: 'اطلاعات عائله',
+          create_jobs: 'تعریف مشاغل',
           // BUTTONS
           add: 'افزودن',
           delete: 'حذف',
@@ -83,7 +84,16 @@ i18next
           taken_grants: 'مجوزهای عطا شده',
           new_staff: 'پرسنل جدید',
           new_person: 'شخص جدید',
+          new_job: 'شغل جدید',
           new_family_member: 'عائله جدید',
+          organization_unit: 'واحد سازمانی',
+          job_level: 'سطح شغل',
+          job_status: 'وضعیت شغل',
+          job_code: 'شناسه شغل',
+          job_description: 'شرح شغل',
+          responsibility_description: 'شرح وظایف شغل',
+          job_fields: 'رشته‌های تحصیلی مورد نیاز',
+          job_courses: 'دوره‌های تخصصی مورد نیاز',
           // TABLE
           operation: 'عملیات',
           row_number: 'ردیف',
@@ -97,7 +107,8 @@ i18next
           hire_date: 'تاریخ استخدام',
           service_status: 'وضعیت خدمتی',
           martial_status: 'وضعیت تاهل',
-          military_degree: 'درجه/رتبه',
+          position_degree: 'درجه/رتبه',
+          position: 'جایگاه',
           degree: 'مدرک',
           work_location: 'محل خدمت',
           educational_field: 'رشته تحصیلی',
@@ -127,6 +138,10 @@ i18next
           // MARITAL STATUS
           marital_single_status: 'مجرد',
           marital_married_status: 'متاهل',
+          // JOB LEVEL
+          job_level_manager: 'مدیر',
+          job_level_expert: 'کارشناس',
+          job_level_boss: 'رئیس',
           // RELIGION
           religion_shia: 'شیعه',
           religion_sunni: 'سنی',
@@ -135,6 +150,9 @@ i18next
           ckeditor_placeholder: 'متن پیام را وارد نمایید',
           confirm_remove: 'آیا از حذف آیتم مدنظر اطمینان دارید؟',
           user_removed: 'کاربر مورد نظر با موفقیت حذف گردید',
+          job_removed: 'شغل مورد نظر با موفقیت حذف گردید',
+          job_created: 'شغل مدنظر با موفقیت اضافه گردید',
+          job_updated: 'شغل مدنظر با موفقیت ویرایش گردید',
           // ERRORS
           please_fill_req_fields: 'لطفا تمام موارد لازم را پر نمایید',
           firstname_is_req: 'لطفا فیلد نام را وارد نمایید',
@@ -169,7 +187,7 @@ i18next
           degree_is_req: 'لطفا فیلد مدرک را وارد نمایید',
           service_status_is_req: 'لطفا فیلد وضعیت خدمتی را وارد نمایید',
           gender_is_req: 'لطفا فیلد جنسیت را وارد نمایید',
-          military_degree_is_req: 'لطفا فیلد درجه/رتبه را وارد نمایید',
+          position_degree_is_req: 'لطفا فیلد درجه/رتبه را وارد نمایید',
           martial_status_is_req: 'لطفا فیلد وضعیت تاهل را وارد نمایید',
           birth_location_is_req: 'لطفا فیلد محل تولد را وارد نمایید',
           educational_field_is_req: 'لطفا فیلد رشته تحصیلی را وارد نمایید',
@@ -179,7 +197,23 @@ i18next
           supervisor_national_code_is_req:
             'لطفا فیلد کدملی سرپرست را وارد نمایید',
           family_relation_field_is_req:
-            'لطفا فیلد نسبت با سرپرست را وارد نمایید'
+            'لطفا فیلد نسبت با سرپرست را وارد نمایید',
+          job_title_is_req: 'لطفا فیلد عنوان شغل را وارد نمایید',
+          job_title_min_length: 'عنوان شغل باید حداقل 2 کاراکتر باشد',
+          job_title_max_length: 'عنوان شغل باید حداکثر 50 کاراکتر باشد',
+          job_code_is_req: 'لطفا فیلد کد شغل را وارد نمایید',
+          job_code_min_length: 'کد شغل باید حداقل 2 کاراکتر باشد',
+          job_code_max_length: 'کد شغل باید حداکثر 10 کاراکتر باشد',
+          job_description_max_length: 'شرح شغل باید حداکثر 100 کاراکتر باشد',
+          organization_unit_is_req: 'لطفا واحد سازمانی را تعیین نمایید',
+          job_level_is_req: 'لطفا سطح شغل را تعیین نمایید',
+          job_status_is_req: 'لطفا وضعیت شغل را تعیین نمایید',
+          job_fields_is_req:
+            'لطفا رشته‌های تحصیلی مورد نیاز شغل را تعیین نمایید',
+          job_courses_is_req:
+            'لطفا دوره‌های تخصصی مورد نیاز شغل را تعیین نمایید',
+          responsibility_description_is_req:
+            'فیلد شرح وظایف شغل باید حداکثر 1000 کاراکتر باشد'
         }
       }
     }
