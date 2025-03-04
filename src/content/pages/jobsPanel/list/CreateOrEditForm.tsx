@@ -47,9 +47,9 @@ function CreateOrEditForm({
       setNeededFieldsDefaultValues(
         initialValues.neededFields.map((e) => 'job_field_' + e)
       );
-      setOrganizationUnitsDefaultValues(
-        initialValues.neededFields.map((e) => 'organization_unit_' + e)
-      );
+      setOrganizationUnitsDefaultValues([
+        'organization_unit_' + initialValues.organizationUnit
+      ]);
     } else {
       setNeededCoursesDefaultValues([]);
       setNeededFieldsDefaultValues([]);

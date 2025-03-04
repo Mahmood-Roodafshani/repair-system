@@ -6,12 +6,12 @@ import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 import { InlineLoader, Loader, MyCustomTable, OpGrid } from 'src/components';
+import { Degree, Gender, MaritalStatus, Religion } from 'src/constants';
 import { i18n } from 'src/i18n';
 import { ConfirmationDialog, TextFieldFormik } from 'src/mahmood-components';
-import { EducationalFieldMock } from 'src/mock';
-import { Degree, Gender, MaritalStatus, Religion } from 'src/constants';
 import {
   fetchCities,
+  fetchEducationalFields,
   fetchNonStaffInfoList,
   removeNonStaff
 } from 'src/service';
@@ -67,7 +67,8 @@ function OtherInfo() {
     ],
     []
   );
-  const [staffInfo, setStaffInfo] = useState<StaffInfoResponseType[]>();
+  const [filter, setFilter] = useState<StaffInfoRequestType>();
+  const [otherInfo, setOtherInfo] = useState<StaffInfoResponseType[]>();
   const [selectedStaffForEdit, setSelectedStaffForEdit] =
     useState<StaffInfoResponseType>();
   const [selectedStaffIdForDelete, setSelectedStaffIdForDelete] = useState<
@@ -76,8 +77,16 @@ function OtherInfo() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [cities, setCities] = useState<RichViewType[]>();
-  const [educationalFields, setEducationalFields] =
-    useState<RichViewType[]>(EducationalFieldMock);
+  const [educationalFields, setEducationalFields] = useState<RichViewType[]>();
+
+  useEffect(() => {
+    setLoading(true);
+    Promise.all([fetchEducationalFields()])
+      .then((res) => {
+        if (res[0].statusCode === 200) setEducationalFields(res[0].content);
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   useEffect(() => {
     if ((selectedStaffForEdit || showCreateForm) && !cities) {
@@ -94,10 +103,11 @@ function OtherInfo() {
     values: StaffInfoRequestType,
     actions: FormikHelpers<StaffInfoRequestType>
   ) => {
-    setStaffInfo([]);
+    setFilter(values);
+    setOtherInfo([]);
     const res = await fetchNonStaffInfoList({ filter: values });
     actions.setSubmitting(false);
-    if (res.statusCode === 200) setStaffInfo(res.content);
+    if (res.statusCode === 200) setOtherInfo(res.content);
   };
 
   return (
@@ -168,7 +178,7 @@ function OtherInfo() {
               </Form>
             )}
           </Formik>
-          {staffInfo && (
+          {otherInfo && (
             <MyCustomTable
               enableRowActions={true}
               rowActions={({
@@ -181,7 +191,7 @@ function OtherInfo() {
                     color="secondary"
                     onClick={() => {
                       setSelectedStaffForEdit(
-                        staffInfo.find((e) => e.id === row.original.id)
+                        otherInfo.find((e) => e.id === row.original.id)
                       );
                     }}
                   >
@@ -195,7 +205,7 @@ function OtherInfo() {
                   </IconButton>
                 </Grid>
               )}
-              data={staffInfo}
+              data={otherInfo}
               columns={columns}
             />
           )}
@@ -210,8 +220,8 @@ function OtherInfo() {
               removeNonStaff({ staffId: selectedStaffIdForDelete })
                 .then((res) => {
                   if (res.statusCode === 200) {
-                    setStaffInfo(
-                      staffInfo.filter((e) => e.id !== selectedStaffIdForDelete)
+                    setOtherInfo(
+                      otherInfo.filter((e) => e.id !== selectedStaffIdForDelete)
                     );
                     toast.success(i18n.t('user_removed').toString());
                   }
@@ -246,7 +256,13 @@ function OtherInfo() {
                   religion: Religion[selectedStaffForEdit.religion]
                 }
           }
-          setStaffInfo={setStaffInfo}
+          onSuccess={async () => {
+            setLoading(true);
+            setOtherInfo([]);
+            const res = await fetchNonStaffInfoList({ filter: filter });
+            if (res.statusCode === 200) setOtherInfo(res.content);
+            setLoading(false);
+          }}
           onClose={() => {
             setShowCreateForm(false);
             setSelectedStaffForEdit(undefined);

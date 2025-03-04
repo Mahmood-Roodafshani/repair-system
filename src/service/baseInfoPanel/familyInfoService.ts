@@ -61,9 +61,9 @@ const updateFamilyInfo = async ({
 };
 
 const createFamilyInfo = async ({
-  staffInfo
+  memberInfo
 }: {
-  staffInfo: StaffInfoRequestType;
+  memberInfo: StaffInfoRequestType;
 }) => {
   if (process.env.REACT_APP_WORK_WITH_MOCK) {
     await timeout(1000);
@@ -73,7 +73,7 @@ const createFamilyInfo = async ({
   }
   const response = await post({
     url: ROUTES.ACCESS_CONTROL_FETCH_LIST,
-    data: staffInfo
+    data: memberInfo
   });
   return response;
 };

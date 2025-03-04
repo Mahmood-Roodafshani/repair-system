@@ -35,8 +35,10 @@ import {
 } from 'src/constants';
 import {
   fetchCities,
+  fetchEducationalFields,
   fetchPositionDegree,
   fetchStaffInfoList,
+  fetchWorkLocations,
   removeStaff
 } from 'src/service';
 import {
@@ -53,6 +55,7 @@ function StaffInfo() {
   const [workLocations, setWorkLocations] = useState<RichViewType[]>();
   const [positionDegrees, setPositionDegrees] = useState<RichViewType[]>();
 
+  const [filter, setFilter] = useState<StaffInfoRequestType>();
   const [staffInfo, setStaffInfo] = useState<StaffInfoResponseType[]>();
   const [selectedStaffForEdit, setSelectedStaffForEdit] =
     useState<StaffInfoResponseType>();
@@ -75,15 +78,24 @@ function StaffInfo() {
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([fetchPositionDegree()]).then((res) => {
-      if (res[0].statusCode === 200) setPositionDegrees(res[0].content);
-    });
+    Promise.all([
+      fetchPositionDegree(),
+      fetchEducationalFields(),
+      fetchWorkLocations()
+    ])
+      .then((res) => {
+        if (res[0].statusCode === 200) setPositionDegrees(res[0].content);
+        if (res[1].statusCode === 200) setEducationalFields(res[1].content);
+        if (res[2].statusCode === 200) setWorkLocations(res[2].content);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   const onSubmit = async (
     values: StaffInfoRequestType,
     actions: FormikHelpers<StaffInfoRequestType>
   ) => {
+    setFilter(values);
     setStaffInfo([]);
     const res = await fetchStaffInfoList({ filter: values });
     actions.setSubmitting(false);
@@ -219,6 +231,32 @@ function StaffInfo() {
                         }}
                         error={errors.hireDate}
                       />
+                      {positionDegrees && (
+                        <SelectFormik
+                          sx={{ width: '250px' }}
+                          options={positionDegrees}
+                          name="positionDegree"
+                          label={i18n.t('position_degree').toString()}
+                        />
+                      )}
+                      <SelectFormik
+                        sx={{ width: '250px' }}
+                        options={MaritalStatusOptions}
+                        name="martialStatus"
+                        label={i18n.t('martial_status').toString()}
+                      />
+                      <SelectFormik
+                        sx={{ width: '250px' }}
+                        options={DegreeOptions}
+                        name="degree"
+                        label={i18n.t('degree').toString()}
+                      />
+                      <SelectFormik
+                        sx={{ width: '250px' }}
+                        options={ServiceStatusOptions}
+                        name="serviceStatus"
+                        label={i18n.t('service_status').toString()}
+                      />
                     </Grid>
                     <Grid display={'flex'} flexDirection={'row'} gap={'20px'}>
                       {workLocations && (
@@ -261,37 +299,6 @@ function StaffInfo() {
                           error={errors.educationalField}
                         />
                       )}
-                    </Grid>
-                    <Grid
-                      display={'flex'}
-                      flexDirection={'row'}
-                      gap={'20px'}
-                      flexWrap="wrap"
-                    >
-                      <SelectFormik
-                        sx={{ width: '250px' }}
-                        options={positionDegrees}
-                        name="positionDegree"
-                        label={i18n.t('position_degree').toString()}
-                      />
-                      <SelectFormik
-                        sx={{ width: '250px' }}
-                        options={MaritalStatusOptions}
-                        name="martialStatus"
-                        label={i18n.t('martial_status').toString()}
-                      />
-                      <SelectFormik
-                        sx={{ width: '250px' }}
-                        options={DegreeOptions}
-                        name="degree"
-                        label={i18n.t('degree').toString()}
-                      />
-                      <SelectFormik
-                        sx={{ width: '250px' }}
-                        options={ServiceStatusOptions}
-                        name="serviceStatus"
-                        label={i18n.t('service_status').toString()}
-                      />
                     </Grid>
                   </Grid>
                   {isSubmitting && <InlineLoader />}
@@ -407,7 +414,12 @@ function StaffInfo() {
           positionDegrees={positionDegrees}
           workLocations={workLocations}
           educationalFields={educationalFields}
-          setStaffInfo={setStaffInfo}
+          onSuccess={async () => {
+            setStaffInfo([]);
+            const res = await fetchStaffInfoList({ filter: filter });
+            setLoading(false);
+            if (res.statusCode === 200) setStaffInfo(res.content);
+          }}
           onClose={() => {
             setShowCreateForm(false);
             setSelectedStaffForEdit(undefined);

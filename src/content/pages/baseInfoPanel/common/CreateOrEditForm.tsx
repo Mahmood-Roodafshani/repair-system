@@ -1,14 +1,12 @@
 import { Grid } from '@mui/material';
 import { Form, Formik, FormikHelpers } from 'formik';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   CustomDatePicker,
   CustomRichTreeView,
   InlineLoader,
   OpGrid
 } from 'src/components';
-import { i18n } from 'src/i18n';
-import { SelectFormik, TextFieldFormik } from 'src/mahmood-components';
 import {
   DegreeOptions,
   FamilyRelationOptions,
@@ -17,17 +15,24 @@ import {
   ReligionOptions,
   ServiceStatusOptions
 } from 'src/constants';
-import { createStaff, updateStaff } from 'src/service';
+import { i18n } from 'src/i18n';
+import { SelectFormik, TextFieldFormik } from 'src/mahmood-components';
 import {
-  RichViewType,
-  StaffInfoRequestType,
-  StaffInfoResponseType
-} from 'src/types';
+  createFamilyInfo,
+  createNonStaff,
+  createStaff,
+  updateFamilyInfo,
+  updateNonStaff,
+  updateStaff
+} from 'src/service';
+import { RichViewType, StaffInfoRequestType } from 'src/types';
+import { mapAllIdsInNestedArray } from 'src/utils/helper';
 import {
   createFamilyMemberValidationSchema,
   createNonStaffValidationSchema,
   createStaffValidationSchema
 } from './validationSchema';
+import { toast } from 'react-toastify';
 
 function CreateOrEditForm({
   initialValues,
@@ -35,7 +40,7 @@ function CreateOrEditForm({
   educationalFields,
   workLocations,
   positionDegrees,
-  setStaffInfo,
+  onSuccess,
   onClose,
   mode
 }: {
@@ -44,13 +49,35 @@ function CreateOrEditForm({
   educationalFields: RichViewType[];
   workLocations?: RichViewType[];
   positionDegrees?: RichViewType[];
-  setStaffInfo: Dispatch<SetStateAction<StaffInfoResponseType[]>>;
+  onSuccess: () => void;
   onClose: () => void;
   mode: 'staff' | 'nonStaff' | 'family';
 }) {
   const [isInEditMode, setIsInEditMode] = useState(false);
+  const [workLocationDefaultValue, setWorkLocationDefaultValue] =
+    useState<string[]>();
+  const [educationalFieldDefaultValue, setEducationalFieldDefaultValue] =
+    useState<string[]>();
+  const [birthLocationDefaultValue, setBirthLocationDefaultValue] =
+    useState<string[]>();
+
   useEffect(() => {
     setIsInEditMode(initialValues.id !== undefined);
+    if (initialValues.id !== undefined) {
+      setWorkLocationDefaultValue([
+        'work_location_' + initialValues.workLocation
+      ]);
+      setEducationalFieldDefaultValue([
+        'educational_field_' + initialValues.educationalField
+      ]);
+      setBirthLocationDefaultValue([
+        'birth_location_' + initialValues.birthLocation
+      ]);
+    } else {
+      setWorkLocationDefaultValue([]);
+      setEducationalFieldDefaultValue([]);
+      setBirthLocationDefaultValue([]);
+    }
   }, [initialValues]);
 
   const onSubmit = async (
@@ -58,11 +85,33 @@ function CreateOrEditForm({
     actions: FormikHelpers<StaffInfoRequestType>
   ) => {
     const res = await (isInEditMode
-      ? updateStaff({ staffId: values.id, staffInfo: values })
-      : createStaff({ staffInfo: values }));
+      ? mode === 'staff'
+        ? updateStaff({ staffId: values.id, staffInfo: values })
+        : mode === 'nonStaff'
+        ? updateNonStaff({ staffId: values.id, staffInfo: values })
+        : updateFamilyInfo({ memberId: values.id, memberInfo: values })
+      : mode === 'staff'
+      ? createStaff({ staffInfo: values })
+      : mode === 'nonStaff'
+      ? createNonStaff({ staffInfo: values })
+      : createFamilyInfo({ memberInfo: values }));
     actions.setSubmitting(false);
     if (res.statusCode === 200) {
-      setStaffInfo(res.content);
+      toast(
+        isInEditMode
+          ? mode === 'staff'
+            ? i18n.t('staff_updated').toString()
+            : mode === 'nonStaff'
+            ? i18n.t('non_staff_updated').toString()
+            : i18n.t('family_member_updated').toString()
+          : mode === 'staff'
+          ? i18n.t('staff_created').toString()
+          : mode === 'nonStaff'
+          ? i18n.t('non_staff_created').toString()
+          : i18n.t('family_member_created').toString(),
+        { type: 'success' }
+      );
+      onSuccess();
     }
     onClose();
   };
@@ -213,11 +262,11 @@ function CreateOrEditForm({
                       width: '330px'
                     }}
                     label={i18n.t('work_location')}
-                    items={workLocations.map((e) => ({
-                      id: 'work_location_' + e.id,
-                      label: e.label,
-                      children: e.children
-                    }))}
+                    items={mapAllIdsInNestedArray(
+                      'work_location_',
+                      workLocations
+                    )}
+                    defaultValue={workLocationDefaultValue}
                     onSelectedItemsChange={(_, itemIds) =>
                       setValues((prevValues) => ({
                         ...prevValues,
@@ -233,11 +282,11 @@ function CreateOrEditForm({
                     sx={{
                       width: '330px'
                     }}
-                    items={educationalFields.map((e) => ({
-                      id: 'educational_fields_' + e.id,
-                      label: e.label,
-                      children: e.children
-                    }))}
+                    defaultValue={educationalFieldDefaultValue}
+                    items={mapAllIdsInNestedArray(
+                      'educational_fields_',
+                      educationalFields
+                    )}
                     onSelectedItemsChange={(_, itemIds) =>
                       setValues((prevValues) => ({
                         ...prevValues,
@@ -253,11 +302,8 @@ function CreateOrEditForm({
                       width: '330px'
                     }}
                     label={i18n.t('birth_location').toString()}
-                    items={cities.map((e) => ({
-                      id: 'cities_' + e.id,
-                      label: e.label,
-                      children: e.children
-                    }))}
+                    defaultValue={birthLocationDefaultValue}
+                    items={mapAllIdsInNestedArray('cities_', cities)}
                     onSelectedItemsChange={(_, itemIds) =>
                       setValues((prevValues) => ({
                         ...prevValues,

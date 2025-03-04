@@ -5,7 +5,6 @@ import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router';
 import { i18n } from 'src/i18n';
 import { ConfirmationDialog, TextFieldFormik } from 'src/mahmood-components';
-import { EducationalFieldMock } from 'src/mock';
 import {
   RichViewType,
   StaffInfoRequestType,
@@ -25,6 +24,7 @@ import { toast } from 'react-toastify';
 import { Delete, Edit } from '@mui/icons-material';
 import {
   fetchCities,
+  fetchEducationalFields,
   fetchFamilyInfoList,
   removeFamilyInfo
 } from 'src/service';
@@ -89,6 +89,7 @@ function FamilyInfo() {
     ],
     []
   );
+  const [filter, setFilter] = useState<StaffInfoRequestType>();
   const [familyInfo, setFamilyInfo] = useState<StaffInfoResponseType[]>();
   const [selectedMemberForEdit, setSelectedMemberForEdit] =
     useState<StaffInfoResponseType>();
@@ -98,8 +99,16 @@ function FamilyInfo() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [cities, setCities] = useState<RichViewType[]>();
-  const [educationalFields, setEducationalFields] =
-    useState<RichViewType[]>(EducationalFieldMock);
+  const [educationalFields, setEducationalFields] = useState<RichViewType[]>();
+
+  useEffect(() => {
+    setLoading(true);
+    Promise.all([fetchEducationalFields()])
+      .then((res) => {
+        if (res[0].statusCode === 200) setEducationalFields(res[0].content);
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   useEffect(() => {
     if ((selectedMemberForEdit || showCreateForm) && !cities) {
@@ -116,6 +125,7 @@ function FamilyInfo() {
     values: StaffInfoRequestType,
     actions: FormikHelpers<StaffInfoRequestType>
   ) => {
+    setFilter(values);
     setFamilyInfo([]);
     const res = await fetchFamilyInfoList({ filter: values });
     actions.setSubmitting(false);
@@ -287,7 +297,12 @@ function FamilyInfo() {
                     selectedMemberForEdit.supervisorNationalCode
                 }
           }
-          setStaffInfo={setFamilyInfo}
+          onSuccess={async () => {
+            setLoading(true);
+            setFamilyInfo([]);
+            const res = await fetchFamilyInfoList({ filter: filter });
+            if (res.statusCode === 200) setFamilyInfo(res.content);
+          }}
           onClose={() => {
             setShowCreateForm(false);
             setSelectedMemberForEdit(undefined);

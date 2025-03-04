@@ -1,10 +1,12 @@
 import {
   CitiesMock,
   CoursesMock,
+  EducationalFieldMock,
   FieldsMock,
   OrganizationUnitsMock,
   PositionDegreeMock,
-  RolesMock
+  RolesMock,
+  WorkLocationsMock
 } from 'src/mock';
 import { timeout } from 'src/utils/helper';
 import { get } from '../service';
@@ -94,11 +96,41 @@ const fetchPositionDegree = async () => {
   return response;
 };
 
+const fetchEducationalFields = async () => {
+  if (process.env.REACT_APP_WORK_WITH_MOCK) {
+    await timeout(1000);
+    return {
+      statusCode: 200,
+      content: EducationalFieldMock
+    };
+  }
+  const response = await get({
+    url: ROUTES.FETCH_ORGANIZATION_UNITS
+  });
+  return response;
+};
+
+const fetchWorkLocations = async () => {
+  if (process.env.REACT_APP_WORK_WITH_MOCK) {
+    await timeout(1000);
+    return {
+      statusCode: 200,
+      content: WorkLocationsMock
+    };
+  }
+  const response = await get({
+    url: ROUTES.FETCH_ORGANIZATION_UNITS
+  });
+  return response;
+};
+
 export {
   fetchRoles,
   fetchOrganizationUnits,
   fetchCities,
   fetchFields,
   fetchCourses,
-  fetchPositionDegree
+  fetchPositionDegree,
+  fetchEducationalFields,
+  fetchWorkLocations
 };
