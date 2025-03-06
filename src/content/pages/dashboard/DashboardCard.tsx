@@ -8,11 +8,11 @@ const StyledCard = styled(Grid)(({ theme }) => ({
   alignItems: 'center',
   position: 'relative',
   cursor: 'pointer',
-  fontWeight: 'bolder',
-  fontSize: '1.2rem',
-  height: '100px',
-  padding: '0 16px',
-  transition: 'all 0.2s',
+  fontWeight: 'bold',
+  fontSize: '1.1rem',
+  height: '90px',
+  padding: '0 20px',
+  transition: theme.transitions.create(['transform', 'box-shadow']),
   '&:hover': {
     transform: 'translateY(-3px)',
     boxShadow: theme.colors.shadows.primary,
@@ -40,18 +40,21 @@ const BottomCard = styled(StyledCard)(({ theme }) => ({
 
 const NotificationCounter = styled(Typography)(({ theme }) => ({
   position: 'absolute',
-  top: '5px',
-  left: '5px',
-  fontSize: '0.9rem',
+  top: '8px',
+  left: '8px',
+  fontSize: '0.85rem',
   backgroundColor: theme.palette.mode === 'dark'
     ? theme.colors.gradients.orange1
     : theme.colors.warning.main,
-  padding: '2px 8px',
-  borderRadius: '8px',
-  color: theme.palette.error.main,
+  padding: '1px 8px',
+  borderRadius: '6px',
+  color: theme.palette.mode === 'dark'
+    ? theme.palette.error.main
+    : theme.palette.error.contrastText,
   fontWeight: 'bold',
-  minWidth: '20px',
+  minWidth: '18px',
   textAlign: 'center',
+  boxShadow: theme.colors.shadows.warning,
 }));
 
 interface DashboardCardProps {
