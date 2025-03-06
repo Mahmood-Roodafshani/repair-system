@@ -18,6 +18,7 @@ import CloseTwoToneIcon from '@mui/icons-material/CloseTwoTone';
 import HeaderButtons from './Buttons';
 import HeaderUserbox from './Userbox';
 import HeaderMenu from './Menu';
+import ThemeToggle from './ThemeToggle';
 
 const HeaderWrapper = styled(Box)(
   ({ theme }) => `
@@ -72,6 +73,7 @@ function Header() {
       </Stack>
       <Box display="flex" alignItems="center">
         {/*<HeaderButtons /> todo Mahmood - Check fr future use cases */}
+        <ThemeToggle />
         <HeaderUserbox />
         <Box
           component="span"

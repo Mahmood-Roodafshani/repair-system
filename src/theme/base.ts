@@ -1,10 +1,15 @@
 import React from 'react';
 
-import { Theme } from '@mui/material';
-import { PureLightTheme } from './schemes/PureLightTheme';
+import { Theme, createTheme } from '@mui/material';
+import { themeMap, ThemeName } from './themes';
 
-export function themeCreator(theme: string): Theme {
-  return themeMap[theme];
+/**
+ * Theme creator function that returns the requested theme
+ * @param themeName - Name of the theme to return
+ * @returns Theme object
+ */
+export function themeCreator(themeName: ThemeName): Theme {
+  return createTheme(themeMap[themeName]);
 }
 
 declare module '@mui/material/styles' {
@@ -259,7 +264,3 @@ declare module '@mui/material/styles' {
     };
   }
 }
-
-const themeMap: { [key: string]: Theme } = {
-  PureLightTheme
-};

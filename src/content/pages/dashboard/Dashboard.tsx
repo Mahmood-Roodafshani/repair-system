@@ -1,7 +1,27 @@
-import {Grid} from '@mui/material';
-import './style.scss';
+import { Grid } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import DashboardCard from './DashboardCard';
 import {Helmet} from 'react-helmet-async';
+
+const Container = styled('div')`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: ${({ theme }) => theme.spacing(3)};
+    width: 100%;
+    min-height: 100vh;
+    background-color: ${({ theme }) => theme.palette.background.default};
+`;
+
+const CardsContainer = styled(Grid)`
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 20px 20px 0 20px;
+    width: calc(100% - 40px);
+`;
 
 function Dashboard() {
     return (
@@ -9,68 +29,76 @@ function Dashboard() {
             <Helmet>
                 <title>سامانه برخط</title>
             </Helmet>
-            <Grid display={'flex'} flexDirection={'column'} gap={'20px'}>
-                <Grid className="top-cards">
-                    <Grid container spacing={1}>
+            <Container>
+                <CardsContainer container spacing={3}>
+                    <Grid item xs={12} lg={4}>
                         <DashboardCard
-                            notifsCount={3}
-                            xs={12}
-                            lg={4}
+                            variant="top"
                             title="کارتابل عمومی"
+                            notifications={3}
                             navigateTo=""
                         />
-                        <DashboardCard
-                            notifsCount={1}
-                            xs={12}
-                            lg={4}
-                            title="هشدار"
-                            navigateTo=""
-                        />
-                        <DashboardCard xs={12} lg={4} title="اطلاع رسانی" navigateTo=""/>
                     </Grid>
-                </Grid>
-                <Grid className="bottom-cards">
-                    <Grid container spacing={1}>
+                    <Grid item xs={12} lg={4}>
                         <DashboardCard
-                            xs={12}
-                            lg={4}
-                            title="سامانه تعمیرات"
-                            navigateTo="/repair-panel"
-                            notifsCount={2}
+                            variant="top"
+                            title="هشدار"
+                            notifications={1}
+                            navigateTo=""
                         />
+                    </Grid>
+                    <Grid item xs={12} lg={4}>
                         <DashboardCard
-                            xs={12}
-                            lg={4}
+                            variant="top"
+                            title="اطلاع رسانی"
+                            navigateTo=""
+                        />
+                    </Grid>
+                    <Grid item xs={12} lg={4}>
+                        <DashboardCard
+                            variant="bottom"
+                            title="سامانه تعمیرات"
+                            notifications={2}
+                            navigateTo="/repair-panel"
+                        />
+                    </Grid>
+                    <Grid item xs={12} lg={4}>
+                        <DashboardCard
+                            variant="bottom"
                             title="سامانه مدیریت کاربران"
                             navigateTo="/usermanagement"
                         />
+                    </Grid>
+                    <Grid item xs={12} lg={4}>
                         <DashboardCard
-                            xs={12}
-                            lg={4}
+                            variant="bottom"
                             title="سامانه مشاغل سازمانی"
                             navigateTo="/jobs-panel"
                         />
+                    </Grid>
+                    <Grid item xs={12} lg={4}>
                         <DashboardCard
-                            xs={12}
-                            lg={4}
+                            variant="bottom"
                             title="سامانه ردیابی فعالیت کاربران"
                             navigateTo="/tracking-panel"
                         />
+                    </Grid>
+                    <Grid item xs={12} lg={4}>
                         <DashboardCard
-                            xs={12}
-                            lg={4}
+                            variant="bottom"
                             title="سامانه کدینگ"
                             navigateTo="/coding-panel"
                         />
+                    </Grid>
+                    <Grid item xs={12} lg={4}>
                         <DashboardCard
-                            xs={12}
-                            lg={4}
+                            variant="bottom"
                             title="سامانه اطلاعات پایه"
                             navigateTo="/base-info-panel"
                         />
                     </Grid>
-                </Grid>
-            </Grid>
+                </CardsContainer>
+            </Container>
         </>
     );
 }
