@@ -1,12 +1,12 @@
 import { useContext } from 'react';
 import { Button, List, ListItem } from '@mui/material';
 import { NavLink as RouterLink } from 'react-router-dom';
-import { SidebarContext } from 'src/contexts/SidebarContext';
+import { SidebarContext } from '../../../contexts/SidebarContext';
 import { MenuWrapper } from 'src/layouts/components/MenuWrapper';
 import { SubMenuWrapper } from 'src/layouts/components/SubMenuWrapper';
 
 function SidebarMenu() {
-  const { closeSidebar } = useContext(SidebarContext);
+  const { toggleSidebar } = useContext(SidebarContext);
 
   return (
     <>
@@ -18,17 +18,17 @@ function SidebarMenu() {
                 <Button
                   disableRipple
                   component={RouterLink}
-                  onClick={closeSidebar}
-                  to="/usermanagement/"
+                  onClick={toggleSidebar}
+                  to="/user-management/"
                 >
-                  سامانه دسترسی
+                  مدیریت کاربران
                 </Button>
               </ListItem>
               <ListItem component="div">
                 <Button
                   disableRipple
                   component={RouterLink}
-                  onClick={closeSidebar}
+                  onClick={toggleSidebar}
                   to="/usermanagement/accessControl"
                 >
                   مدیریت دسترسی
@@ -38,7 +38,7 @@ function SidebarMenu() {
                 <Button
                   disableRipple
                   component={RouterLink}
-                  onClick={closeSidebar}
+                  onClick={toggleSidebar}
                   to="/usermanagement/roleManagement"
                 >
                   مدیریت نقش
@@ -48,7 +48,7 @@ function SidebarMenu() {
                 <Button
                   disableRipple
                   component={RouterLink}
-                  onClick={closeSidebar}
+                  onClick={toggleSidebar}
                   to="/usermanagement/create-group-access"
                 >
                   ایجاد گروه دسترسی
@@ -58,7 +58,7 @@ function SidebarMenu() {
                 <Button
                   disableRipple
                   component={RouterLink}
-                  onClick={closeSidebar}
+                  onClick={toggleSidebar}
                   to="/usermanagement/security-announcement"
                 >
                   اطلاع رسانی امنیتی
@@ -68,7 +68,7 @@ function SidebarMenu() {
                 <Button
                   disableRipple
                   component={RouterLink}
-                  onClick={closeSidebar}
+                  onClick={toggleSidebar}
                   to="/usermanagement/public-announcement"
                 >
                   اطلاع رسانی عمومی
@@ -78,7 +78,7 @@ function SidebarMenu() {
                 <Button
                   disableRipple
                   component={RouterLink}
-                  onClick={closeSidebar}
+                  onClick={toggleSidebar}
                   to="/usermanagement/choose-replacement"
                 >
                   انتخاب جایگزین
@@ -88,7 +88,7 @@ function SidebarMenu() {
                 <Button
                   disableRipple
                   component={RouterLink}
-                  onClick={closeSidebar}
+                  onClick={toggleSidebar}
                   to="/usermanagement/signiture"
                 >
                   نمونه امضا

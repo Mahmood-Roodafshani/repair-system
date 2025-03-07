@@ -3,6 +3,7 @@ import { RouteObject } from 'react-router';
 import { Navigate } from 'react-router-dom';
 
 import BaseLayout from 'src/layouts/BaseLayout';
+import SidebarLayout from 'src/layouts/SidebarLayout';
 
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import {
@@ -40,15 +41,6 @@ import {
   UserManagementHomePage
 } from './content';
 import {
-  CodingPanelSidebarLayout,
-  DashboardSidebarLayout,
-  JobsPanelSidebarLayout,
-  RepairPanelSidebarLayout,
-  TrackingPanelSidebarLayout,
-  UserManagementSidebarLayout
-} from './layouts';
-import { BaseInfoPanelSidebarLayout } from './layouts/baseInfoPanelSidebarLayout';
-import {
   BaseInfoHomePage,
   FamilyInfo,
   OtherInfo,
@@ -61,7 +53,6 @@ const Loader = (Component) => (props) =>
       <Component {...props} />
     </Suspense>
   );
-
 
 const Buttons = Loader(
   lazy(() => import('src/content/pages/Components/Buttons'))
@@ -146,188 +137,182 @@ const routes: RouteObject[] = [
     ]
   },
   {
-    path: 'dashboard',
-    element: <DashboardSidebarLayout />,
+    path: '/',
+    element: <SidebarLayout />,
     children: [
       {
-        path: '',
+        path: 'dashboard',
         element: <Dashboard />
-      }
-    ]
-  },
-  {
-    path: 'repair-panel',
-    element: <RepairPanelSidebarLayout />,
-    children: [
-      {
-        path: '',
-        element: <RepairPanelHomePage />
       },
       {
-        path: 'cartable',
-        element: <Cartable />
+        path: 'repair-panel',
+        children: [
+          {
+            path: '',
+            element: <RepairPanelHomePage />
+          },
+          {
+            path: 'cartable',
+            element: <Cartable />
+          },
+          {
+            path: 'repair-request',
+            element: <RepairRequest />
+          },
+          {
+            path: 'content-report',
+            element: <ContentReport />
+          },
+          {
+            path: 'group-performance-report',
+            element: <GroupPerformanceReport />
+          },
+          {
+            path: 'individual-performance-report',
+            element: <IndividualPerformanceReport />
+          },
+          {
+            path: 'technical-interface',
+            element: <TechnicalInterface />
+          },
+          {
+            path: 'commission',
+            element: <Commission />
+          },
+          {
+            path: 'borrowed-items',
+            element: <BorrowedItems />
+          },
+          {
+            path: 'items-list',
+            element: <ItemsList />
+          },
+          {
+            path: 'companies',
+            element: <Companies />
+          },
+          {
+            path: 'group-property-code',
+            element: <GroupPropertyCode />
+          },
+          {
+            path: 'missing-request',
+            element: <MissingRequest />
+          },
+          {
+            path: 'print-checkout',
+            element: <PrintCheckout />
+          },
+          {
+            path: 'system-process',
+            element: <SystemProcess />
+          }
+        ]
       },
       {
-        path: 'repair-request',
-        element: <RepairRequest />
+        path: 'jobs-panel',
+        children: [
+          {
+            path: '',
+            element: <JobsHomePage />
+          },
+          {
+            path: 'list',
+            element: <JobsList />
+          },
+          {
+            path: 'tree',
+            element: <JobsTree />
+          }
+        ]
       },
       {
-        path: 'content-report',
-        element: <ContentReport />
+        path: 'tracking-panel',
+        children: [
+          {
+            path: '',
+            element: <TrackingHomePage />
+          },
+          {
+            path: 'tracking',
+            element: <Tracking />
+          }
+        ]
       },
       {
-        path: 'group-performance-report',
-        element: <GroupPerformanceReport />
+        path: 'base-info-panel',
+        children: [
+          {
+            path: '',
+            element: <BaseInfoHomePage />
+          },
+          {
+            path: 'staff-info',
+            element: <StaffInfo />
+          },
+          {
+            path: 'family-info',
+            element: <FamilyInfo />
+          },
+          {
+            path: 'other-info',
+            element: <OtherInfo />
+          }
+        ]
       },
       {
-        path: 'individual-performance-report',
-        element: <IndividualPerformanceReport />
+        path: 'coding-panel',
+        children: [
+          {
+            path: '',
+            element: <CodingHomePage />
+          },
+          {
+            path: 'coding',
+            element: <CodingHomePage />
+          },
+          {
+            path: 'access',
+            element: <CodingAccess />
+          }
+        ]
       },
       {
-        path: 'technical-interface',
-        element: <TechnicalInterface />
-      },
-      {
-        path: 'commission',
-        element: <Commission />
-      },
-      {
-        path: 'borrowed-items',
-        element: <BorrowedItems />
-      },
-      {
-        path: 'items-list',
-        element: <ItemsList />
-      },
-      {
-        path: 'companies',
-        element: <Companies />
-      },
-      {
-        path: 'group-property-code',
-        element: <GroupPropertyCode />
-      },
-      {
-        path: 'missing-request',
-        element: <MissingRequest />
-      },
-      {
-        path: 'print-checkout',
-        element: <PrintCheckout />
-      },
-      {
-        path: 'system-process',
-        element: <SystemProcess />
-      }
-    ]
-  },
-  {
-    path: 'jobs-panel',
-    element: <JobsPanelSidebarLayout />,
-    children: [
-      {
-        path: '',
-        element: <JobsHomePage />
-      },
-      {
-        path: 'list',
-        element: <JobsList />
-      },
-      {
-        path: 'tree',
-        element: <JobsTree />
-      }
-    ]
-  },
-  {
-    path: 'tracking-panel',
-    element: <TrackingPanelSidebarLayout />,
-    children: [
-      {
-        path: '',
-        element: <TrackingHomePage />
-      },
-      {
-        path: 'tracking',
-        element: <Tracking />
-      }
-    ]
-  },
-  {
-    path: 'base-info-panel',
-    element: <BaseInfoPanelSidebarLayout />,
-    children: [
-      {
-        path: '',
-        element: <BaseInfoHomePage />
-      },
-      {
-        path: 'staff-info',
-        element: <StaffInfo />
-      },
-      {
-        path: 'family-info',
-        element: <FamilyInfo />
-      },
-      {
-        path: 'other-info',
-        element: <OtherInfo />
-      }
-    ]
-  },
-  {
-    path: 'coding-panel',
-    element: <CodingPanelSidebarLayout />,
-    children: [
-      {
-        path: '',
-        element: <CodingHomePage />
-      },
-      {
-        path: 'coding',
-        element: <CodingHomePage />
-      },
-      {
-        path: 'access',
-        element: <CodingAccess />
-      }
-    ]
-  },
-  {
-    path: 'usermanagement',
-    element: <UserManagementSidebarLayout />,
-    children: [
-      {
-        path: '',
-        element: <UserManagementHomePage />
-      },
-      {
-        path: 'accessControl',
-        element: <AccessControl />
-      },
-      {
-        path: 'roleManagement',
-        element: <RoleManagement />
-      },
-      {
-        path: 'create-group-access',
-        element: <CreateGroupAccess />
-      },
-      {
-        path: 'security-announcement',
-        element: <SecurityAnnouncements />
-      },
-      {
-        path: 'public-announcement',
-        element: <PublicAnnouncements />
-      },
-      {
-        path: 'choose-replacement',
-        element: <ChooseReplacement />
-      },
-      {
-        path: 'signiture',
-        element: <Signiture />
+        path: 'usermanagement',
+        children: [
+          {
+            path: '',
+            element: <UserManagementHomePage />
+          },
+          {
+            path: 'accessControl',
+            element: <AccessControl />
+          },
+          {
+            path: 'roleManagement',
+            element: <RoleManagement />
+          },
+          {
+            path: 'create-group-access',
+            element: <CreateGroupAccess />
+          },
+          {
+            path: 'security-announcement',
+            element: <SecurityAnnouncements />
+          },
+          {
+            path: 'public-announcement',
+            element: <PublicAnnouncements />
+          },
+          {
+            path: 'choose-replacement',
+            element: <ChooseReplacement />
+          },
+          {
+            path: 'signiture',
+            element: <Signiture />
+          }
+        ]
       }
     ]
   }

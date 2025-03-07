@@ -1,6 +1,8 @@
 import { alpha, Box, lighten, useTheme } from '@mui/material';
 import { ReactNode } from 'react';
 import { Outlet } from 'react-router';
+import Header from './Header';
+import Footer from './Footer';
 
 function SidebarBaseLayout({ children }: { children: ReactNode }) {
   const theme = useTheme();
@@ -33,6 +35,7 @@ function SidebarBaseLayout({ children }: { children: ReactNode }) {
           }
         }}
       >
+        <Header />
         {children}
         <Box
           sx={{
@@ -40,7 +43,8 @@ function SidebarBaseLayout({ children }: { children: ReactNode }) {
             zIndex: 5,
             display: 'block',
             flex: 1,
-            padding: '10px',
+            pt: '64px', // Default header height
+            pb: '64px', // Default footer height 
             [theme.breakpoints.up('lg')]: {
               mr: `${theme.sidebar.width}`
             }
@@ -50,6 +54,7 @@ function SidebarBaseLayout({ children }: { children: ReactNode }) {
             <Outlet />
           </Box>
         </Box>
+        <Footer />
       </Box>
     </>
   );
