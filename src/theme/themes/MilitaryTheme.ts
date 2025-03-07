@@ -183,4 +183,9 @@ export const MilitaryTheme: ThemeOptions = {
     boxShadow: '0 0 20px rgba(0, 0, 0, 0.3)',
     textColor: '#FAEA0E',
   },
+  footer: {
+    height: '60px',
+    background: '#02402B',
+    color: '#ffffff'
+  },
 }; 

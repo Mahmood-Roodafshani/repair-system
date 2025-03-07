@@ -2,13 +2,13 @@ import { useContext } from 'react';
 
 import { Button, List, ListItem } from '@mui/material';
 import { NavLink as RouterLink } from 'react-router-dom';
-import { SidebarContext } from 'src/contexts/SidebarContext';
+import { SidebarContext } from '../../../contexts/SidebarContext';
 
 import { MenuWrapper } from 'src/layouts/components/MenuWrapper';
 import { SubMenuWrapper } from 'src/layouts/components/SubMenuWrapper';
 
 function SidebarMenu() {
-  const { closeSidebar } = useContext(SidebarContext);
+  const { toggleSidebar } = useContext(SidebarContext);
 
   return (
     <>
@@ -20,7 +20,7 @@ function SidebarMenu() {
                 <Button
                   disableRipple
                   component={RouterLink}
-                  onClick={closeSidebar}
+                  onClick={toggleSidebar}
                   to="/repair-panel/"
                 >
                   سامانه تعمیرات
@@ -30,7 +30,7 @@ function SidebarMenu() {
                 <Button
                   disableRipple
                   component={RouterLink}
-                  onClick={closeSidebar}
+                  onClick={toggleSidebar}
                   to="repair-panel/cartable"
                 >
                   کارتابل
@@ -40,7 +40,7 @@ function SidebarMenu() {
                 <Button
                   disableRipple
                   component={RouterLink}
-                  onClick={closeSidebar}
+                  onClick={toggleSidebar}
                   to="repair-panel/repair-request"
                 >
                   درخواست تعمیر
@@ -50,7 +50,7 @@ function SidebarMenu() {
                 <Button
                   disableRipple
                   component={RouterLink}
-                  onClick={closeSidebar}
+                  onClick={toggleSidebar}
                   to="repair-panel/content-report"
                 >
                   گزارش محتوا
@@ -60,7 +60,7 @@ function SidebarMenu() {
                 <Button
                   disableRipple
                   component={RouterLink}
-                  onClick={closeSidebar}
+                  onClick={toggleSidebar}
                   to="repair-panel/group-performance-report"
                 >
                   گزارش عملکرد یگانی
@@ -70,7 +70,7 @@ function SidebarMenu() {
                 <Button
                   disableRipple
                   component={RouterLink}
-                  onClick={closeSidebar}
+                  onClick={toggleSidebar}
                   to="repair-panel/individual-performance-report"
                 >
                   گزارش عملکرد فردی
@@ -80,7 +80,7 @@ function SidebarMenu() {
                 <Button
                   disableRipple
                   component={RouterLink}
-                  onClick={closeSidebar}
+                  onClick={toggleSidebar}
                   to="repair-panel/technical-interface"
                 >
                   رابط فنی
@@ -90,7 +90,7 @@ function SidebarMenu() {
                 <Button
                   disableRipple
                   component={RouterLink}
-                  onClick={closeSidebar}
+                  onClick={toggleSidebar}
                   to="repair-panel/commission"
                 >
                   کمیسیون
@@ -100,7 +100,7 @@ function SidebarMenu() {
                 <Button
                   disableRipple
                   component={RouterLink}
-                  onClick={closeSidebar}
+                  onClick={toggleSidebar}
                   to="repair-panel/borrowed-items"
                 >
                   اقلام امانی
@@ -110,7 +110,7 @@ function SidebarMenu() {
                 <Button
                   disableRipple
                   component={RouterLink}
-                  onClick={closeSidebar}
+                  onClick={toggleSidebar}
                   to="repair-panel/items-list"
                 >
                   لیست اقلام
@@ -120,7 +120,7 @@ function SidebarMenu() {
                 <Button
                   disableRipple
                   component={RouterLink}
-                  onClick={closeSidebar}
+                  onClick={toggleSidebar}
                   to="repair-panel/companies"
                 >
                   شرکت ها
@@ -130,7 +130,7 @@ function SidebarMenu() {
                 <Button
                   disableRipple
                   component={RouterLink}
-                  onClick={closeSidebar}
+                  onClick={toggleSidebar}
                   to="repair-panel/group-property-code"
                 >
                   اتصال کد اموال به گروه
@@ -140,7 +140,7 @@ function SidebarMenu() {
                 <Button
                   disableRipple
                   component={RouterLink}
-                  onClick={closeSidebar}
+                  onClick={toggleSidebar}
                   to="repair-panel/missing-request"
                 >
                   درخواست مفقودی
@@ -150,7 +150,7 @@ function SidebarMenu() {
                 <Button
                   disableRipple
                   component={RouterLink}
-                  onClick={closeSidebar}
+                  onClick={toggleSidebar}
                   to="repair-panel/print-checkout"
                 >
                   چاپ برگه خروج
@@ -160,7 +160,7 @@ function SidebarMenu() {
                 <Button
                   disableRipple
                   component={RouterLink}
-                  onClick={closeSidebar}
+                  onClick={toggleSidebar}
                   to="repair-panel/system-process"
                 >
                   فرآیند سامانه

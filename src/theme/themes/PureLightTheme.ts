@@ -179,9 +179,14 @@ export const PureLightTheme: ThemeOptions = {
     menuItemHeadingColor: '#2C3E50',
   },
   header: {
-    height: '64px',
-    background: '#FFFFFF',
-    boxShadow: '0 0 20px rgba(0, 0, 0, 0.05)',
-    textColor: '#2C3E50',
+    height: '80px',
+    background: '#5569ff',
+    boxShadow: '#5569ff',
+    textColor: '#ffffff'
+  },
+  footer: {
+    height: '60px',
+    background: '#ffffff',
+    color: '#5569ff'
   },
 }; 

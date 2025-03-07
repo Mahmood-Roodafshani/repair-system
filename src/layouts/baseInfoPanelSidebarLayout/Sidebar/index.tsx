@@ -1,12 +1,12 @@
 import { useContext } from 'react';
 import { Button, List, ListItem } from '@mui/material';
 import { NavLink as RouterLink } from 'react-router-dom';
-import { SidebarContext } from 'src/contexts/SidebarContext';
-import { MenuWrapper } from 'src/layouts/components/MenuWrapper';
-import { SubMenuWrapper } from 'src/layouts/components/SubMenuWrapper';
+import { SidebarContext } from '../../../contexts/SidebarContext';
+import { MenuWrapper } from '../../components/MenuWrapper';
+import { SubMenuWrapper } from '../../components/SubMenuWrapper';
 
 function SidebarMenu() {
-  const { closeSidebar } = useContext(SidebarContext);
+  const { toggleSidebar } = useContext(SidebarContext);
 
   return (
     <>
@@ -18,7 +18,7 @@ function SidebarMenu() {
                 <Button
                   disableRipple
                   component={RouterLink}
-                  onClick={closeSidebar}
+                  onClick={toggleSidebar}
                   to="/base-info-panel/"
                 >
                   سامانه اطلاعات پایه
@@ -28,7 +28,7 @@ function SidebarMenu() {
                 <Button
                   disableRipple
                   component={RouterLink}
-                  onClick={closeSidebar}
+                  onClick={toggleSidebar}
                   to="/base-info-panel/staff-info"
                 >
                   اطلاعات پرسنل
@@ -38,7 +38,7 @@ function SidebarMenu() {
                 <Button
                   disableRipple
                   component={RouterLink}
-                  onClick={closeSidebar}
+                  onClick={toggleSidebar}
                   to="/base-info-panel/family-info"
                 >
                   اطلاعات عائله
@@ -48,7 +48,7 @@ function SidebarMenu() {
                 <Button
                   disableRipple
                   component={RouterLink}
-                  onClick={closeSidebar}
+                  onClick={toggleSidebar}
                   to="/base-info-panel/other-info"
                 >
                   اطلاعات غیر پرسنل

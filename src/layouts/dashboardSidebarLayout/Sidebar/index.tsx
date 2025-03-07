@@ -1,116 +1,67 @@
 import { useContext } from 'react';
-import Scrollbar from 'src/components/Scrollbar';
-import { SidebarContext } from 'src/contexts/SidebarContext';
-
-import {
-  alpha,
-  Box,
-  darken,
-  Divider,
-  Drawer,
-  lighten,
-  styled,
-  useTheme
-} from '@mui/material';
-
-import Logo from 'src/components/LogoSign';
+import { Drawer, Box, styled } from '@mui/material';
+import { SidebarContext, SIDEBAR_WIDTH, SIDEBAR_WIDTH_COLLAPSED } from '../../../contexts/SidebarContext';
+import SidebarMenu from './SidebarMenu';
+import { useTheme } from '@mui/material/styles';
 
 const SidebarWrapper = styled(Box)(
   ({ theme }) => `
-        width: ${theme.sidebar.width};
-        min-width: ${theme.sidebar.width};
-        color: ${theme.colors.alpha.trueWhite[70]};
+    width: ${SIDEBAR_WIDTH}px;
+    min-width: ${SIDEBAR_WIDTH}px;
+    color: ${theme.palette.text.primary};
+    position: relative;
+    z-index: 7;
+    height: 100%;
+    padding-bottom: 68px;
+`
+);
+
+const StyledDrawer = styled(Drawer)(
+  ({ theme }) => `
+    width: ${SIDEBAR_WIDTH}px;
+    min-width: ${SIDEBAR_WIDTH}px;
+    position: relative;
+    
+    & .MuiDrawer-paper {
+        width: ${SIDEBAR_WIDTH}px;
+        min-width: ${SIDEBAR_WIDTH}px;
+        background: ${theme.palette.background.default};
+        color: ${theme.palette.text.primary};
         position: relative;
-        z-index: 7;
-        height: 100%;
-        padding-bottom: 68px;
+        transition: ${theme.transitions.create(['width', 'min-width'], {
+          easing: theme.transitions.easing.sharp,
+          duration: theme.transitions.duration.shorter
+        })};
+    }
+    
+    &.collapsed {
+        width: ${SIDEBAR_WIDTH_COLLAPSED}px;
+        min-width: ${SIDEBAR_WIDTH_COLLAPSED}px;
+        
+        & .MuiDrawer-paper {
+            width: ${SIDEBAR_WIDTH_COLLAPSED}px;
+            min-width: ${SIDEBAR_WIDTH_COLLAPSED}px;
+        }
+    }
 `
 );
 
 function Sidebar() {
-  const { sidebarToggle, toggleSidebar } = useContext(SidebarContext);
-  const closeSidebar = () => toggleSidebar();
+  const { sidebarToggle } = useContext(SidebarContext);
   const theme = useTheme();
-
+  
   return (
     <>
-      <SidebarWrapper
-        sx={{
-          display: {
-            xs: 'none',
-            lg: 'inline-block'
-          },
-          position: 'fixed',
-          right: 0,
-          top: 0,
-          background:
-            theme.palette.mode === 'dark'
-              ? alpha(lighten(theme.header.background, 0.1), 0.5)
-              : darken(theme.colors.alpha.black[100], 0.5),
-          boxShadow:
-            theme.palette.mode === 'dark' ? theme.sidebar.boxShadow : 'none'
-        }}
-      >
-        <Scrollbar>
-          <Box mt={3}>
-            <Box
-              mx={2}
-              sx={{
-                width: 52
-              }}
-            >
-
-              {/*<Logo />*/}
-            </Box>
-          </Box>
-          <Divider
-            sx={{
-              mt: theme.spacing(3),
-              mx: theme.spacing(2),
-              background: theme.colors.alpha.trueWhite[10]
-            }}
-          />
-        </Scrollbar>
-      </SidebarWrapper>
-      <Drawer
-        sx={{
-          boxShadow: `${theme.sidebar.boxShadow}`
-        }}
-        anchor={theme.direction === 'rtl' ? 'right' : 'left'}
+      <StyledDrawer
+        variant="permanent"
+        anchor="left"
+        className={sidebarToggle ? '' : 'collapsed'}
         open={sidebarToggle}
-        onClose={closeSidebar}
-        variant="temporary"
-        elevation={9}
       >
-        <SidebarWrapper
-          sx={{
-            background:
-              theme.palette.mode === 'dark'
-                ? theme.colors.alpha.white[100]
-                : darken(theme.colors.alpha.black[100], 0.5)
-          }}
-        >
-          <Scrollbar>
-            <Box mt={3}>
-              <Box
-                mx={2}
-                sx={{
-                  width: 52
-                }}
-              >
-                <Logo />
-              </Box>
-            </Box>
-            <Divider
-              sx={{
-                mt: theme.spacing(3),
-                mx: theme.spacing(2),
-                background: theme.colors.alpha.trueWhite[10]
-              }}
-            />
-          </Scrollbar>
+        <SidebarWrapper>
+          <SidebarMenu />
         </SidebarWrapper>
-      </Drawer>
+      </StyledDrawer>
     </>
   );
 }

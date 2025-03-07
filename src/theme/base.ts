@@ -135,6 +135,11 @@ declare module '@mui/material/styles' {
       boxShadow: React.CSSProperties['color'];
       textColor: React.CSSProperties['color'];
     };
+    footer: {
+      height: string;
+      background: React.CSSProperties['color'];
+      color: React.CSSProperties['color'];
+    };
   }
 
   interface ThemeOptions {
@@ -261,6 +266,11 @@ declare module '@mui/material/styles' {
       background: React.CSSProperties['color'];
       boxShadow: React.CSSProperties['color'];
       textColor: React.CSSProperties['color'];
+    };
+    footer: {
+      height?: string;
+      background?: React.CSSProperties['color'];
+      color?: React.CSSProperties['color'];
     };
   }
 }

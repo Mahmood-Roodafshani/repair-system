@@ -1,29 +1,40 @@
-import { createContext, useState } from 'react';
-type SidebarContext = {
-  sidebarToggle: any;
+import React, { createContext, useContext, useState, ReactNode } from 'react';
+
+export const SIDEBAR_WIDTH = 280;
+export const SIDEBAR_WIDTH_COLLAPSED = 80;
+
+interface SidebarContextType {
+  sidebarToggle: boolean;
   toggleSidebar: () => void;
-  closeSidebar: () => void;
-};
+}
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const SidebarContext = createContext<SidebarContext>(
-  {} as SidebarContext
-);
+export const SidebarContext = createContext<SidebarContextType>({
+  sidebarToggle: false,
+  toggleSidebar: () => {}
+});
 
-export const SidebarProvider = ({ children }) => {
+interface SidebarProviderProps {
+  children: ReactNode;
+}
+
+export function SidebarProvider({ children }: SidebarProviderProps) {
   const [sidebarToggle, setSidebarToggle] = useState(false);
+
   const toggleSidebar = () => {
     setSidebarToggle(!sidebarToggle);
   };
-  const closeSidebar = () => {
-    setSidebarToggle(false);
-  };
 
   return (
-    <SidebarContext.Provider
-      value={{ sidebarToggle, toggleSidebar, closeSidebar }}
-    >
+    <SidebarContext.Provider value={{ sidebarToggle, toggleSidebar }}>
       {children}
     </SidebarContext.Provider>
   );
+}
+
+export const useSidebarContext = () => {
+  const context = useContext(SidebarContext);
+  if (context === undefined) {
+    throw new Error('useSidebarContext must be used within a SidebarProvider');
+  }
+  return context;
 };

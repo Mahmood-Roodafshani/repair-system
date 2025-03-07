@@ -1,6 +1,2 @@
-export * from './dashboardSidebarLayout';
-export * from './jobsPanelSidebarLayout';
-export * from './repairPanelSidebarLayout';
-export * from './userManagementSidebarLayout';
-export * from './trackingPanelSidebarLayout';
-export * from './codingPanelSidebarLayout';
+export { default as BaseLayout } from './BaseLayout';
+export { default as SidebarLayout } from './SidebarLayout';

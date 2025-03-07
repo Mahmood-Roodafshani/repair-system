@@ -3,18 +3,17 @@ import {
   Box,
   Button,
   darken,
-  Divider,
-  Drawer,
   lighten,
   styled,
   useTheme
 } from '@mui/material';
 import { ReactNode, useContext } from 'react';
 import { useNavigate } from 'react-router';
-import Logo from 'src/components/LogoSign';
 import Scrollbar from 'src/components/Scrollbar';
 import { SidebarContext } from 'src/contexts/SidebarContext';
 import { i18n } from 'src/i18n';
+import SidebarToggle from './SidebarToggle';
+import AppMenu from './Menu/AppMenu';
 
 function SidebarWrapper({ children }: { children: ReactNode }) {
   const theme = useTheme();
@@ -34,7 +33,6 @@ function SidebarWrapper({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
 
   return (
-    <>
       <SidebarWrapper
         sx={{
           display: {
@@ -42,16 +40,18 @@ function SidebarWrapper({ children }: { children: ReactNode }) {
             lg: 'inline-block'
           },
           position: 'fixed',
-          right: 0,
+        right: sidebarToggle ? 0 : `-${theme.sidebar.width}`,
           top: 0,
           background:
             theme.palette.mode === 'dark'
               ? alpha(lighten(theme.header.background, 0.1), 0.5)
               : darken(theme.colors.alpha.black[100], 0.5),
           boxShadow:
-            theme.palette.mode === 'dark' ? theme.sidebar.boxShadow : 'none'
+          theme.palette.mode === 'dark' ? theme.sidebar.boxShadow : 'none',
+        transition: theme.transitions.create(['right'])
         }}
       >
+      <SidebarToggle />
         <Scrollbar>
           <Button
             onClick={() => navigate('/dashboard')}
@@ -65,67 +65,9 @@ function SidebarWrapper({ children }: { children: ReactNode }) {
           >
             {i18n.t('dashboard').toString()}
           </Button>
-          {/*<Box mt={3}> */}
-          {/*  <Box*/}
-          {/*    mx={2}*/}
-          {/*    sx={{*/}
-          {/*      width: 52*/}
-          {/*    }}*/}
-          {/*  >*/}
-          {/*    /!*<Logo />*!/*/}
-          {/*  </Box>*/}
-          {/*</Box>*/}
-          {/*<Divider*/}
-          {/*  sx={{*/}
-          {/*    mt: theme.spacing(3),*/}
-          {/*    mx: theme.spacing(2),*/}
-          {/*    background: theme.colors.alpha.trueWhite[10]*/}
-          {/*  }}*/}
-          {/*/>*/}
-          {children}
-        </Scrollbar>
-      </SidebarWrapper>
-      <Drawer
-        sx={{
-          boxShadow: `${theme.sidebar.boxShadow}`
-        }}
-        anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-        open={sidebarToggle}
-        onClose={closeSidebar}
-        variant="temporary"
-        elevation={9}
-      >
-        <SidebarWrapper
-          sx={{
-            background:
-              theme.palette.mode === 'dark'
-                ? theme.colors.alpha.white[100]
-                : darken(theme.colors.alpha.black[100], 0.5)
-          }}
-        >
-          <Scrollbar>
-            <Box mt={3}>
-              <Box
-                mx={2}
-                sx={{
-                  width: 52
-                }}
-              >
-                <Logo />
-              </Box>
-            </Box>
-            <Divider
-              sx={{
-                mt: theme.spacing(3),
-                mx: theme.spacing(2),
-                background: theme.colors.alpha.trueWhite[10]
-              }}
-            />
-            {children}
+        <AppMenu drawerOpen={sidebarToggle} />
           </Scrollbar>
         </SidebarWrapper>
-      </Drawer>
-    </>
   );
 }
 

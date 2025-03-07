@@ -179,9 +179,14 @@ export const PureDarkTheme: ThemeOptions = {
     menuItemHeadingColor: '#FFFFFF',
   },
   header: {
-    height: '64px',
-    background: '#1E1E1E',
-    boxShadow: '0 0 20px rgba(0, 0, 0, 0.3)',
-    textColor: '#FFFFFF',
+    height: '80px',
+    background: '#1C1C1C',
+    boxShadow: '#000000',
+    textColor: '#ffffff'
+  },
+  footer: {
+    height: '60px',
+    background: '#1C1C1C',
+    color: '#ffffff'
   },
 }; 
