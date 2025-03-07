@@ -70,6 +70,27 @@ export const CKEditorToolbar = {
   }
 };
 
+export function findItemById(array: RichViewType[], id: string) {
+  for (let i = 0; i < array.length; i++) {
+    const item = array[i];
+
+    // Check if this item has the right id
+    if (item.id === id) {
+      return item;
+    }
+
+    // If the item has children, recursively search in them
+    if (item.children && Array.isArray(item.children)) {
+      const foundInChildren = findItemById(item.children, id);
+      if (foundInChildren) {
+        return foundInChildren;
+      }
+    }
+  }
+
+  return null; // Return null if item is not found
+}
+
 // Function to find the node in the tree by ID and keep track of the parent chain
 export function findNodeWithParents(
   node: RichViewType,

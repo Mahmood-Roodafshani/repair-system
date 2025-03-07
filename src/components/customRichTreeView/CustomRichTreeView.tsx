@@ -5,7 +5,7 @@ import { RichViewType } from 'src/types';
 import { findAllNodesWithChild, findAllParents } from 'src/utils/helper';
 
 function CustomRichTreeView({
-  sx,
+  sx = { width: '500px' },
   label,
   items,
   defaultValue,
@@ -41,11 +41,9 @@ function CustomRichTreeView({
       setExpandedItems([]);
       return;
     }
-
     let allParents: string[] = [];
     for (const node of defaultValue) {
       const parents = findAllParents(node, items);
-
       for (const parent of parents) {
         if (!allParents.includes(parent.id)) {
           allParents.push(parent.id);

@@ -15,4 +15,8 @@ const filterListValidationSchema = Yup.object().shape({
   staffCode: Yup.string().matches(/\\d{3,20}/, i18n.t('invalid_staff_code'))
 });
 
-export { filterListValidationSchema };
+const createNewAccessValidationSchema = Yup.object().shape({
+  staffCode: Yup.string().required(i18n.t('staff_code_is_req'))
+});
+
+export { filterListValidationSchema, createNewAccessValidationSchema };

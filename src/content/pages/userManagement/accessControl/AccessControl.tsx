@@ -1,3 +1,4 @@
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import {
   Checkbox,
   FormControlLabel,
@@ -7,67 +8,74 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { RichTreeView } from '@mui/x-tree-view';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router';
-import { Loader, MyCustomTable, OpGrid } from 'src/components';
+import {
+  CustomRichTreeView,
+  Loader,
+  MyCustomTable,
+  OpGrid
+} from 'src/components';
 import i18n from 'src/i18n/i18n';
 import { Button, ButtonType, TextFieldFormik } from 'src/mahmood-components';
 import {
   accessControlFetchList,
+  fetchJobsTree,
   fetchOrganizationUnits,
   fetchRoles
 } from 'src/service';
 import {
   AccessControlFilterType,
   AccessControlListResponseType,
-  OrganizationUnitResponseType,
-  RoleResponseType
+  RichViewType
 } from 'src/types';
+import { mapAllIdsInNestedArray } from 'src/utils/helper';
 import Grants from './Grants';
 import { filterListValidationSchema } from './validationSchema';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import NewAccess from './NewAccess';
 
 function AccessControl() {
-  const [roles, setRoles] = useState<RoleResponseType[]>();
-  const [organizationUnits, setOrganizationUnits] =
-    useState<OrganizationUnitResponseType[]>();
+  const [roles, setRoles] = useState<RichViewType[]>();
+  const [jobs, setJobs] = useState<RichViewType[]>();
+  const [organizationUnits, setOrganizationUnits] = useState<RichViewType[]>();
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState<AccessControlListResponseType[]>();
-  const [addNewUser, setAddNewUser] = useState(false);
+  const [addNewAccess, setAddNewAccess] = useState(false);
+  const [filter, setFilter] = useState<AccessControlFilterType>();
   const [selectedUserGrants, setSelectedUserGrants] = useState<
     string | number
   >();
-  const [expandedOrganizationItems, setExpandedOrganizationItems] = useState<
-    string[]
-  >([]);
-  const [expandedRoleItems, setExpandedRoleItems] = useState<string[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     setLoading(true);
     Promise.all([fetchRoles(), fetchOrganizationUnits()])
       .then((res) => {
-        if (res[0].statusCode === 200) {
-          setRoles(res[0].content);
-          setExpandedRoleItems(res[0].content.map((e) => 'role_' + e.id));
-        }
-        if (res[1].statusCode === 200) {
-          setOrganizationUnits(res[1].content);
-          setExpandedOrganizationItems(
-            res[1].content.map((e) => 'organization_' + e.id)
-          );
-        }
+        if (res[0].statusCode === 200) setRoles(res[0].content);
+        if (res[1].statusCode === 200) setOrganizationUnits(res[1].content);
       })
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (addNewAccess && jobs === undefined) {
+      setLoading(true);
+      Promise.all([fetchJobsTree()])
+        .then((res) => {
+          if (res[0].statusCode === 200) setJobs(res[0].content);
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [addNewAccess, jobs]);
 
   const onSubmit = async (
     values: AccessControlFilterType,
     actions: FormikHelpers<AccessControlFilterType>
   ) => {
+    setFilter(values);
+    setList(undefined);
     const res = await accessControlFetchList({ filter: values });
     actions.setSubmitting(false);
     if (res.statusCode === 200) setList(res.content);
@@ -76,7 +84,7 @@ function AccessControl() {
   const columns = useMemo(() => {
     return [
       {
-        header: 'ردیف',
+        header: i18n.t('row_number'),
         enableHiding: false,
         Cell: ({ row }) => {
           return (
@@ -88,15 +96,15 @@ function AccessControl() {
         size: 40
       },
       {
-        header: 'نام و نام خانوادگی',
+        header: i18n.t('fullname'),
         accessorKey: 'name'
       },
       {
-        header: 'شماره پرسنلی',
+        header: i18n.t('staff_code'),
         accessorKey: 'staffCode'
       },
       {
-        header: 'وضعیت',
+        header: i18n.t('status'),
         Cell: ({ row }) => {
           return (
             <FormControlLabel
@@ -111,7 +119,7 @@ function AccessControl() {
         }
       },
       {
-        header: 'تغییر رمز',
+        header: i18n.t('change_pass'),
         Cell: ({ row }) => {
           return (
             <Grid
@@ -154,19 +162,12 @@ function AccessControl() {
                 }
                 type="password"
               />
-              {/* <IconButton
-                key={'show_btn_' + row.index}
-                color="primary"
-                onClick={() => console.info('Edit')}
-              >
-                <Add />
-              </IconButton> */}
             </Grid>
           );
         }
       },
       {
-        header: 'یگان خدمتی',
+        header: i18n.t('work_unit'),
         accessorKey: 'unit'
       }
     ];
@@ -178,7 +179,7 @@ function AccessControl() {
         <title>{i18n.t('access_control').toString()}</title>
       </Helmet>
       {loading && <Loader />}
-      {!loading && !selectedUserGrants && (
+      {!loading && !selectedUserGrants && !addNewAccess && (
         <Grid>
           <Formik
             onSubmit={onSubmit}
@@ -219,44 +220,19 @@ function AccessControl() {
                     label={i18n.t('lastname').toString()}
                   />
                   {roles && (
-                    <RichTreeView
-                      sx={{
-                        mt: '10px',
-                        width: '500px'
-                      }}
-                      expandedItems={expandedRoleItems}
-                      onExpandedItemsChange={(
-                        event: React.SyntheticEvent,
-                        itemIds: string[]
-                      ) => {
-                        setExpandedRoleItems(itemIds);
-                      }}
-                      items={roles.map((e) => ({
-                        id: 'role_' + e.id,
-                        label: e.label,
-                        children: e.children
-                      }))}
+                    <CustomRichTreeView
+                      label={i18n.t('choose_role')}
+                      items={mapAllIdsInNestedArray('role_', roles)}
                       // onSelectedItemsChange={(event, itemIds) => setSelectedRole(itemIds[0])}
                     />
                   )}
                   {organizationUnits && (
-                    <RichTreeView
-                      sx={{
-                        mt: '10px',
-                        width: '500px'
-                      }}
-                      expandedItems={expandedOrganizationItems}
-                      onExpandedItemsChange={(
-                        event: React.SyntheticEvent,
-                        itemIds: string[]
-                      ) => {
-                        setExpandedOrganizationItems(itemIds);
-                      }}
-                      items={organizationUnits.map((e) => ({
-                        id: 'organization_' + e.id,
-                        label: e.label,
-                        children: e.children
-                      }))}
+                    <CustomRichTreeView
+                      label={i18n.t('organization_unit').toString()}
+                      items={mapAllIdsInNestedArray(
+                        'organization_',
+                        organizationUnits
+                      )}
                       // onSelectedItemsChange={(event, itemIds) => setSelectedRole(itemIds[0])}
                     />
                   )}
@@ -268,7 +244,7 @@ function AccessControl() {
                     setValues({});
                     resetForm();
                   }}
-                  onCreateOrEdit={() => setAddNewUser(true)}
+                  onCreateOrEdit={() => setAddNewAccess(true)}
                   createOrEditLabel={i18n.t('new_user').toString()}
                   onClose={() => navigate('/usermanagement')}
                 />
@@ -300,6 +276,20 @@ function AccessControl() {
         <Grants
           userId={selectedUserGrants}
           onClose={() => setSelectedUserGrants(undefined)}
+        />
+      )}
+      {addNewAccess && jobs && (
+        <NewAccess
+          onSubmit={async () => {
+            setAddNewAccess(false);
+            setLoading(true);
+            setList(undefined);
+            const res = await accessControlFetchList({ filter: filter });
+            setLoading(false);
+            if (res.statusCode === 200) setList(res.content);
+          }}
+          jobs={jobs}
+          onClose={() => setAddNewAccess(false)}
         />
       )}
     </>
