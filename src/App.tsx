@@ -1,24 +1,23 @@
-import { useRoutes } from 'react-router-dom';
-import router from 'src/router';
-
+import React from 'react';
 import { CssBaseline } from '@mui/material';
-import ThemeProvider from './theme/ThemeProvider';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { ThemeProvider } from './theme/ThemeProvider';
 import { SidebarProvider } from './contexts/SidebarContext';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { faIR } from 'date-fns/locale';
+import AppRoutes from './router';
 
 function App() {
-  const content = useRoutes(router);
-
   return (
-    <ThemeProvider>
-      <SidebarProvider>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <CssBaseline />
-          {content}
+      <ThemeProvider>
+        <CssBaseline />
+        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={faIR as any}>
+          <SidebarProvider>
+              <AppRoutes />
+          </SidebarProvider>
         </LocalizationProvider>
-      </SidebarProvider>
-    </ThemeProvider>
+      </ThemeProvider>
   );
 }
+
 export default App;

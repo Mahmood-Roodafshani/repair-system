@@ -26,7 +26,7 @@ const themeOptions = [
 
 function ThemeToggle() {
   const theme = useTheme();
-  const setThemeName = useContext(ThemeContext);
+  const { setThemeName } = useContext(ThemeContext);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 

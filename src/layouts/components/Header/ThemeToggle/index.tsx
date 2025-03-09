@@ -7,7 +7,7 @@ import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import { ThemeName } from 'src/theme/themes';
 
 function ThemeToggle() {
-  const setTheme = useContext(ThemeContext);
+  const { setTheme } = useContext(ThemeContext);
   const currentTheme = (localStorage.getItem('appTheme') || 'PureLightTheme') as ThemeName;
 
   const getNextTheme = () => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Theme as MuiTheme } from '@mui/material/styles';
+import { Theme as MuiTheme, ThemeOptions as MuiThemeOptions } from '@mui/material/styles';
 
 interface CustomThemeColors {
   gradients: {
@@ -106,26 +106,31 @@ interface CustomThemeExtensions {
     borderRadiusXl: string;
   };
   sidebar: {
-    background: React.CSSProperties['color'];
-    boxShadow: React.CSSProperties['color'];
+    background: string;
+    boxShadow: string;
     width: string;
     right: string;
     left: string;
-    textColor: React.CSSProperties['color'];
-    dividerBg: React.CSSProperties['color'];
-    menuItemColor: React.CSSProperties['color'];
-    menuItemColorActive: React.CSSProperties['color'];
-    menuItemBg: React.CSSProperties['color'];
-    menuItemBgActive: React.CSSProperties['color'];
-    menuItemIconColor: React.CSSProperties['color'];
-    menuItemIconColorActive: React.CSSProperties['color'];
-    menuItemHeadingColor: React.CSSProperties['color'];
+    textColor: string;
+    dividerBg: string;
+    menuItemColor: string;
+    menuItemColorActive: string;
+    menuItemBg: string;
+    menuItemBgActive: string;
+    menuItemIconColor: string;
+    menuItemIconColorActive: string;
+    menuItemHeadingColor: string;
   };
   header: {
     height: string;
-    background: React.CSSProperties['color'];
-    boxShadow: React.CSSProperties['color'];
-    textColor: React.CSSProperties['color'];
+    background: string;
+    boxShadow: string;
+    textColor: string;
+  };
+  footer: {
+    height: string;
+    background: string;
+    color: string;
   };
 }
 
@@ -135,6 +140,16 @@ declare module '@mui/material/styles' {
 }
 
 export type Theme = MuiTheme & CustomThemeExtensions;
+
+export type ThemeName = 'PureLightTheme' | 'PureDarkTheme' | 'MilitaryTheme';
+
+export interface ExtendedThemeOptions extends MuiThemeOptions {
+  colors: CustomThemeColors;
+  general: CustomThemeExtensions['general'];
+  sidebar: CustomThemeExtensions['sidebar'];
+  header: CustomThemeExtensions['header'];
+  footer: CustomThemeExtensions['footer'];
+}
 
 // Export an empty object to make this file a module
 export {}; 
