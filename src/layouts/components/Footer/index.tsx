@@ -12,8 +12,9 @@ const FooterWrapper = styled(Box)(
         display: flex;
         align-items: center;
         justify-content: center;
-        z-index: ${theme.zIndex.drawer + 1};
+        z-index: ${theme.zIndex.drawer - 1};
         padding: 0 ${theme.spacing(2)};
+        box-shadow: ${theme.shadows[2]};
 `
 );
 
