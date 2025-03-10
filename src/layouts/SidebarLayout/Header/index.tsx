@@ -51,13 +51,9 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   };
 
   const handleLogout = () => {
-    // Clear authentication state
     localStorage.removeItem('isAuthenticated');
-    // Show success message
     toast.success('خروج موفقیت‌آمیز');
-    // Close menu
     handleUserMenuClose();
-    // Navigate to login
     navigate('/login');
   };
 

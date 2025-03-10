@@ -88,9 +88,7 @@ function LoginForm() {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    // Mock authentication
     if (data.username === 'admin' && data.password === 'admin') {
-      // In a real app, you would store the token in localStorage or context
       localStorage.setItem('isAuthenticated', 'true');
       toast.success('ورود موفقیت‌آمیز');
       navigate('/dashboard');

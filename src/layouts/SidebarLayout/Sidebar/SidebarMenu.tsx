@@ -6,7 +6,7 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 
 const SIDEBAR_WIDTH = 240;
-const MENU_PADDING = 20; // Consistent padding
+const MENU_PADDING = 20;
 
 interface SidebarMenuProps {
   isCollapsed: boolean;
