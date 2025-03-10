@@ -20,8 +20,8 @@ export const MainContent = styled(Box, {
 })<{ isCollapsed: boolean }>(({ theme, isCollapsed }) => ({
   flexGrow: 1,
   position: 'absolute',
-  left: CONTENT_PADDING,
-  right: SIDEBAR_WIDTH_COLLAPSED,
+  left: 0,
+  right: 0,
   transition: theme.transitions.create('right', {
     easing: theme.transitions.easing.easeOut,
     duration: theme.transitions.duration.enteringScreen,

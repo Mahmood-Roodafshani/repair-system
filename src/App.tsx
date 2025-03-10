@@ -1,22 +1,26 @@
-import React from 'react';
 import { CssBaseline } from '@mui/material';
-import { ThemeProvider } from './theme/ThemeProvider';
-import { SidebarProvider } from './contexts/SidebarContext';
+import { ThemeProvider } from '@mui/material/styles';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { faIR } from 'date-fns/locale';
+import { HelmetProvider } from 'react-helmet-async';
+import { ToastContainer } from 'react-toastify';
+import { SidebarProvider } from './contexts/SidebarContext';
+import { ThemeProvider as CustomThemeProvider } from './theme/ThemeProvider';
 import AppRoutes from './router';
 
 function App() {
   return (
-      <ThemeProvider>
+    <HelmetProvider>
+      <CustomThemeProvider>
         <CssBaseline />
-        <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={faIR as any}>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
           <SidebarProvider>
-              <AppRoutes />
+            <AppRoutes />
+            <ToastContainer position="bottom-right" />
           </SidebarProvider>
         </LocalizationProvider>
-      </ThemeProvider>
+      </CustomThemeProvider>
+    </HelmetProvider>
   );
 }
 
