@@ -27,7 +27,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ isCollapsed }) => {
 
   const menuItems = MenuService.getAppMenuList();
 
-  const renderMenuItem = (item: any, isSubItem = false) => {
+  const renderMenuItem = (item: any, level = 0) => {
     const isExpandable = item.items && item.items.length > 0;
     const isOpen = openItems.includes(item.title);
 
@@ -40,9 +40,10 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ isCollapsed }) => {
           minHeight: 48,
           position: 'relative',
           justifyContent: 'flex-end',
-          px: MENU_PADDING / 8, // Convert to MUI spacing units
+          px: MENU_PADDING / 8,
           overflow: 'hidden',
           transition: 'none !important',
+          pr: `${MENU_PADDING + (level * 16)}px`,
           '& *': {
             transition: 'none !important'
           },
@@ -55,17 +56,33 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ isCollapsed }) => {
               color: 'primary.main',
               fontWeight: 'bold',
             },
+            '&::after': {
+              backgroundColor: 'primary.main',
+            }
           },
-          ...(isSubItem && {
-            pr: MENU_PADDING / 8,
-          }),
+          '&::after': {
+            content: '""',
+            position: 'absolute',
+            right: 0,
+            top: 0,
+            bottom: 0,
+            width: 3,
+            backgroundColor: 'transparent',
+            transition: 'background-color 0.2s',
+          },
+          '&:hover::after': {
+            backgroundColor: 'primary.light',
+          },
+          '&.active::after': {
+            backgroundColor: 'primary.main',
+          }
         }}
       >
         <ListItemIcon 
           sx={{
             minWidth: 0,
             position: 'absolute',
-            right: MENU_PADDING,
+            right: `${MENU_PADDING + (level * 16)}px`,
             justifyContent: 'center',
             transform: 'none !important',
           }}
@@ -77,7 +94,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ isCollapsed }) => {
           alignItems: 'center',
           width: SIDEBAR_WIDTH - (MENU_PADDING * 2),
           position: 'absolute',
-          right: MENU_PADDING * 2,
+          right: `${MENU_PADDING * 2 + (level * 16)}px`,
           pr: MENU_PADDING / 4,
           transform: 'none !important',
           pointerEvents: isCollapsed ? 'none' : 'auto',
@@ -109,6 +126,26 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ isCollapsed }) => {
     ) : menuItem;
   };
 
+  const renderMenuItems = (items: any[], level = 0) => {
+    return items.map((item) => {
+      const isExpandable = item.items && item.items.length > 0;
+      const isOpen = openItems.includes(item.title);
+
+      return (
+        <React.Fragment key={item.title}>
+          {renderMenuItem(item, level)}
+          {!isCollapsed && isExpandable && (
+            <Collapse in={isOpen} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                {renderMenuItems(item.items, level + 1)}
+              </List>
+            </Collapse>
+          )}
+        </React.Fragment>
+      );
+    });
+  };
+
   return (
     <List 
       component="nav" 
@@ -118,23 +155,7 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ isCollapsed }) => {
         '& *': { transition: 'none !important' }
       }}
     >
-      {menuItems.map((item) => {
-        const isExpandable = item.items && item.items.length > 0;
-        const isOpen = openItems.includes(item.title);
-
-        return (
-          <React.Fragment key={item.title}>
-            {renderMenuItem(item)}
-            {!isCollapsed && isExpandable && (
-              <Collapse in={isOpen} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
-                  {item.items.map((subItem: any) => renderMenuItem(subItem, true))}
-                </List>
-              </Collapse>
-            )}
-          </React.Fragment>
-        );
-      })}
+      {renderMenuItems(menuItems)}
     </List>
   );
 };
