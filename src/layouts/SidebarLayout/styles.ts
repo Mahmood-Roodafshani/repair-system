@@ -22,8 +22,15 @@ export const MainContent = styled(Box, {
   position: 'absolute',
   left: 0,
   right: 0,
+  padding: theme.spacing(3),
   transition: theme.transitions.create('right', {
     easing: theme.transitions.easing.easeOut,
     duration: theme.transitions.duration.enteringScreen,
   }),
+  '& .MuiContainer-root': {
+    padding: theme.spacing(2),
+  },
+  '& .MuiCard-root': {
+    marginBottom: theme.spacing(3),
+  },
 })); 

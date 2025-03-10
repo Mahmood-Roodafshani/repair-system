@@ -14,8 +14,8 @@ const LogoWrapper = styled(Link)(
         color: ${theme.palette.text.primary};
         display: flex;
         text-decoration: none;
-        width: 53px;
-        margin: 0 auto;
+        width: 100%;
+        justify-content: center;
         font-weight: ${theme.typography.fontWeightBold};
 `
 );
@@ -24,6 +24,11 @@ const LogoSignWrapper = styled(Box)(
   () => `
         width: 52px;
         height: 38px;
+        margin: 0 auto;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
 `
 );
 
@@ -35,8 +40,7 @@ const LogoSign = styled(Box)(
         border-radius: ${theme.general.borderRadiusSm};
         position: relative;
         transform: rotate(45deg);
-        top: 3px;
-        left: 17px;
+        margin: 0 auto;
 
         &:after, 
         &:before {
@@ -69,8 +73,9 @@ const LogoSignInner = styled(Box)(
         width: 16px;
         height: 16px;
         position: absolute;
-        top: 12px;
-        left: 12px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
         z-index: 5;
         border-radius: ${theme.general.borderRadiusSm};
         background: ${theme.header.background};
@@ -99,7 +104,7 @@ function Logo() {
 
   return (
     <TooltipWrapper
-      title="متن پیشنهاذی"
+      title="متن پیشنهادی"
       arrow
     >
       <LogoWrapper to="/overview">

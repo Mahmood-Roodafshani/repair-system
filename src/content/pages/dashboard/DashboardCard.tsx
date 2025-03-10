@@ -28,7 +28,15 @@ const TopCard = styled(StyledCard)(({ theme }) => ({
     : theme.colors.gradients.blue1}`,
   color: theme.palette.mode === 'dark' 
     ? theme.colors.gradients.orange1 
-    : theme.colors.gradients.blue1,
+    : '#ffffff',
+  '&:hover': {
+    backgroundColor: theme.palette.mode === 'dark'
+      ? theme.colors.gradients.black1
+      : theme.colors.gradients.blue1,
+    borderColor: theme.palette.mode === 'dark'
+      ? theme.colors.gradients.orange2
+      : theme.colors.gradients.blue2,
+  }
 }));
 
 const BottomCard = styled(StyledCard)(({ theme }) => ({
@@ -36,6 +44,11 @@ const BottomCard = styled(StyledCard)(({ theme }) => ({
     ? theme.colors.gradients.black1
     : theme.colors.gradients.blue2,
   color: theme.colors.alpha.white[100],
+  '&:hover': {
+    backgroundColor: theme.palette.mode === 'dark'
+      ? theme.colors.gradients.black2
+      : theme.colors.gradients.blue1,
+  }
 }));
 
 const NotificationCounter = styled(Typography)(({ theme }) => ({

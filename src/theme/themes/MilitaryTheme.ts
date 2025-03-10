@@ -9,14 +9,16 @@ const baseThemeOptions: ExtendedThemeOptions = {
   palette: {
     mode: 'light',
     primary: {
-      main: '#4a4a4a',
-      light: '#6b6b6b',
-      dark: '#2d2d2d',
+      main: '#009db1',
+      light: '#33b3c4',
+      dark: '#007a8a',
+      contrastText: '#ffffff',
     },
     secondary: {
       main: '#8b4513',
       light: '#a0522d',
       dark: '#654321',
+      contrastText: '#ffffff',
     },
     background: {
       default: '#f5f5f5',
@@ -62,36 +64,70 @@ const baseThemeOptions: ExtendedThemeOptions = {
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          backgroundColor: '#4a4a4a',
+          backgroundColor: '#009db1',
+        },
+      },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          '&:hover': {
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+          },
+        },
+      },
+    },
+    MuiListItemButton: {
+      styleOverrides: {
+        root: {
+          '&:hover': {
+            backgroundColor: '#007a8a',
+            '& .MuiListItemIcon-root': {
+              color: '#ffffff',
+            },
+            '& .MuiListItemText-primary': {
+              color: '#ffffff',
+            },
+          },
+          '&.active': {
+            backgroundColor: '#007a8a',
+            '& .MuiListItemIcon-root': {
+              color: '#ffffff',
+            },
+            '& .MuiListItemText-primary': {
+              color: '#ffffff',
+              fontWeight: 'bold',
+            },
+          },
         },
       },
     },
   },
   colors: {
     gradients: {
-      blue1: '#4a4a4a',
-      blue2: '#6b6b6b',
-      blue3: '#2d2d2d',
+      blue1: '#009db1',
+      blue2: '#33b3c4',
+      blue3: '#007a8a',
       blue4: '#8b4513',
       blue5: '#a0522d',
       orange1: '#8b4513',
       orange2: '#a0522d',
       orange3: '#654321',
-      purple1: '#4a4a4a',
-      purple3: '#6b6b6b',
+      purple1: '#009db1',
+      purple3: '#33b3c4',
       pink1: '#8b4513',
       pink2: '#a0522d',
-      green1: '#4a4a4a',
-      green2: '#6b6b6b',
+      green1: '#009db1',
+      green2: '#33b3c4',
       black1: '#000000',
       black2: '#121212',
     },
     shadows: {
-      success: '#4a4a4a',
+      success: '#009db1',
       error: '#8b4513',
-      primary: '#4a4a4a',
+      primary: '#009db1',
       warning: '#8b4513',
-      info: '#4a4a4a',
+      info: '#009db1',
     },
     alpha: {
       white: {
@@ -120,10 +156,10 @@ const baseThemeOptions: ExtendedThemeOptions = {
       },
     },
     primary: {
-      lighter: '#6b6b6b',
-      light: '#8b8b8b',
-      main: '#4a4a4a',
-      dark: '#2d2d2d',
+      lighter: '#33b3c4',
+      light: '#4dbccb',
+      main: '#009db1',
+      dark: '#007a8a',
     },
     secondary: {
       lighter: '#a0522d',
@@ -132,10 +168,10 @@ const baseThemeOptions: ExtendedThemeOptions = {
       dark: '#654321',
     },
     success: {
-      lighter: '#6b6b6b',
-      light: '#8b8b8b',
-      main: '#4a4a4a',
-      dark: '#2d2d2d',
+      lighter: '#33b3c4',
+      light: '#4dbccb',
+      main: '#009db1',
+      dark: '#007a8a',
     },
     warning: {
       lighter: '#a0522d',
@@ -150,49 +186,49 @@ const baseThemeOptions: ExtendedThemeOptions = {
       dark: '#654321',
     },
     info: {
-      lighter: '#6b6b6b',
-      light: '#8b8b8b',
-      main: '#4a4a4a',
-      dark: '#2d2d2d',
+      lighter: '#33b3c4',
+      light: '#4dbccb',
+      main: '#009db1',
+      dark: '#007a8a',
     },
     custom: {
-      darkBlue: '#4a4a4a',
-      lightBlue: '#6b6b6b',
+      darkBlue: '#009db1',
+      lightBlue: '#33b3c4',
       pink: '#8b4513',
     },
   },
   general: {
-    reactFrameworkColor: '#4a4a4a',
+    reactFrameworkColor: '#009db1',
     borderRadiusSm: '4px',
     borderRadius: '8px',
     borderRadiusLg: '12px',
     borderRadiusXl: '16px',
   },
   sidebar: {
-    background: '#424242',
-    boxShadow: '#212121',
+    background: '#009db1',
+    boxShadow: '#007a8a',
     width: '280px',
     right: '0',
     left: 'auto',
     textColor: '#fafafa',
-    dividerBg: '#212121',
-    menuItemColor: '#bdbdbd',
-    menuItemColorActive: '#bcaaa4',
-    menuItemBg: '#424242',
-    menuItemBgActive: '#212121',
-    menuItemIconColor: '#bdbdbd',
-    menuItemIconColorActive: '#bcaaa4',
+    dividerBg: '#007a8a',
+    menuItemColor: '#e8e8e8',
+    menuItemColorActive: '#ffffff',
+    menuItemBg: '#009db1',
+    menuItemBgActive: '#007a8a',
+    menuItemIconColor: '#e8e8e8',
+    menuItemIconColorActive: '#ffffff',
     menuItemHeadingColor: '#fafafa',
   },
   header: {
     height: '64px',
-    background: '#4a4a4a',
-    boxShadow: '#2d2d2d',
+    background: '#009db1',
+    boxShadow: '#007a8a',
     textColor: '#ffffff',
   },
   footer: {
     height: '48px',
-    background: '#4a4a4a',
+    background: '#009db1',
     color: '#ffffff',
   },
 };

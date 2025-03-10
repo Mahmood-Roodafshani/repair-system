@@ -15,7 +15,7 @@ const LoginWrapper = styled(Box)(
     min-height: 100vh;
     display: flex;
     align-items: center;
-    background: linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%);
+    background: #009db1;
     padding: 0;
     margin: 0;
     width: 100%;
@@ -31,7 +31,7 @@ const LoginCard = styled(Paper)(
     border-radius: 16px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.9);
     transition: transform 0.3s ease-in-out;
     &:hover {
       transform: translateY(-5px);
@@ -43,20 +43,33 @@ const StyledTextField = styled(TextField)(
   ({ theme }) => `
     .MuiOutlinedInput-root {
       border-radius: 12px;
-      background: rgba(255, 255, 255, 0.8);
+      background: #ffffff;
+      color: #333333;
       transition: all 0.3s ease;
       &:hover {
-        background: rgba(255, 255, 255, 0.9);
+        .MuiOutlinedInput-notchedOutline {
+          border-color: rgba(0, 0, 0, 0.2);
+        }
       }
       &.Mui-focused {
-        background: rgba(255, 255, 255, 1);
-        box-shadow: 0 0 0 2px ${theme.palette.primary.light};
+        .MuiOutlinedInput-notchedOutline {
+          border-color: #009db1;
+          border-width: 2px;
+        }
+      }
+      .MuiInputBase-input {
+        color: #333333;
+      }
+      .MuiInputAdornment-root {
+        .MuiSvgIcon-root {
+          color: #009db1;
+        }
       }
     }
     .MuiInputLabel-root {
-      color: ${theme.palette.text.secondary};
+      color: rgba(0, 0, 0, 0.6);
       &.Mui-focused {
-        color: ${theme.palette.primary.main};
+        color: #009db1;
       }
     }
 `
@@ -69,12 +82,14 @@ const LoginButton = styled(Button)(
     text-transform: none;
     font-size: 1.1rem;
     font-weight: 600;
-    background: linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.primary.dark} 90%);
-    box-shadow: 0 3px 5px 2px rgba(33, 203, 243, .3);
+    background: #009db1;
+    color: #ffffff;
+    box-shadow: 0 3px 5px 2px rgba(0, 157, 177, 0.2);
     transition: all 0.3s ease;
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 5px 8px 3px rgba(33, 203, 243, .4);
+      background: #007a8a;
+      box-shadow: 0 5px 8px 3px rgba(0, 157, 177, 0.3);
     }
 `
 );
@@ -105,15 +120,21 @@ function LoginForm() {
       
       <Container maxWidth={false} sx={{ px: 0 }}>
         <LoginCard>
-          <Box display="flex" justifyContent="center" mb={4}>
+          <Box 
+            display="flex" 
+            justifyContent="center" 
+            alignItems="center"
+            mb={4}
+            sx={{ width: '100%' }}
+          >
             <Logo />
           </Box>
           
-          <Typography variant="h4" align="center" gutterBottom sx={{ mb: 4, fontWeight: 600 }}>
+          <Typography variant="h4" align="center" gutterBottom sx={{ mb: 4, fontWeight: 600, color: '#333333' }}>
             خوش آمدید
           </Typography>
           
-          <Typography variant="body1" align="center" color="text.secondary" sx={{ mb: 4 }}>
+          <Typography variant="body1" align="center" sx={{ mb: 4, color: 'rgba(0, 0, 0, 0.6)' }}>
             لطفاً برای ورود به سیستم، اطلاعات خود را وارد کنید
           </Typography>
 
@@ -135,7 +156,7 @@ function LoginForm() {
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <PhoneIcon color="primary" />
+                      <PhoneIcon />
                     </InputAdornment>
                   ),
                 }}
@@ -159,7 +180,7 @@ function LoginForm() {
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <LockIcon color="primary" />
+                      <LockIcon />
                     </InputAdornment>
                   ),
                   endAdornment: (
