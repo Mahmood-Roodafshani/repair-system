@@ -1,6 +1,5 @@
 import { Suspense, lazy } from 'react';
-import { RouteObject } from 'react-router';
-import { Navigate, useRoutes } from 'react-router-dom';
+import { RouteObject, Navigate, useRoutes } from 'react-router-dom';
 
 import SidebarLayout from 'src/layouts/SidebarLayout';
 import SuspenseLoader from 'src/components/SuspenseLoader';
@@ -77,18 +76,33 @@ const Status500 = Loader(lazy(() => import('src/content/pages/Status/Status500')
 const StatusComingSoon = Loader(lazy(() => import('src/content/pages/Status/ComingSoon')));
 const StatusMaintenance = Loader(lazy(() => import('src/content/pages/Status/Maintenance')));
 
+// Protected Route Component
+const ProtectedRoute = ({ children }) => {
+  const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  return children;
+};
+
 const routes: RouteObject[] = [
   {
+    path: '/login',
+    element: <LoginPage />
+  },
+  {
     path: '/',
-    element: <SidebarLayout />,
+    element: (
+      <ProtectedRoute>
+        <SidebarLayout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         path: '',
         element: <Navigate to="/dashboard" replace />
-      },
-      {
-        path: 'login',
-        element: <LoginPage />
       },
       {
         path: 'dashboard',

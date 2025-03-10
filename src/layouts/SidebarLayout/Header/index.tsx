@@ -15,9 +15,13 @@ import {
   Brightness7 as LightModeIcon,
   MilitaryTech as MilitaryIcon,
   AccountCircle as AccountCircleIcon,
+  Logout as LogoutIcon,
+  Person as PersonIcon,
 } from '@mui/icons-material';
 import { useThemeContext } from '../../../theme/ThemeProvider';
 import { ThemeName } from '../../../theme/themes';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -25,6 +29,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const { theme: currentTheme, setTheme } = useThemeContext();
   const [themeAnchorEl, setThemeAnchorEl] = useState<null | HTMLElement>(null);
   const [userAnchorEl, setUserAnchorEl] = useState<null | HTMLElement>(null);
@@ -43,6 +48,17 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
 
   const handleUserMenuClose = () => {
     setUserAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    // Clear authentication state
+    localStorage.removeItem('isAuthenticated');
+    // Show success message
+    toast.success('خروج موفقیت‌آمیز');
+    // Close menu
+    handleUserMenuClose();
+    // Navigate to login
+    navigate('/login');
   };
 
   const handleThemeChange = (newTheme: ThemeName) => {
@@ -103,16 +119,22 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
             onClose={handleThemeMenuClose}
           >
             <MenuItem onClick={() => handleThemeChange('PureLightTheme')}>
-              <LightModeIcon sx={{ mr: 1 }} />
-              تم روشن
+              <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                <LightModeIcon sx={{ ml: 1 }} />
+                <Typography>تم روشن</Typography>
+              </Box>
             </MenuItem>
             <MenuItem onClick={() => handleThemeChange('PureDarkTheme')}>
-              <DarkModeIcon sx={{ mr: 1 }} />
-              تم تاریک
+              <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                <DarkModeIcon sx={{ ml: 1 }} />
+                <Typography>تم تاریک</Typography>
+              </Box>
             </MenuItem>
             <MenuItem onClick={() => handleThemeChange('MilitaryTheme')}>
-              <MilitaryIcon sx={{ mr: 1 }} />
-              تم نظامی
+              <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                <MilitaryIcon sx={{ ml: 1 }} />
+                <Typography>تم نظامی</Typography>
+              </Box>
             </MenuItem>
           </Menu>
           <IconButton
@@ -140,8 +162,18 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
             open={Boolean(userAnchorEl)}
             onClose={handleUserMenuClose}
           >
-            <MenuItem onClick={handleUserMenuClose}>پروفایل</MenuItem>
-            <MenuItem onClick={handleUserMenuClose}>خروج</MenuItem>
+            <MenuItem onClick={handleUserMenuClose}>
+              <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                <PersonIcon sx={{ ml: 1 }} />
+                <Typography>پروفایل</Typography>
+              </Box>
+            </MenuItem>
+            <MenuItem onClick={handleLogout}>
+              <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                <LogoutIcon sx={{ ml: 1 }} />
+                <Typography>خروج</Typography>
+              </Box>
+            </MenuItem>
           </Menu>
         </Box>
       </Toolbar>

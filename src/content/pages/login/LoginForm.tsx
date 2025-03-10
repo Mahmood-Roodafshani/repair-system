@@ -2,14 +2,13 @@ import { Box, Container, TextField, Grid, Button, Typography, Paper, InputAdornm
 import { Helmet } from 'react-helmet-async';
 import { styled } from '@mui/material/styles';
 import Logo from 'src/components/LogoSign';
-import { signIn } from 'src/service';
 import { useState } from 'react';
-import { SignInRequest } from 'src/types';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import PhoneIcon from '@mui/icons-material/Phone';
 import LockIcon from '@mui/icons-material/Lock';
+import { toast } from 'react-toastify';
 
 const LoginWrapper = styled(Box)(
   ({ theme }) => `
@@ -81,12 +80,24 @@ const LoginButton = styled(Button)(
 );
 
 function LoginForm() {
-  const [data, setData] = useState<SignInRequest>({
-    phone: undefined,
-    password: undefined
+  const [data, setData] = useState({
+    username: '',
+    password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    // Mock authentication
+    if (data.username === 'admin' && data.password === 'admin') {
+      // In a real app, you would store the token in localStorage or context
+      localStorage.setItem('isAuthenticated', 'true');
+      toast.success('ورود موفقیت‌آمیز');
+      navigate('/dashboard');
+    } else {
+      toast.error('نام کاربری یا رمز عبور اشتباه است');
+    }
+  };
 
   return (
     <LoginWrapper>
@@ -115,12 +126,12 @@ function LoginForm() {
                 required
                 dir="rtl"
                 label="نام کاربری"
-                placeholder="09xxxxxxxxx"
-                value={data.phone}
+                placeholder="نام کاربری خود را وارد کنید"
+                value={data.username}
                 onChange={(e) =>
                   setData((prevValues) => ({
                     ...prevValues,
-                    phone: e.target.value
+                    username: e.target.value
                   }))
                 }
                 InputProps={{
@@ -170,10 +181,7 @@ function LoginForm() {
             <Grid item xs={12}>
               <LoginButton
                 fullWidth
-                onClick={async () => {
-                  const res = await signIn({ data: data });
-                  if (res.statusCode === 200) navigate('/dashboards/crypto');
-                }}
+                onClick={handleLogin}
               >
                 ورود به سیستم
               </LoginButton>
