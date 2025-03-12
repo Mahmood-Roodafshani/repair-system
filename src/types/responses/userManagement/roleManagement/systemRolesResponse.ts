@@ -1,6 +1,6 @@
 export type SystemRolesResponse = {
   label: string;
-  id: string | number;
+  id: string;
   status?: boolean;
   children?: SystemRolesResponse[];
 };

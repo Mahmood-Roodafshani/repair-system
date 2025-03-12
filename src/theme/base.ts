@@ -1,7 +1,7 @@
 import React from 'react';
-
-import { Theme, createTheme } from '@mui/material';
+import { Theme, createTheme, ThemeOptions } from '@mui/material';
 import { themeMap, ThemeName } from './themes';
+import { ExtendedThemeOptions } from './types';
 
 /**
  * Theme creator function that returns the requested theme
@@ -9,7 +9,7 @@ import { themeMap, ThemeName } from './themes';
  * @returns Theme object
  */
 export function themeCreator(themeName: ThemeName): Theme {
-  return createTheme(themeMap[themeName]);
+  return themeMap[themeName];
 }
 
 declare module '@mui/material/styles' {

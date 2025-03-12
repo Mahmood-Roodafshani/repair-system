@@ -1,10 +1,7 @@
 import { Suspense, lazy } from 'react';
-import { RouteObject } from 'react-router';
-import { Navigate } from 'react-router-dom';
+import { RouteObject, Navigate, useRoutes } from 'react-router-dom';
 
-import BaseLayout from 'src/layouts/BaseLayout';
 import SidebarLayout from 'src/layouts/SidebarLayout';
-
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import {
   AccessControl,
@@ -73,73 +70,40 @@ const Avatars = Loader(
 const Cards = Loader(lazy(() => import('src/content/pages/Components/Cards')));
 const Forms = Loader(lazy(() => import('src/content/pages/Components/Forms')));
 
-// Status
+// Status pages
+const Status404 = Loader(lazy(() => import('src/content/pages/Status/Status404')));
+const Status500 = Loader(lazy(() => import('src/content/pages/Status/Status500')));
+const StatusComingSoon = Loader(lazy(() => import('src/content/pages/Status/ComingSoon')));
+const StatusMaintenance = Loader(lazy(() => import('src/content/pages/Status/Maintenance')));
 
-const Status404 = Loader(
-  lazy(() => import('src/content/pages/Status/Status404'))
-);
-const Status500 = Loader(
-  lazy(() => import('src/content/pages/Status/Status500'))
-);
-const StatusComingSoon = Loader(
-  lazy(() => import('src/content/pages/Status/ComingSoon'))
-);
-const StatusMaintenance = Loader(
-  lazy(() => import('src/content/pages/Status/Maintenance'))
-);
+// Protected Route Component
+const ProtectedRoute = ({ children }) => {
+  const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  return children;
+};
 
 const routes: RouteObject[] = [
   {
-    path: '',
-    element: <BaseLayout />,
-    children: [
-      {
-        path: '/',
-        element: <Navigate to="dashboard" replace />
-      },
-      {
-        path: '/login',
-        element: <LoginPage />
-      },
-      {
-        path: 'overview',
-        element: <Navigate to="/" replace />
-      },
-      {
-        path: 'status',
-        children: [
-          {
-            path: '',
-            element: <Navigate to="404" replace />
-          },
-          {
-            path: '404',
-            element: <Status404 />
-          },
-          {
-            path: '500',
-            element: <Status500 />
-          },
-          {
-            path: 'maintenance',
-            element: <StatusMaintenance />
-          },
-          {
-            path: 'coming-soon',
-            element: <StatusComingSoon />
-          }
-        ]
-      },
-      {
-        path: '*',
-        element: <Status404 />
-      }
-    ]
+    path: '/login',
+    element: <LoginPage />
   },
   {
     path: '/',
-    element: <SidebarLayout />,
+    element: (
+      <ProtectedRoute>
+        <SidebarLayout />
+      </ProtectedRoute>
+    ),
     children: [
+      {
+        path: '',
+        element: <Navigate to="/dashboard" replace />
+      },
       {
         path: 'dashboard',
         element: <Dashboard />
@@ -313,9 +277,36 @@ const routes: RouteObject[] = [
             element: <Signiture />
           }
         ]
+      },
+      {
+        path: 'status',
+        children: [
+          {
+            path: '404',
+            element: <Status404 />
+          },
+          {
+            path: '500',
+            element: <Status500 />
+          },
+          {
+            path: 'maintenance',
+            element: <StatusMaintenance />
+          },
+          {
+            path: 'coming-soon',
+            element: <StatusComingSoon />
+          }
+        ]
+      },
+      {
+        path: '*',
+        element: <Status404 />
       }
     ]
   }
 ];
 
-export default routes;
+export default function AppRoutes() {
+  return useRoutes(routes);
+}

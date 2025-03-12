@@ -8,17 +8,21 @@ import {
   Typography,
   useTheme
 } from '@mui/material';
-import { RichTreeView } from '@mui/x-tree-view';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import persian from 'react-date-object/calendars/persian';
 import persian_fa from 'react-date-object/locales/persian_fa';
 import { Helmet } from 'react-helmet-async';
 import DatePicker from 'react-multi-date-picker';
 import { useNavigate } from 'react-router';
-import { Loader, MyCustomTable, OpGrid } from 'src/components';
+import {
+  CustomRichTreeView,
+  Loader,
+  MyCustomTable,
+  OpGrid
+} from 'src/components';
 import { i18n } from 'src/i18n';
 import { grantsMock, jobsMock } from 'src/mock';
-import { extractIds } from 'src/utils/helper';
+import { mapAllIdsInNestedArray } from 'src/utils/helper';
 import { TakenGrants } from './takenGrants';
 
 function ChooseReplacement() {
@@ -38,11 +42,8 @@ function ChooseReplacement() {
   const [takenGrants, setTakenGrants] = useState<TakenGrants[]>([]);
   const [replacementJobs, setReplacementJobs] = useState<any[]>(jobsMock);
   const [replacementGrants, setReplacementGrants] = useState<any[]>(grantsMock);
-  const [expandedIds, setExpandedIds] = useState<string[]>([]);
 
-  useEffect(() => {
-    setExpandedIds(extractIds(replacementJobs));
-  }, [replacementJobs]);
+  // don't use mock and use service instead
 
   const [rolesColumns, jobsColumns] = useMemo(() => {
     return [
@@ -144,19 +145,12 @@ function ChooseReplacement() {
                   padding: '10px'
                 }}
               >
-                <RichTreeView
+                <CustomRichTreeView
+                  label=""
                   sx={{
-                    mt: '10px',
                     width: '500px'
                   }}
-                  expandedItems={expandedIds}
-                  onExpandedItemsChange={(
-                    event: React.SyntheticEvent,
-                    itemIds: string[]
-                  ) => {
-                    setExpandedIds(itemIds);
-                  }}
-                  items={replacementJobs}
+                  items={mapAllIdsInNestedArray('role_', replacementJobs)}
                   // onSelectedItemsChange={(event, itemIds) => setSelectedRole(itemIds[0])}
                 />
               </Grid>

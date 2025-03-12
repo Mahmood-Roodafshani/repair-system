@@ -1,4 +1,4 @@
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Edit, Visibility, VisibilityOff } from '@mui/icons-material';
 import {
   Checkbox,
   FormControlLabel,
@@ -223,12 +223,15 @@ function AccessControl() {
                     <CustomRichTreeView
                       label={i18n.t('choose_role')}
                       items={mapAllIdsInNestedArray('role_', roles)}
-                      // onSelectedItemsChange={(event, itemIds) => setSelectedRole(itemIds[0])}
+                      sx={{ width: '500px' }}
                     />
                   )}
                   {organizationUnits && (
                     <CustomRichTreeView
-                      label={i18n.t('organization_unit').toString()}
+                      sx={{
+                        width: '500px'
+                      }}
+                      label={i18n.t('organization_unit')}
                       items={mapAllIdsInNestedArray(
                         'organization_',
                         organizationUnits
@@ -238,7 +241,7 @@ function AccessControl() {
                   )}
                 </Grid>
                 <OpGrid
-                  sx={{ marginTop: '10px' }}
+                  sx={{ marginTop: '10px', marginBottom: '20px' }}
                   onSearch={submitForm}
                   onClear={() => {
                     setValues({});
@@ -260,11 +263,9 @@ function AccessControl() {
               }: {
                 row: { original: { id: string | number } };
               }) => (
-                <Button
-                  onClick={() => setSelectedUserGrants(row.original.id)}
-                  showText={false}
-                  buttonType={ButtonType.EDIT}
-                />
+                <IconButton color="secondary" onClick={() => {}}>
+                  <Edit />
+                </IconButton>
               )}
               data={list}
               columns={columns}

@@ -56,6 +56,8 @@ i18next
           firstname: 'نام',
           lastname: 'نام خانوادگی',
           grants: 'مجوزهای عطا شده',
+          choose_job: 'انتخاب شغل',
+          choose_role: 'انتخاب نقش',
           job: 'شغل',
           job_title: 'عنوان شغل',
           role_title: 'عنوان نقش',
@@ -75,8 +77,6 @@ i18next
           hefazat_access: 'یگان دسترسی حفاظت',
           faraja_access: 'یگان دسترسی فراجا',
           jobs_access: 'دسترسی مشاغل سازمانی',
-          choose_role: 'انتخاب نقش',
-          choose_job: 'انتخاب شغل',
           signiture_sample_file: 'بارگذاری عکس امضا',
           digital_signiture: 'امضای دیجیتال',
           system_title: 'عنوان سامانه',
@@ -167,6 +167,7 @@ i18next
           family_member_created: 'اطلاعات عائله مدنظر با موفقیت ثبت گردید',
           family_member_updated: 'اطلاعات عائله مدنظر با موفقیت ویرایش گردید',
           new_access_created: 'دسترسی مدنظر با موفقیت ایجاد گردید',
+          role_created: 'نقش مورد نظر با موفقیت افزوده شد',
           // ERRORS
           please_fill_req_fields: 'لطفا تمام موارد لازم را پر نمایید',
           firstname_is_req: 'لطفا فیلد نام را وارد نمایید',
@@ -227,7 +228,9 @@ i18next
           job_courses_is_req:
             'لطفا دوره‌های تخصصی مورد نیاز شغل را تعیین نمایید',
           responsibility_description_is_req:
-            'فیلد شرح وظایف شغل باید حداکثر 1000 کاراکتر باشد'
+            'فیلد شرح وظایف شغل باید حداکثر 1000 کاراکتر باشد',
+          role_title_is_req: 'لطفا عنوان نقش را وارد نمایید',
+          role_is_req: 'لطفا نقش را وارد نمایید'
         }
       }
     }

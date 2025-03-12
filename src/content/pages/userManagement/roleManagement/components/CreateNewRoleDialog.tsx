@@ -7,13 +7,14 @@ import {
   Grid,
   TextField
 } from '@mui/material';
-import { SimpleTreeView, TreeItem } from '@mui/x-tree-view';
+import { SimpleTreeView } from '@mui/x-tree-view';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { Loader } from 'src/components';
+import { CustomRichTreeView } from 'src/components';
 import { i18n } from 'src/i18n';
 import { getSystemRoles, storeNewRole } from 'src/service';
-import { SystemRolesResponse } from 'src/types';
+import { RichViewType } from 'src/types';
+import { mapAllIdsInNestedArray } from 'src/utils/helper';
 
 function CreateNewRoleDialog({
   systemId,
@@ -30,8 +31,7 @@ function CreateNewRoleDialog({
 }) {
   const [loading, setLoading] = useState(false);
   const [roleName, setRoleName] = useState<string>();
-  const [expandedItems, setExpandedItems] = useState<string[]>([]);
-  const [roles, setRoles] = useState<SystemRolesResponse[]>();
+  const [roles, setRoles] = useState<RichViewType[]>();
   const [fetchingRoles, setFetchingRoles] = useState(false);
   const [selectedRole, setSelectedRole] = useState<string>();
 
@@ -42,22 +42,10 @@ function CreateNewRoleDialog({
       .then((res) => {
         if (res[0].statusCode === 200) {
           setRoles(res[0].content);
-
-          setExpandedItems([
-            'system_' + systemId.toString(),
-            ...res[0].content.map((e) => e.id.toString())
-          ]);
         }
       })
       .finally(() => setFetchingRoles(false));
   }, [systemId]);
-
-  const handleExpandedItemsChange = (
-    event: React.SyntheticEvent,
-    itemIds: string[]
-  ) => {
-    setExpandedItems(itemIds);
-  };
 
   return (
     <Dialog sx={{ margin: '0 auto' }} onClose={onClose} open={open}>
@@ -76,29 +64,13 @@ function CreateNewRoleDialog({
         />
       )}
       {!fetchingRoles && systemId && (
-        <SimpleTreeView
+        <CustomRichTreeView
           sx={{
             mt: '10px'
           }}
-          expandedItems={expandedItems}
-          onExpandedItemsChange={handleExpandedItemsChange}
-          onSelectedItemsChange={(event, itemIds) =>
-            setSelectedRole(itemIds[0])
-          }
-        >
-          <TreeItem itemId={'system_' + systemId.toString()} label={systemName}>
-            {roles &&
-              roles.map((role, index) => {
-                return (
-                  <TreeItem
-                    itemId={role.id.toString()}
-                    label={role.label}
-                    key={index}
-                  />
-                );
-              })}
-          </TreeItem>
-        </SimpleTreeView>
+          onSelectedItemsChange={(_, itemIds) => setSelectedRole(itemIds[0])}
+          items={mapAllIdsInNestedArray('system_', roles)}
+        />
       )}
       <Grid display={'flex'} flexDirection={'row'} gap={'10px'} mt={'10px'}>
         <Button variant="outlined" color="error" onClick={onClose}>
@@ -110,11 +82,11 @@ function CreateNewRoleDialog({
           color="success"
           onClick={async () => {
             if (!roleName || roleName?.length < 2) {
-              toast.error('لطفا عنوان نقش را وارد نمایید');
+              toast.error(i18n.t('role_title_is_req').toString());
               return;
             }
             if (selectedRole === undefined) {
-              toast.error('لطفا نقش را وارد نمایید');
+              toast.error(i18n.t('role_is_req').toString());
               return;
             }
             setLoading(true);
@@ -125,7 +97,7 @@ function CreateNewRoleDialog({
             })
               .then((res) => {
                 if (res.statusCode === 200) {
-                  toast.success('نقش مورد نظر با موفقیت افزوده شد');
+                  toast.success(i18n.t('role_created').toString());
                   onAdd();
                 }
               })

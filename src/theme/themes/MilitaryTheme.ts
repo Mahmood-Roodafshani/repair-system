@@ -1,191 +1,236 @@
-import { ThemeOptions } from '@mui/material';
+import { createTheme, responsiveFontSizes } from '@mui/material/styles';
+import type {} from '@mui/x-date-pickers/themeAugmentation';
+import { ExtendedThemeOptions } from '../types';
+import { grey, brown } from '@mui/material/colors';
+import { ThemeOptions } from '@mui/material/styles';
 
-export const MilitaryTheme: ThemeOptions = {
+const baseThemeOptions: ExtendedThemeOptions = {
+  direction: 'rtl',
   palette: {
     mode: 'light',
     primary: {
-      main: '#02402B',
-      light: '#668367',
-      dark: '#002419',
-      contrastText: '#FAEA0E',
+      main: '#009db1',
+      light: '#33b3c4',
+      dark: '#007a8a',
+      contrastText: '#ffffff',
     },
     secondary: {
-      main: '#668367',
-      light: '#86A387',
-      dark: '#445744',
-      contrastText: '#FFFFFF',
-    },
-    success: {
-      main: '#84AD2D',
-      light: '#A5D438',
-      dark: '#5C7A1F',
-      contrastText: '#FFFFFF',
-    },
-    warning: {
-      main: '#FAEA0E',
-      light: '#FFF176',
-      dark: '#C7BC0C',
-      contrastText: '#000000',
-    },
-    error: {
-      main: '#FF1943',
-      light: '#FF4D6E',
-      dark: '#CC1436',
-      contrastText: '#FFFFFF',
-    },
-    info: {
-      main: '#33C2FF',
-      light: '#5CD1FF',
-      dark: '#2699CC',
-      contrastText: '#FFFFFF',
+      main: '#8b4513',
+      light: '#a0522d',
+      dark: '#654321',
+      contrastText: '#ffffff',
     },
     background: {
-      default: '#02402B',
-      paper: '#033523'
+      default: '#f5f5f5',
+      paper: '#ffffff',
+    },
+  },
+  typography: {
+    fontFamily: 'IRANSans, Roboto, Arial',
+    h1: {
+      fontSize: '2.5rem',
+      fontWeight: 700,
+    },
+    h2: {
+      fontSize: '2rem',
+      fontWeight: 700,
+    },
+    h3: {
+      fontSize: '1.75rem',
+      fontWeight: 700,
+    },
+    h4: {
+      fontSize: '1.5rem',
+      fontWeight: 700,
+    },
+    h5: {
+      fontSize: '1.25rem',
+      fontWeight: 700,
+    },
+    h6: {
+      fontSize: '1rem',
+      fontWeight: 700,
     },
   },
   components: {
-    MuiAppBar: {
+    MuiButton: {
       styleOverrides: {
         root: {
-          backgroundColor: '#02402B',
-          color: '#FAEA0E',
-        }
-      }
-    }
-  },
-  typography: {
-    fontFamily: '"Inter", "Helvetica", "Arial", sans-serif',
-  },
-  shape: {
-    borderRadius: 8
+          textTransform: 'none',
+          borderRadius: 4,
+        },
+      },
+    },
+    MuiDrawer: {
+      styleOverrides: {
+        paper: {
+          backgroundColor: '#009db1',
+        },
+      },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          '&:hover': {
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+          },
+        },
+      },
+    },
+    MuiListItemButton: {
+      styleOverrides: {
+        root: {
+          '&:hover': {
+            backgroundColor: '#007a8a',
+            '& .MuiListItemIcon-root': {
+              color: '#ffffff',
+            },
+            '& .MuiListItemText-primary': {
+              color: '#ffffff',
+            },
+          },
+          '&.active': {
+            backgroundColor: '#007a8a',
+            '& .MuiListItemIcon-root': {
+              color: '#ffffff',
+            },
+            '& .MuiListItemText-primary': {
+              color: '#ffffff',
+              fontWeight: 'bold',
+            },
+          },
+        },
+      },
+    },
   },
   colors: {
     gradients: {
-      blue1: '#02402B',
-      blue2: '#668367',
-      blue3: '#84AD2D',
-      blue4: '#02402B',
-      blue5: '#033523',
-      orange1: '#FAEA0E',
-      orange2: '#FFF176',
-      orange3: '#C7BC0C',
-      purple1: '#02402B',
-      purple3: '#033523',
-      pink1: '#FF1943',
-      pink2: '#CC1436',
-      green1: '#02402B',
-      green2: '#033523',
-      black1: '#002419',
-      black2: '#001812',
+      blue1: '#009db1',
+      blue2: '#33b3c4',
+      blue3: '#007a8a',
+      blue4: '#8b4513',
+      blue5: '#a0522d',
+      orange1: '#8b4513',
+      orange2: '#a0522d',
+      orange3: '#654321',
+      purple1: '#009db1',
+      purple3: '#33b3c4',
+      pink1: '#8b4513',
+      pink2: '#a0522d',
+      green1: '#009db1',
+      green2: '#33b3c4',
+      black1: '#000000',
+      black2: '#121212',
     },
     shadows: {
-      success: '0 0 20px rgba(132, 173, 45, 0.2)',
-      error: '0 0 20px rgba(255, 25, 67, 0.2)',
-      primary: '0 0 20px rgba(2, 64, 43, 0.2)',
-      warning: '0 0 20px rgba(250, 234, 14, 0.2)',
-      info: '0 0 20px rgba(51, 194, 255, 0.2)',
+      success: '#009db1',
+      error: '#8b4513',
+      primary: '#009db1',
+      warning: '#8b4513',
+      info: '#009db1',
     },
     alpha: {
       white: {
-        5: 'rgba(255, 255, 255, 0.05)',
-        10: 'rgba(255, 255, 255, 0.1)',
-        30: 'rgba(255, 255, 255, 0.3)',
-        50: 'rgba(255, 255, 255, 0.5)',
-        70: 'rgba(255, 255, 255, 0.7)',
-        100: 'rgba(255, 255, 255, 1)',
+        5: '#f5f5f5',
+        10: '#e8e8e8',
+        30: '#d1d1d1',
+        50: '#b8b8b8',
+        70: '#9e9e9e',
+        100: '#ffffff',
       },
       trueWhite: {
-        5: 'rgba(255, 255, 255, 0.05)',
-        10: 'rgba(255, 255, 255, 0.1)',
-        30: 'rgba(255, 255, 255, 0.3)',
-        50: 'rgba(255, 255, 255, 0.5)',
-        70: 'rgba(255, 255, 255, 0.7)',
-        100: 'rgba(255, 255, 255, 1)',
+        5: '#f5f5f5',
+        10: '#e8e8e8',
+        30: '#d1d1d1',
+        50: '#b8b8b8',
+        70: '#9e9e9e',
+        100: '#ffffff',
       },
       black: {
-        5: 'rgba(0, 0, 0, 0.05)',
-        10: 'rgba(0, 0, 0, 0.1)',
-        30: 'rgba(0, 0, 0, 0.3)',
-        50: 'rgba(0, 0, 0, 0.5)',
-        70: 'rgba(0, 0, 0, 0.7)',
-        100: 'rgba(0, 0, 0, 1)',
+        5: '#f5f5f5',
+        10: '#e8e8e8',
+        30: '#d1d1d1',
+        50: '#b8b8b8',
+        70: '#9e9e9e',
+        100: '#000000',
       },
     },
     primary: {
-      lighter: '#668367',
-      light: '#02402B',
-      main: '#002419',
-      dark: '#001812',
+      lighter: '#33b3c4',
+      light: '#4dbccb',
+      main: '#009db1',
+      dark: '#007a8a',
     },
     secondary: {
-      lighter: '#86A387',
-      light: '#668367',
-      main: '#445744',
-      dark: '#2A362A',
+      lighter: '#a0522d',
+      light: '#b87333',
+      main: '#8b4513',
+      dark: '#654321',
     },
     success: {
-      lighter: '#A5D438',
-      light: '#84AD2D',
-      main: '#5C7A1F',
-      dark: '#3C501A',
+      lighter: '#33b3c4',
+      light: '#4dbccb',
+      main: '#009db1',
+      dark: '#007a8a',
     },
     warning: {
-      lighter: '#FFF176',
-      light: '#FAEA0E',
-      main: '#C7BC0C',
-      dark: '#8C8408',
+      lighter: '#a0522d',
+      light: '#b87333',
+      main: '#8b4513',
+      dark: '#654321',
     },
     error: {
-      lighter: '#FF4D6E',
-      light: '#FF1943',
-      main: '#CC1436',
-      dark: '#990F29',
+      lighter: '#a0522d',
+      light: '#b87333',
+      main: '#8b4513',
+      dark: '#654321',
     },
     info: {
-      lighter: '#5CD1FF',
-      light: '#33C2FF',
-      main: '#2699CC',
-      dark: '#1B7399',
+      lighter: '#33b3c4',
+      light: '#4dbccb',
+      main: '#009db1',
+      dark: '#007a8a',
     },
     custom: {
-      darkBlue: '#02402B',
-      lightBlue: '#668367',
-      pink: '#FF1943',
+      darkBlue: '#009db1',
+      lightBlue: '#33b3c4',
+      pink: '#8b4513',
     },
   },
   general: {
-    reactFrameworkColor: '#00D8FF',
-    borderRadiusSm: '6px',
+    reactFrameworkColor: '#009db1',
+    borderRadiusSm: '4px',
     borderRadius: '8px',
     borderRadiusLg: '12px',
     borderRadiusXl: '16px',
   },
   sidebar: {
-    background: '#02402B',
-    boxShadow: '0 0 20px rgba(0, 0, 0, 0.3)',
+    background: '#009db1',
+    boxShadow: '#007a8a',
     width: '280px',
     right: '0',
-    left: '0',
-    textColor: '#FAEA0E',
-    dividerBg: '#033523',
-    menuItemColor: '#668367',
-    menuItemColorActive: '#FAEA0E',
-    menuItemBg: '#02402B',
-    menuItemBgActive: '#033523',
-    menuItemIconColor: '#668367',
-    menuItemIconColorActive: '#FAEA0E',
-    menuItemHeadingColor: '#FAEA0E',
+    left: 'auto',
+    textColor: '#fafafa',
+    dividerBg: '#007a8a',
+    menuItemColor: '#e8e8e8',
+    menuItemColorActive: '#ffffff',
+    menuItemBg: '#009db1',
+    menuItemBgActive: '#007a8a',
+    menuItemIconColor: '#e8e8e8',
+    menuItemIconColorActive: '#ffffff',
+    menuItemHeadingColor: '#fafafa',
   },
   header: {
     height: '64px',
-    background: '#02402B',
-    boxShadow: '0 0 20px rgba(0, 0, 0, 0.3)',
-    textColor: '#FAEA0E',
+    background: '#009db1',
+    boxShadow: '#007a8a',
+    textColor: '#ffffff',
   },
   footer: {
-    height: '60px',
-    background: '#02402B',
-    color: '#ffffff'
+    height: '48px',
+    background: '#009db1',
+    color: '#ffffff',
   },
-}; 
+};
+
+export const MilitaryTheme = createTheme(baseThemeOptions as ThemeOptions); 

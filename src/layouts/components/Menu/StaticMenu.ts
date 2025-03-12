@@ -7,6 +7,14 @@ import CodeIcon from '@mui/icons-material/Code';
 import InfoIcon from '@mui/icons-material/Info';
 import BuildIcon from '@mui/icons-material/Build';
 import WorkIcon from '@mui/icons-material/Work';
+import ListIcon from '@mui/icons-material/List';
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
+import HomeIcon from '@mui/icons-material/Home';
+import SecurityIcon from '@mui/icons-material/Security';
+import GroupIcon from '@mui/icons-material/Group';
+import AnnouncementIcon from '@mui/icons-material/Announcement';
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
+import DrawIcon from '@mui/icons-material/Draw';
 
 export class StaticMenu {
     static appMenuItems = [
@@ -21,67 +29,162 @@ export class StaticMenu {
             items: [
                 {
                     title: "کنترل دسترسی",
-                    link: "/usermanagement/accessControl"
+                    link: "/usermanagement/accessControl",
+                    icon: SecurityIcon
                 },
                 {
                     title: "مدیریت نقش",
-                    link: "/usermanagement/roleManagement"
+                    link: "/usermanagement/roleManagement",
+                    icon: GroupIcon
                 },
                 {
                     title: "ایجاد گروه دسترسی",
-                    link: "/usermanagement/create-group-access"
+                    link: "/usermanagement/create-group-access",
+                    icon: GroupIcon
+                },
+                {
+                    title: "اطلاع رسانی امنیتی",
+                    link: "/usermanagement/security-announcement",
+                    icon: AnnouncementIcon
+                },
+                {
+                    title: "اطلاع رسانی عمومی",
+                    link: "/usermanagement/public-announcement",
+                    icon: AnnouncementIcon
+                },
+                {
+                    title: "انتخاب جایگزین",
+                    link: "/usermanagement/choose-replacement",
+                    icon: SwapHorizIcon
+                },
+                {
+                    title: "نمونه امضا",
+                    link: "/usermanagement/signiture",
+                    icon: DrawIcon
                 }
             ]
         },
         {
-            title: "پنل تعمیرات",
+            title: "سامانه تعمیرات",
             icon: BuildIcon,
             items: [
                 {
-                    title: "تعمیرات",
-                    link: "/repair-panel/repair"
+                    title: "کارتابل",
+                    link: "/repair-panel/cartable",
+                    icon: BuildIcon
                 },
                 {
-                    title: "مدیریت دسترسی",
-                    link: "/repair-panel/access"
+                    title: "درخواست تعمیر",
+                    link: "/repair-panel/repair-request",
+                    icon: BuildIcon
+                },
+                {
+                    title: "گزارش محتوا",
+                    link: "/repair-panel/content-report",
+                    icon: BuildIcon
+                },
+                {
+                    title: "گزارش عملکرد یگانی",
+                    link: "/repair-panel/group-performance-report",
+                    icon: BuildIcon
+                },
+                {
+                    title: "گزارش عملکرد فردی",
+                    link: "/repair-panel/individual-performance-report",
+                    icon: BuildIcon
+                },
+                {
+                    title: "رابط فنی",
+                    link: "/repair-panel/technical-interface",
+                    icon: BuildIcon
+                },
+                {
+                    title: "کمیسیون",
+                    link: "/repair-panel/commission",
+                    icon: BuildIcon
+                },
+                {
+                    title: "اقلام امانی",
+                    link: "/repair-panel/borrowed-items",
+                    icon: BuildIcon
+                },
+                {
+                    title: "لیست اقلام",
+                    link: "/repair-panel/items-list",
+                    icon: BuildIcon
+                },
+                {
+                    title: "شرکت ها",
+                    link: "/repair-panel/companies",
+                    icon: BuildIcon
+                },
+                {
+                    title: "اتصال کد اموال به گروه",
+                    link: "/repair-panel/group-property-code",
+                    icon: BuildIcon
+                },
+                {
+                    title: "درخواست مفقودی",
+                    link: "/repair-panel/missing-request",
+                    icon: BuildIcon
+                },
+                {
+                    title: "چاپ برگه خروج",
+                    link: "/repair-panel/print-checkout",
+                    icon: BuildIcon
+                },
+                {
+                    title: "فرآیند سامانه",
+                    link: "/repair-panel/system-process",
+                    icon: BuildIcon
                 }
             ]
         },
         {
-            title: "پنل مشاغل",
+            title: "سامانه مشاغل",
             icon: WorkIcon,
             items: [
                 {
-                    title: "مشاغل",
-                    link: "/jobs-panel/jobs"
+                    title: "صفحه اصلی",
+                    link: "/jobs-panel",
+                    icon: HomeIcon
                 },
                 {
-                    title: "مدیریت دسترسی",
-                    link: "/jobs-panel/access"
+                    title: "تعریف مشاغل",
+                    link: "/jobs-panel/list",
+                    icon: ListIcon
+                },
+                {
+                    title: "درختواره مشاغل",
+                    link: "/jobs-panel/tree",
+                    icon: AccountTreeIcon
                 }
             ]
         },
         {
-            title: "پنل پیگیری",
+            title: "سامانه پیگیری",
             icon: TrackChangesIcon,
             items: [
                 {
-                    title: "پیگیری",
-                    link: "/tracking-panel/tracking"
+                    title: "رد یابی",
+                    link: "/tracking-panel/tracking",
+                    icon: TrackChangesIcon
                 }
             ]
         },
         {
-            title: "پنل کدینگ",
+            title: "سامانه کدینگ",
             icon: CodeIcon,
             items: [
                 {
                     title: "کدینگ",
-                    link: "/coding-panel/coding"
+                    link: "/coding-panel/coding",
+                    icon: CodeIcon
                 },
                 {
-                    title: "مدیریت دسترسی",
-                    link: "/coding-panel/access"
+                    title: "دسترسی کدینگ",
+                    link: "/coding-panel/access",
+                    icon: CodeIcon
                 }
             ]
         },
@@ -91,15 +194,18 @@ export class StaticMenu {
             items: [
                 {
                     title: "اطلاعات پرسنل",
-                    link: "/base-info-panel/staff-info"
+                    link: "/base-info-panel/staff-info",
+                    icon: GroupIcon
                 },
                 {
                     title: "اطلاعات خانواده",
-                    link: "/base-info-panel/family-info"
+                    link: "/base-info-panel/family-info",
+                    icon: GroupIcon
                 },
                 {
                     title: "سایر اطلاعات",
-                    link: "/base-info-panel/other-info"
+                    link: "/base-info-panel/other-info",
+                    icon: InfoIcon
                 }
             ]
         }

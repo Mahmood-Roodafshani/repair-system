@@ -76,18 +76,24 @@ export const SystemFullRolesMock: SystemRolesResponse[] = [
 
 export const SystemRolesMock: SystemRolesResponse[] = [
   {
-    id: '1',
-    label: 'صفحه اصلی',
-    status: true
-  },
-  {
-    id: '2',
-    label: 'گزارش عملکرد یگانی',
-    status: true
-  },
-  {
-    id: '3',
-    label: 'درخواست تعمیر',
-    status: false
+    id: '0',
+    label: 'سامانه تعمیرات',
+    children: [
+      {
+        id: '1',
+        label: 'صفحه اصلی',
+        status: true
+      },
+      {
+        id: '2',
+        label: 'گزارش عملکرد یگانی',
+        status: true
+      },
+      {
+        id: '3',
+        label: 'درخواست تعمیر',
+        status: false
+      }
+    ]
   }
 ];

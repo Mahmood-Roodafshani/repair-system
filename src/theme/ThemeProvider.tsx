@@ -1,31 +1,55 @@
-import React, { useState } from 'react';
-import { ThemeProvider } from '@mui/material';
-import { themeCreator } from './base';
-import { StylesProvider } from '@mui/styles';
-import { ThemeName } from './themes';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
+import { ThemeName } from './types';
+import { PureLightTheme } from './themes/PureLightTheme';
+import { PureDarkTheme } from './themes/PureDarkTheme';
+import { MilitaryTheme } from './themes/MilitaryTheme';
 
-export const ThemeContext = React.createContext(
-  (themeName: ThemeName): void => {}
-);
+interface ThemeContextType {
+  themeName: ThemeName;
+  setThemeName: React.Dispatch<React.SetStateAction<ThemeName>>;
+  theme: typeof PureLightTheme;
+  setTheme: (theme: ThemeName) => void;
+}
 
-const ThemeProviderWrapper = (props) => {
-  const curThemeName = (localStorage.getItem('appTheme') || 'PureLightTheme') as ThemeName;
-  const [themeName, _setThemeName] = useState<ThemeName>(curThemeName);
-  const theme = themeCreator(themeName);
+const themeMap = {
+  PureLightTheme,
+  PureDarkTheme,
+  MilitaryTheme,
+} as const;
 
-  const setThemeName = (themeName: ThemeName): void => {
-    console.log(themeName);
-    localStorage.setItem('appTheme', themeName);
-    _setThemeName(themeName);
+const defaultContext: ThemeContextType = {
+  themeName: 'PureLightTheme',
+  setThemeName: () => {},
+  theme: PureLightTheme,
+  setTheme: () => {},
+};
+
+export const ThemeContext = createContext<ThemeContextType>(defaultContext);
+
+export const useThemeContext = () => useContext(ThemeContext);
+
+export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [themeName, setThemeName] = useState<ThemeName>(() => {
+    const savedTheme = localStorage.getItem('themeName');
+    return (savedTheme as ThemeName) || 'PureLightTheme';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('themeName', themeName);
+  }, [themeName]);
+
+  const currentTheme = themeMap[themeName];
+
+  const setTheme = (newTheme: ThemeName) => {
+    setThemeName(newTheme);
   };
 
   return (
-    <StylesProvider injectFirst>
-      <ThemeContext.Provider value={setThemeName}>
-        <ThemeProvider theme={theme}>{props.children}</ThemeProvider>
-      </ThemeContext.Provider>
-    </StylesProvider>
+    <ThemeContext.Provider value={{ themeName, setThemeName, theme: currentTheme, setTheme }}>
+      <MuiThemeProvider theme={currentTheme}>
+        {children}
+      </MuiThemeProvider>
+    </ThemeContext.Provider>
   );
 };
-
-export default ThemeProviderWrapper;
