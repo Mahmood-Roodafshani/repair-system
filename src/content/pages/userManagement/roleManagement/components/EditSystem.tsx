@@ -1,9 +1,10 @@
 import { Grid, TextField } from '@mui/material';
-import { RichTreeView } from '@mui/x-tree-view';
-import { useEffect, useState } from 'react';
-import { Loader, OpGrid } from 'src/components';
+import { useState } from 'react';
+import { CustomRichTreeView, Loader, OpGrid } from 'src/components';
 import { i18n } from 'src/i18n';
 import { SystemFullRolesMock } from 'src/mock';
+import { RichViewType, SystemRolesResponse } from 'src/types';
+import { mapAllIdsInNestedArray } from 'src/utils/helper';
 
 function EditSystem({
   systemId,
@@ -15,18 +16,10 @@ function EditSystem({
   onBack: () => void;
 }) {
   const [title, setTitle] = useState<string>(systemName);
-  const [roles, setRoles] = useState<any>(SystemFullRolesMock);
-  const [expandedItems, setExpandedItems] = useState<string[]>([]);
+  const [roles, setRoles] =
+    useState<Omit<SystemRolesResponse, 'status'>[]>(SystemFullRolesMock);
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (roles === undefined) return;
-
-    setExpandedItems([
-      'system_' + systemId,
-      ...roles.map((e) => e.id.toString())
-    ]);
-  }, [roles]);
+  const [selectedRoles, setSelectedRoles] = useState<string[]>();
 
   return (
     <Grid display={'flex'} flexDirection={'column'} gap={'10px'}>
@@ -44,24 +37,13 @@ function EditSystem({
           onClose={onBack}
         />
       </Grid>
-      <RichTreeView
+      <CustomRichTreeView
         sx={{
-          mt: '10px',
           width: '500px'
         }}
-        expandedItems={expandedItems}
-        onExpandedItemsChange={(
-          event: React.SyntheticEvent,
-          itemIds: string[]
-        ) => {
-          setExpandedItems(itemIds);
-        }}
-        items={roles.map((e) => ({
-          id: e.id,
-          children: e.children,
-          label: e.label
-        }))}
-        // onSelectedItemsChange={(event, itemIds) => setSelectedRole(itemIds[0])}
+        label=""
+        items={mapAllIdsInNestedArray('role_', roles)}
+        // onSelectedItemsChange={(_, itemIds) => setSelectedRole(itemIds[0])}
       />
       {loading && <Loader />}
     </Grid>

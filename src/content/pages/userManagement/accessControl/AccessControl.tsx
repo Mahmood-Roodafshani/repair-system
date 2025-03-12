@@ -1,3 +1,4 @@
+import { Edit, Visibility, VisibilityOff } from '@mui/icons-material';
 import {
   Checkbox,
   FormControlLabel,
@@ -12,7 +13,12 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router';
-import { Loader, MyCustomTable, OpGrid } from 'src/components';
+import {
+  CustomRichTreeView,
+  Loader,
+  MyCustomTable,
+  OpGrid
+} from 'src/components';
 import i18n from 'src/i18n/i18n';
 import { Button, ButtonType, TextFieldFormik } from 'src/mahmood-components';
 import {
@@ -23,27 +29,21 @@ import {
 import {
   AccessControlFilterType,
   AccessControlListResponseType,
-  OrganizationUnitResponseType,
-  RoleResponseType
+  RichViewType
 } from 'src/types';
+import { mapAllIdsInNestedArray } from 'src/utils/helper';
 import Grants from './Grants';
 import { filterListValidationSchema } from './validationSchema';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 function AccessControl() {
-  const [roles, setRoles] = useState<RoleResponseType[]>();
-  const [organizationUnits, setOrganizationUnits] =
-    useState<OrganizationUnitResponseType[]>();
+  const [roles, setRoles] = useState<RichViewType[]>();
+  const [organizationUnits, setOrganizationUnits] = useState<RichViewType[]>();
   const [loading, setLoading] = useState(false);
   const [list, setList] = useState<AccessControlListResponseType[]>();
   const [addNewUser, setAddNewUser] = useState(false);
   const [selectedUserGrants, setSelectedUserGrants] = useState<
     string | number
   >();
-  const [expandedOrganizationItems, setExpandedOrganizationItems] = useState<
-    string[]
-  >([]);
-  const [expandedRoleItems, setExpandedRoleItems] = useState<string[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -52,13 +52,9 @@ function AccessControl() {
       .then((res) => {
         if (res[0].statusCode === 200) {
           setRoles(res[0].content);
-          setExpandedRoleItems(res[0].content.map((e) => 'role_' + e.id));
         }
         if (res[1].statusCode === 200) {
           setOrganizationUnits(res[1].content);
-          setExpandedOrganizationItems(
-            res[1].content.map((e) => 'organization_' + e.id)
-          );
         }
       })
       .finally(() => setLoading(false));
@@ -219,50 +215,28 @@ function AccessControl() {
                     label={i18n.t('lastname').toString()}
                   />
                   {roles && (
-                    <RichTreeView
-                      sx={{
-                        mt: '10px',
-                        width: '500px'
-                      }}
-                      expandedItems={expandedRoleItems}
-                      onExpandedItemsChange={(
-                        event: React.SyntheticEvent,
-                        itemIds: string[]
-                      ) => {
-                        setExpandedRoleItems(itemIds);
-                      }}
-                      items={roles.map((e) => ({
-                        id: 'role_' + e.id,
-                        label: e.label,
-                        children: e.children
-                      }))}
-                      // onSelectedItemsChange={(event, itemIds) => setSelectedRole(itemIds[0])}
+                    <CustomRichTreeView
+                      label={i18n.t('choose_role')}
+                      items={mapAllIdsInNestedArray('role_', roles)}
+                      sx={{ width: '500px' }}
                     />
                   )}
                   {organizationUnits && (
-                    <RichTreeView
+                    <CustomRichTreeView
                       sx={{
-                        mt: '10px',
                         width: '500px'
                       }}
-                      expandedItems={expandedOrganizationItems}
-                      onExpandedItemsChange={(
-                        event: React.SyntheticEvent,
-                        itemIds: string[]
-                      ) => {
-                        setExpandedOrganizationItems(itemIds);
-                      }}
-                      items={organizationUnits.map((e) => ({
-                        id: 'organization_' + e.id,
-                        label: e.label,
-                        children: e.children
-                      }))}
+                      label={i18n.t('organization_unit')}
+                      items={mapAllIdsInNestedArray(
+                        'organization_',
+                        organizationUnits
+                      )}
                       // onSelectedItemsChange={(event, itemIds) => setSelectedRole(itemIds[0])}
                     />
                   )}
                 </Grid>
                 <OpGrid
-                  sx={{ marginTop: '10px' }}
+                  sx={{ marginTop: '10px', marginBottom: '20px' }}
                   onSearch={submitForm}
                   onClear={() => {
                     setValues({});
@@ -284,11 +258,9 @@ function AccessControl() {
               }: {
                 row: { original: { id: string | number } };
               }) => (
-                <Button
-                  onClick={() => setSelectedUserGrants(row.original.id)}
-                  showText={false}
-                  buttonType={ButtonType.EDIT}
-                />
+                <IconButton color="secondary" onClick={() => {}}>
+                  <Edit />
+                </IconButton>
               )}
               data={list}
               columns={columns}

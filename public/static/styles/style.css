@@ -103,11 +103,16 @@ input:-moz-placeholder {
 }
 
 .MuiRichTreeView-root {
-  text-align: left;
+  text-align: end;
   border: 1px solid;
+  direction: ltr;
+}
+.MuiRichTreeView-root li {
+  direction: ltr;
 }
 .MuiRichTreeView-root .MuiTreeItem-label {
   font-size: 12px !important;
+  text-align: end;
 }
 .MuiRichTreeView-root .MuiTreeItem-content {
   flex-direction: row-reverse;

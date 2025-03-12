@@ -1,3 +1,5 @@
+import { Delete } from '@mui/icons-material';
+import { TabContext, TabPanel } from '@mui/lab';
 import {
   Grid,
   IconButton,
@@ -6,21 +8,22 @@ import {
   Typography,
   useTheme
 } from '@mui/material';
-import { Helmet } from 'react-helmet-async';
-import DatePicker from 'react-multi-date-picker';
-import { i18n } from 'src/i18n';
+import { useMemo, useState } from 'react';
 import persian from 'react-date-object/calendars/persian';
 import persian_fa from 'react-date-object/locales/persian_fa';
-import { useEffect, useMemo, useState } from 'react';
-import { TabContext, TabPanel } from '@mui/lab';
-import { Loader, MyCustomTable, OpGrid } from 'src/components';
+import { Helmet } from 'react-helmet-async';
+import DatePicker from 'react-multi-date-picker';
 import { useNavigate } from 'react-router';
-import { TakenGrants } from './takenGrants';
+import {
+  CustomRichTreeView,
+  Loader,
+  MyCustomTable,
+  OpGrid
+} from 'src/components';
+import { i18n } from 'src/i18n';
 import { grantsMock, jobsMock } from 'src/mock';
-import { RichTreeView } from '@mui/x-tree-view';
-import { extractIds } from 'src/utils/helper';
-import { Button, ButtonType } from 'src/mahmood-components';
-import { Delete } from '@mui/icons-material';
+import { mapAllIdsInNestedArray } from 'src/utils/helper';
+import { TakenGrants } from './takenGrants';
 
 function ChooseReplacement() {
   const [formData, setFormData] = useState<any>({
@@ -39,11 +42,8 @@ function ChooseReplacement() {
   const [takenGrants, setTakenGrants] = useState<TakenGrants[]>([]);
   const [replacementJobs, setReplacementJobs] = useState<any[]>(jobsMock);
   const [replacementGrants, setReplacementGrants] = useState<any[]>(grantsMock);
-  const [expandedIds, setExpandedIds] = useState<string[]>([]);
 
-  useEffect(() => {
-    setExpandedIds(extractIds(replacementJobs));
-  }, [replacementJobs]);
+  // don't use mock and use service instead
 
   const [rolesColumns, jobsColumns] = useMemo(() => {
     return [
@@ -145,19 +145,12 @@ function ChooseReplacement() {
                   padding: '10px'
                 }}
               >
-                <RichTreeView
+                <CustomRichTreeView
+                  label=""
                   sx={{
-                    mt: '10px',
                     width: '500px'
                   }}
-                  expandedItems={expandedIds}
-                  onExpandedItemsChange={(
-                    event: React.SyntheticEvent,
-                    itemIds: string[]
-                  ) => {
-                    setExpandedIds(itemIds);
-                  }}
-                  items={replacementJobs}
+                  items={mapAllIdsInNestedArray('role_', replacementJobs)}
                   // onSelectedItemsChange={(event, itemIds) => setSelectedRole(itemIds[0])}
                 />
               </Grid>

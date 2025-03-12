@@ -327,20 +327,6 @@ function StaffInfo() {
                   <IconButton
                     color="secondary"
                     onClick={() => {
-                      console.log(
-                        staffInfo.find((e) => e.id === row.original.id).hireDate
-                      );
-
-                      console.log(
-                        new DateObject({
-                          date: staffInfo.find((e) => e.id === row.original.id)
-                            .hireDate,
-                          calendar: persian,
-                          locale: gregorian_en
-                        })
-                          .convert(gregorian, gregorian_en)
-                          .format('YYYY-MM-DD')
-                      );
                       setSelectedStaffForEdit(
                         staffInfo.find((e) => e.id === row.original.id)
                       );
