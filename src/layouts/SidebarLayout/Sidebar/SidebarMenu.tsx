@@ -61,11 +61,18 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ isCollapsed }) => {
           {item.icon && <item.icon />}
         </ListItemIcon>
         {!isCollapsed && (
-          <>
-            <ListItemText primary={item.title} />
-            {isExpandable && (isOpen ? <ExpandLess /> : <ExpandMore />)}
-          </>
+          <ListItemText 
+            primary={item.title}
+            sx={{
+              textAlign: 'right',
+              '& .MuiListItemText-primary': {
+                textAlign: 'right'
+              }
+            }}
+          />
         )}
+        {!isCollapsed && isExpandable && (isOpen ? <ExpandLess /> : <ExpandMore />)}
+
       </ListItemButton>
     );
 
