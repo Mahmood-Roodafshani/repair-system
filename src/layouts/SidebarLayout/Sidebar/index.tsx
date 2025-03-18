@@ -33,7 +33,8 @@ const StyledDrawer = styled(Drawer, {
 const SidebarContent = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2),
   height: '100%',
-  overflow: 'auto'
+  overflow: 'auto',
+  overflowX: 'hidden'
 }));
 
 const Sidebar: React.FC = () => {
@@ -45,7 +46,12 @@ const Sidebar: React.FC = () => {
       anchor="right"
       isCollapsed={sidebarToggle}
     >
-      <Box sx={{ overflow: 'auto', mt: 8 }}>
+      <Box sx={{ 
+        overflow: 'auto', 
+        overflowX: 'hidden',
+        mt: 8,
+        width: '100%'
+      }}>
         <SidebarMenu isCollapsed={sidebarToggle} />
       </Box>
     </StyledDrawer>
