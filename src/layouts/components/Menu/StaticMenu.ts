@@ -21,11 +21,13 @@ export class StaticMenu {
         {
             title: "داشبورد",
             link: "/dashboard",
-            icon: DashboardIcon
+            icon: DashboardIcon,
+            section: 'all'
         },
         {
             title: "مدیریت کاربران",
             icon: PeopleIcon,
+            section: 'user',
             items: [
                 {
                     title: "کنترل دسترسی",
@@ -67,6 +69,7 @@ export class StaticMenu {
         {
             title: "سامانه تعمیرات",
             icon: BuildIcon,
+            section: 'repair',
             items: [
                 {
                     title: "کارتابل",
@@ -143,6 +146,7 @@ export class StaticMenu {
         {
             title: "سامانه مشاغل",
             icon: WorkIcon,
+            section: 'jobs',
             items: [
                 {
                     title: "صفحه اصلی",
@@ -164,6 +168,7 @@ export class StaticMenu {
         {
             title: "سامانه پیگیری",
             icon: TrackChangesIcon,
+            section: 'tracking',
             items: [
                 {
                     title: "رد یابی",
@@ -175,6 +180,7 @@ export class StaticMenu {
         {
             title: "سامانه کدینگ",
             icon: CodeIcon,
+            section: 'coding',
             items: [
                 {
                     title: "کدینگ",
@@ -191,6 +197,7 @@ export class StaticMenu {
         {
             title: "اطلاعات پایه",
             icon: InfoIcon,
+            section: 'baseInfo',
             items: [
                 {
                     title: "اطلاعات پرسنل",

@@ -5,6 +5,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { HelmetProvider } from 'react-helmet-async';
 import { ToastContainer } from 'react-toastify';
 import { SidebarProvider } from './contexts/SidebarContext';
+import { MenuProvider } from './contexts/MenuContext';
 import { ThemeProvider as CustomThemeProvider } from './theme/ThemeProvider';
 import AppRoutes from './router';
 
@@ -15,8 +16,10 @@ function App() {
         <CssBaseline />
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <SidebarProvider>
-            <AppRoutes />
-            <ToastContainer position="bottom-right" />
+            <MenuProvider>
+              <AppRoutes />
+              <ToastContainer position="bottom-right" />
+            </MenuProvider>
           </SidebarProvider>
         </LocalizationProvider>
       </CustomThemeProvider>
