@@ -25,7 +25,6 @@ function NewAccess({
   const [staffCode, setStaffCode] = useState<string>();
   const [defaultValues, setDefaultValues] = useState<string[]>();
   const [loading, setLoading] = useState(false);
-  const [showRichTreeView, setShowRichTreeView] = useState(true);
   const [selectedStaff, setSelectedStaff] = useState<{
     id: string;
     name: string;
@@ -66,7 +65,7 @@ function NewAccess({
   );
 
   return (
-    <Grid display={'flex'} flexDirection={'column'} gap={'20px'}>
+    <Grid display={'flex'} flexDirection={'column'} gap={'20px'} mb={'50px'}>
       <Grid display={'flex'} flexDirection={'row'} gap={'10px'}>
         <TextField
           label={i18n.t('staff_code').toString()}
@@ -98,26 +97,25 @@ function NewAccess({
       </Grid>
       {selectedStaff && (
         <>
-          {showRichTreeView && (
-            <CustomRichTreeView
-              label={i18n.t('choose_job').toString()}
-              items={mapAllIdsInNestedArray('job_', jobs)}
-              multiSelect={true}
-              checkboxSelection={true}
-              defaultValue={defaultValues}
-              onSelectedItemsChange={(_, itemIds) =>
-                setGrants(
-                  itemIds.map((e) => {
-                    const job = findItemById(jobs, e.replace('job_', ''));
-                    return {
-                      id: job.id,
-                      title: job.label
-                    };
-                  })
-                )
-              }
-            />
-          )}
+          <CustomRichTreeView
+            label={i18n.t('choose_job').toString()}
+            items={mapAllIdsInNestedArray('job_', jobs)}
+            multiSelect={true}
+            justSelectLeaf={true}
+            checkboxSelection={true}
+            defaultValue={defaultValues}
+            onSelectedItemsChange={(_, itemIds) =>
+              setGrants(
+                itemIds.map((e) => {
+                  const job = findItemById(jobs, e.replace('job_', ''));
+                  return {
+                    id: job.id,
+                    title: job.label
+                  };
+                })
+              )
+            }
+          />
 
           <MyCustomTable
             rowActions={({
@@ -136,10 +134,6 @@ function NewAccess({
                   setGrants(
                     grants.filter((grant) => grant.id !== row.original.id)
                   );
-                  setShowRichTreeView(false);
-                  setTimeout(() => {
-                    setShowRichTreeView(true);
-                  }, 300);
                 }}
               >
                 <Close />

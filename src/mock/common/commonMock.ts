@@ -1,3 +1,4 @@
+import { OptionType } from 'src/constants';
 import {
   OrganizationUnitResponseType,
   RichViewType,
@@ -159,10 +160,50 @@ const CitiesMock: RichViewType[] = [
   }
 ];
 
+const ActivityMock: OptionType[] = [
+  {
+    id: '1',
+    label: 'همه'
+  },
+  {
+    id: '2',
+    label: 'ثبت'
+  },
+  {
+    id: '3',
+    label: 'ویرایش'
+  },
+  {
+    id: '4',
+    label: 'حذف'
+  },
+  {
+    id: '5',
+    label: 'مشاهده'
+  },
+  {
+    id: '6',
+    label: 'جستجو'
+  },
+  {
+    id: '7',
+    label: 'ورود'
+  },
+  {
+    id: '8',
+    label: 'خروج'
+  },
+  {
+    id: '9',
+    label: 'رمزعبور نادرست'
+  }
+];
+
 export {
   RolesMock,
   OrganizationUnitsMock,
   CitiesMock,
   CoursesMock,
-  FieldsMock
+  FieldsMock,
+  ActivityMock
 };

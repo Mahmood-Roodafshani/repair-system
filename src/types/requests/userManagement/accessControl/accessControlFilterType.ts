@@ -3,6 +3,6 @@ export type AccessControlFilterType = {
   nationalCode?: string;
   firstname?: string;
   lastname?: string;
-  role?: string;
-  organizationUnit?: string;
+  roles?: string[];
+  organizationUnits?: string[];
 };

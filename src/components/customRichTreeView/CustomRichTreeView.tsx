@@ -6,7 +6,11 @@ import { RichTreeView } from '@mui/x-tree-view';
 import { TreeItem, treeItemClasses } from '@mui/x-tree-view/TreeItem';
 import { useEffect, useState } from 'react';
 import { RichViewType } from 'src/types';
-import { findAllNodesWithChild, findAllParents } from 'src/utils/helper';
+import {
+  findAllNodesWithChild,
+  findAllParents,
+  findLeafs
+} from 'src/utils/helper';
 
 function CustomRichTreeView({
   sx = { width: '500px' },
@@ -18,7 +22,8 @@ function CustomRichTreeView({
   justSelectLeaf = false,
   multiSelect = false,
   checkboxSelection = false,
-  expandAllItems = false
+  expandAllItems = false,
+  clearFlag = false
 }: {
   sx?: any;
   label?: string;
@@ -30,8 +35,24 @@ function CustomRichTreeView({
   multiSelect?: boolean;
   checkboxSelection?: boolean;
   expandAllItems?: boolean;
+  clearFlag?: boolean;
 }) {
   const [expandedItems, setExpandedItems] = useState<string[]>();
+  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [leafs, setLeafs] = useState<string[]>();
+
+  useEffect(() => {
+    if (justSelectLeaf) setLeafs(findLeafs(items));
+  }, [justSelectLeaf]);
+
+  useEffect(() => {
+    if (defaultValue !== undefined && defaultValue.length > 0)
+      setSelectedItems(defaultValue);
+  }, [defaultValue]);
+
+  useEffect(() => {
+    if (clearFlag) setSelectedItems([]);
+  }, [clearFlag]);
 
   useEffect(() => {
     if (expandAllItems) {
@@ -118,6 +139,7 @@ function CustomRichTreeView({
               : sx
           }
           defaultSelectedItems={defaultValue}
+          selectedItems={selectedItems}
           checkboxSelection={checkboxSelection}
           multiSelect={multiSelect}
           expandedItems={expandedItems}
@@ -134,7 +156,32 @@ function CustomRichTreeView({
             collapseIcon: IndeterminateCheckBoxIcon
           }}
           items={items}
-          onSelectedItemsChange={onSelectedItemsChange}
+          onSelectedItemsChange={
+            justSelectLeaf
+              ? (_, itemIds) => {
+                  const filteredItems = Array.isArray(itemIds)
+                    ? itemIds.filter((itr) => leafs.indexOf(itr) !== -1)
+                    : leafs.indexOf(itemIds) !== -1
+                    ? [itemIds]
+                    : undefined;
+
+                  if (
+                    filteredItems === undefined ||
+                    filteredItems.length === 0
+                  ) {
+                    setSelectedItems([]);
+                    return;
+                  }
+                  setSelectedItems(filteredItems);
+                  onSelectedItemsChange(_, filteredItems);
+                }
+              : (_, itemIds) => {
+                  setSelectedItems(
+                    Array.isArray(itemIds) ? itemIds : [itemIds]
+                  );
+                  onSelectedItemsChange(_, itemIds);
+                }
+          }
         />
       )}
       {error && (

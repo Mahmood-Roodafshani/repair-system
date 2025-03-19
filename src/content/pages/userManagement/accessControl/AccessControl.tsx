@@ -47,6 +47,7 @@ function AccessControl() {
   const [selectedUserGrants, setSelectedUserGrants] = useState<
     string | number
   >();
+  const [clearFlag, setClearFlag] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -183,13 +184,18 @@ function AccessControl() {
         <Grid>
           <Formik
             onSubmit={onSubmit}
-            initialValues={{}}
+            initialValues={{
+              staffCode: '',
+              nationalCode: '',
+              firstname: '',
+              lastname: ''
+            }}
             validationSchema={filterListValidationSchema}
             validateOnBlur={false}
             validateOnChange={false}
             validateOnMount={false}
           >
-            {({ setValues, isSubmitting, submitForm, resetForm }) => (
+            {({ values, setValues, isSubmitting, submitForm, resetForm }) => (
               <Form>
                 <Grid
                   display={'flex'}
@@ -223,20 +229,33 @@ function AccessControl() {
                     <CustomRichTreeView
                       label={i18n.t('choose_role')}
                       items={mapAllIdsInNestedArray('role_', roles)}
-                      sx={{ width: '500px' }}
+                      clearFlag={clearFlag}
+                      multiSelect={true}
+                      checkboxSelection={true}
+                      onSelectedItemsChange={(_, itemIds) =>
+                        setValues({
+                          ...values,
+                          roles: itemIds
+                        })
+                      }
                     />
                   )}
                   {organizationUnits && (
                     <CustomRichTreeView
-                      sx={{
-                        width: '500px'
-                      }}
+                      clearFlag={clearFlag}
                       label={i18n.t('organization_unit')}
                       items={mapAllIdsInNestedArray(
                         'organization_',
                         organizationUnits
                       )}
-                      // onSelectedItemsChange={(event, itemIds) => setSelectedRole(itemIds[0])}
+                      multiSelect={true}
+                      checkboxSelection={true}
+                      onSelectedItemsChange={(_, itemIds) =>
+                        setValues({
+                          ...values,
+                          organizationUnits: itemIds
+                        })
+                      }
                     />
                   )}
                 </Grid>
@@ -244,8 +263,11 @@ function AccessControl() {
                   sx={{ marginTop: '10px', marginBottom: '20px' }}
                   onSearch={submitForm}
                   onClear={() => {
-                    setValues({});
                     resetForm();
+                    setClearFlag(true);
+                    setTimeout(() => {
+                      setClearFlag(false);
+                    }, 300);
                   }}
                   onCreateOrEdit={() => setAddNewAccess(true)}
                   createOrEditLabel={i18n.t('new_user').toString()}
@@ -263,7 +285,10 @@ function AccessControl() {
               }: {
                 row: { original: { id: string | number } };
               }) => (
-                <IconButton color="secondary" onClick={() => {}}>
+                <IconButton
+                  color="secondary"
+                  onClick={() => setSelectedUserGrants(row.original.id)}
+                >
                   <Edit />
                 </IconButton>
               )}

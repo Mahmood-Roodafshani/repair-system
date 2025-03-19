@@ -1,12 +1,13 @@
-import React from 'react';
 import TextField from '@mui/material/TextField';
-import { useField, useFormikContext } from 'formik';
 import { OutlinedTextFieldProps } from '@mui/material/TextField/TextField';
+import { useField, useFormikContext } from 'formik';
+import { useEffect } from 'react';
 
 interface LocalTextFieldProps extends Partial<OutlinedTextFieldProps> {
   name: string;
   isHandledByFormik?: boolean;
   visualFormatter?: (val: string) => string;
+  clearFlag?: boolean;
 }
 
 const TextFieldFormik = (props: LocalTextFieldProps) => {
@@ -18,7 +19,7 @@ const TextFieldFormik = (props: LocalTextFieldProps) => {
 };
 
 const TextFieldWithFormik = (props: LocalTextFieldProps) => {
-  const { name, ...otherProps } = props;
+  const { name, clearFlag, ...otherProps } = props;
   const [field, meta] = useField(name);
   const { setFieldValue } = useFormikContext();
 
@@ -41,6 +42,10 @@ const TextFieldWithFormik = (props: LocalTextFieldProps) => {
     let newValue = e.target.value;
     setFieldValue(field.name, String(newValue));
   }
+
+  useEffect(() => {
+    if (clearFlag) setFieldValue(name, '');
+  }, [clearFlag]);
 
   let formattedValue = props.visualFormatter
     ? props.visualFormatter(field.value)

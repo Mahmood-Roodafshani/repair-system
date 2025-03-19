@@ -1,12 +1,29 @@
 import { timeout } from 'src/utils/helper';
 import ROUTES from '../routes';
 import { get, post, remove } from '../service';
+import { GroupAccessesMock, GroupAccessRolesMock } from 'src/mock';
 
-const getGroupAccesses = async ({ name }: { name: string }) => {
+const getGroupAccesses = async ({ name }: { name?: string }) => {
   if (process.env.REACT_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
-      statusCode: 200
+      statusCode: 200,
+      content: GroupAccessesMock
+    };
+  }
+  //todo: build query params from filter
+  const response = await get({
+    url: ROUTES.ACCESS_CONTROL_FETCH_LIST
+  });
+  return response;
+};
+
+const getGroupAccessRoles = async () => {
+  if (process.env.REACT_APP_WORK_WITH_MOCK) {
+    await timeout(1000);
+    return {
+      statusCode: 200,
+      content: GroupAccessRolesMock
     };
   }
   //todo: build query params from filter
@@ -45,4 +62,9 @@ const addGroupAccess = async ({ data }: { data: any }) => {
   return response;
 };
 
-export { getGroupAccesses, removeGroupAccess, addGroupAccess };
+export {
+  getGroupAccesses,
+  removeGroupAccess,
+  addGroupAccess,
+  getGroupAccessRoles
+};
