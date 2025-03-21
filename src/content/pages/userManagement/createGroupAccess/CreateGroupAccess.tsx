@@ -8,20 +8,24 @@ import {
   TextField,
   useTheme
 } from '@mui/material';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 import { Loader, MyCustomTable, OpGrid } from 'src/components';
 import { i18n } from 'src/i18n';
 import { ConfirmationDialog } from 'src/mahmood-components';
-import { groupAccessesMock, groupAccessRolesMock } from 'src/mock';
-import { addGroupAccess, removeGroupAccess } from 'src/service';
+import {
+  addGroupAccess,
+  getGroupAccesses,
+  getGroupAccessRoles,
+  removeGroupAccess
+} from 'src/service';
 
 function CreateGroupAccess() {
   const [name, setName] = useState<string>();
-  const [systems, setSystems] = useState<any[]>(groupAccessRolesMock);
-  const [groups, setGroups] = useState<any[]>(groupAccessesMock);
+  const [systems, setSystems] = useState<any[]>();
+  const [groups, setGroups] = useState<any[]>();
   const [selectedGroupId, setSelectedGroupId] = useState<string | number>();
   const [loading, setLoading] = useState(false);
   const [showConfirmationForRemove, setShowConfirmationForRemove] =
@@ -39,6 +43,16 @@ function CreateGroupAccess() {
     ],
     []
   );
+
+  useEffect(() => {
+    setLoading(true);
+    Promise.all([getGroupAccesses({}), getGroupAccessRoles()])
+      .then((res) => {
+        if (res[0].statusCode === 200) setGroups(res[0].content);
+        if (res[1].statusCode === 200) setSystems(res[1].content);
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
     <>

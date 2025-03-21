@@ -1,4 +1,8 @@
-import { SystemResponseType, SystemRolesResponse } from 'src/types';
+import {
+  RichViewType,
+  SystemResponseType,
+  SystemRolesResponse
+} from 'src/types';
 
 export const SystemsMock: SystemResponseType[] = [
   {
@@ -95,5 +99,70 @@ export const SystemRolesMock: SystemRolesResponse[] = [
         status: false
       }
     ]
+  }
+];
+
+export const MainSystemsMock: RichViewType[] = [
+  {
+    id: '1',
+    label: 'سامانه تعمیرات',
+    children: [
+      {
+        id: '11',
+        label: 'درخواست تعمیر'
+      },
+      {
+        id: '12',
+        label: 'فرم کمیسیون'
+      },
+      {
+        id: '13',
+        label: 'فرم تعمیر بعثه'
+      },
+      {
+        id: '14',
+        label: 'فرم تعمیر برون سازمانی'
+      },
+      {
+        id: '15',
+        label: 'فرم تعمیر سازمان حج'
+      },
+      {
+        id: '16',
+        label: 'فرم تحویل اقلام'
+      },
+      {
+        id: '17',
+        label: 'فرم کارشناسی'
+      },
+      {
+        id: '18',
+        label: 'فرم خروج اقلام از سازمان'
+      },
+      {
+        id: '19',
+        label: 'کارتابل'
+      }
+    ]
+  },
+  {
+    id: '2',
+    label: 'سامانه مدیریت کاربران'
+  },
+  {
+    id: '3',
+    label: 'سامانه اطلاعات پایه'
+  },
+  {
+    id: '4',
+    label: 'سامانه مشاغل سازمانی'
+  },
+  {
+    id: '5',
+    label: 'سامانه ردیابی کاربران'
+  },
+  {
+    id: '6',
+    label: 'سامانه کدینگ'
   }
 ];

@@ -20,6 +20,7 @@ i18next
           family_info: 'اطلاعات عائله',
           create_jobs: 'تعریف مشاغل',
           jobs_tree: 'درختواره مشاغل',
+          tracking: 'سامانه ردیابی',
           // BUTTONS
           add: 'افزودن',
           delete: 'حذف',
@@ -40,6 +41,7 @@ i18next
           hide_menu: 'عدم نمایش منو',
           active: 'فعال',
           deactive: 'غیرفعال',
+          user: 'کاربر',
           new_user: 'کاربر جدید',
           requester: 'درخواست کننده',
           logout: 'خروج از سامانه',
@@ -100,6 +102,11 @@ i18next
           job_courses: 'دوره‌های تخصصی مورد نیاز',
           change_pass: 'تغییر رمزعبور',
           work_unit: 'یگان خدمتی',
+          enter_national_code: 'کد ملی را وارد نمایید',
+          form_name: 'نام فرم',
+          time: 'ساعت',
+          date: 'تاریخ',
+          ip: 'آی پی',
           // TABLE
           operation: 'عملیات',
           row_number: 'ردیف',
@@ -120,6 +127,8 @@ i18next
           educational_field: 'رشته تحصیلی',
           birth_location: 'محل تولد',
           family_relation: 'نسبت با سرپرست',
+          choose_form: 'انتخاب سامانه و فرم',
+          choose_activity: 'انتخاب فعالیت',
           // FAMILY RELATION
           family_relation_wife_husband: 'همسر',
           family_relation_father: 'پدر',

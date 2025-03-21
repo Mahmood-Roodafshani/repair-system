@@ -1,10 +1,10 @@
-const groupAccessRolesMock: object[] = [
-  { name: 'سامانه تعمیرات' },
-  { name: 'سامانه هادی' },
-  { name: 'سامانه بصیر' }
+const GroupAccessRolesMock: object[] = [
+  { id: '1', name: 'سامانه تعمیرات' },
+  { id: '2', name: 'سامانه هادی' },
+  { id: '3', name: 'سامانه بصیر' }
 ];
 
-const groupAccessesMock: object[] = [
+const GroupAccessesMock: object[] = [
   {
     id: 1,
     name: 'مدیر سیستم'
@@ -15,4 +15,4 @@ const groupAccessesMock: object[] = [
   }
 ];
 
-export { groupAccessRolesMock, groupAccessesMock };
+export { GroupAccessRolesMock, GroupAccessesMock };

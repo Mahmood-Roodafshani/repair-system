@@ -145,3 +145,23 @@ export function mapAllIdsInNestedArray(prefix: string, tree: RichViewType[]) {
     children: mapAllIdsInNestedArray(prefix, e.children)
   }));
 }
+
+export function findLeafs(arr: RichViewType[]): any[] {
+  let leafs: string[] = [];
+
+  for (const item of arr) {
+    if (
+      item.children &&
+      Array.isArray(item.children) &&
+      item.children.length > 0
+    ) {
+      // Recursively go deeper if 'child' is present
+      leafs = [...leafs, ...findLeafs(item.children)];
+    } else {
+      // If no 'child', this is a leaf node
+      leafs.push(item.id);
+    }
+  }
+
+  return leafs;
+}

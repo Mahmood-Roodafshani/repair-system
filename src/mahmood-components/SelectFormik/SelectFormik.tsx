@@ -2,6 +2,7 @@ import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import { OutlinedTextFieldProps } from '@mui/material/TextField/TextField';
 import { useField, useFormikContext } from 'formik';
+import { useEffect } from 'react';
 import { OptionType } from 'src/constants';
 
 interface SelectProps extends Partial<OutlinedTextFieldProps> {
@@ -9,6 +10,7 @@ interface SelectProps extends Partial<OutlinedTextFieldProps> {
   options: OptionType[];
   isHandledByFormik?: boolean;
   addEmptyEntry?: boolean;
+  clearFlag?: boolean;
 }
 
 const SelectFormik = (props: SelectProps) => {
@@ -26,14 +28,19 @@ const SelectWithFormik = (props: SelectProps) => {
     size = 'small',
     variant = 'outlined',
     isHandledByFormik = true,
+    clearFlag = false,
     ...otherProps
   } = props;
-  const { setFieldValue } = useFormikContext();
+  const { setFieldValue, values } = useFormikContext();
   const [field, meta] = useField(name);
 
   const handleChange = (event: any) => {
     setFieldValue(name, event.target.value);
   };
+
+  useEffect(() => {
+    if (clearFlag) setFieldValue(name, '');
+  }, [clearFlag]);
 
   const configSelect = {
     select: true,
@@ -55,6 +62,7 @@ const SelectWithFormik = (props: SelectProps) => {
     <TextField
       size={size}
       type={type}
+      value={(values as any).name}
       {...configSelect}
       onChange={handleChange}
       variant={variant}
@@ -69,7 +77,7 @@ const SelectWithFormik = (props: SelectProps) => {
           انتخاب
         </MenuItem>
       ) : null}
-      {options.map((item, index) => (
+      {options.map((item) => (
         <MenuItem key={item.id} value={item.id}>
           {item.label}
         </MenuItem>
