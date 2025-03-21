@@ -21,6 +21,7 @@ i18next
           create_jobs: 'تعریف مشاغل',
           jobs_tree: 'درختواره مشاغل',
           tracking: 'سامانه ردیابی',
+          coding: 'سامانه کدینگ',
           // BUTTONS
           add: 'افزودن',
           delete: 'حذف',
@@ -36,6 +37,7 @@ i18next
           save: 'ذخیره',
           ok: 'تایید',
           'create/edit': 'ثبت/ویرایش',
+          create: 'ایجاد',
           confirm: 'تایید',
           show_menu: 'نمایش منو',
           hide_menu: 'عدم نمایش منو',
@@ -107,6 +109,9 @@ i18next
           time: 'ساعت',
           date: 'تاریخ',
           ip: 'آی پی',
+          coding_name: 'نام کدینگ',
+          priority: 'اولویت',
+          show_priority: 'ترتیب نمایش',
           // TABLE
           operation: 'عملیات',
           row_number: 'ردیف',
@@ -117,6 +122,7 @@ i18next
           to: 'تاریخ پایان',
           id_number: 'شماره شناسنامه',
           father_name: 'نام پدر',
+          child_name: 'نام فرزند',
           hire_date: 'تاریخ استخدام',
           service_status: 'وضعیت خدمتی',
           martial_status: 'وضعیت تاهل',
@@ -129,6 +135,8 @@ i18next
           family_relation: 'نسبت با سرپرست',
           choose_form: 'انتخاب سامانه و فرم',
           choose_activity: 'انتخاب فعالیت',
+          new_coding: 'کدینگ جدید',
+          choose_coding: 'انتخاب کدینگ',
           // FAMILY RELATION
           family_relation_wife_husband: 'همسر',
           family_relation_father: 'پدر',
@@ -177,6 +185,9 @@ i18next
           family_member_updated: 'اطلاعات عائله مدنظر با موفقیت ویرایش گردید',
           new_access_created: 'دسترسی مدنظر با موفقیت ایجاد گردید',
           role_created: 'نقش مورد نظر با موفقیت افزوده شد',
+          coding_removed: 'کدینگ مدنظر حذف گردید',
+          coding_created: 'کدینگ با موفقیت ثبت گردید',
+          coding_updated: 'کدینگ مدنظر با موفقیت ویرایش گردید',
           // ERRORS
           please_fill_req_fields: 'لطفا تمام موارد لازم را پر نمایید',
           firstname_is_req: 'لطفا فیلد نام را وارد نمایید',
@@ -239,7 +250,12 @@ i18next
           responsibility_description_is_req:
             'فیلد شرح وظایف شغل باید حداکثر 1000 کاراکتر باشد',
           role_title_is_req: 'لطفا عنوان نقش را وارد نمایید',
-          role_is_req: 'لطفا نقش را وارد نمایید'
+          role_is_req: 'لطفا نقش را وارد نمایید',
+          child_name_is_req: 'نام فرزند را وارد نمایید',
+          parent_name_is_req: 'کدینگ را وارد نمایید',
+          priority_is_req: 'اولویت را وارد نمایید',
+          priority_max: 'حداکثر مقدار برای اولویت، 10000 می‌باشد',
+          priority_min: 'حداقل مقدار برای اولویت، 1 می‌باشد'
         }
       }
     }

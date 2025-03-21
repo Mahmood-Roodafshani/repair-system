@@ -8,6 +8,7 @@ import {
   BorrowedItems,
   Cartable,
   ChooseReplacement,
+  Coding,
   CodingAccess,
   CodingHomePage,
   Commission,
@@ -71,19 +72,27 @@ const Cards = Loader(lazy(() => import('src/content/pages/Components/Cards')));
 const Forms = Loader(lazy(() => import('src/content/pages/Components/Forms')));
 
 // Status pages
-const Status404 = Loader(lazy(() => import('src/content/pages/Status/Status404')));
-const Status500 = Loader(lazy(() => import('src/content/pages/Status/Status500')));
-const StatusComingSoon = Loader(lazy(() => import('src/content/pages/Status/ComingSoon')));
-const StatusMaintenance = Loader(lazy(() => import('src/content/pages/Status/Maintenance')));
+const Status404 = Loader(
+  lazy(() => import('src/content/pages/Status/Status404'))
+);
+const Status500 = Loader(
+  lazy(() => import('src/content/pages/Status/Status500'))
+);
+const StatusComingSoon = Loader(
+  lazy(() => import('src/content/pages/Status/ComingSoon'))
+);
+const StatusMaintenance = Loader(
+  lazy(() => import('src/content/pages/Status/Maintenance'))
+);
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
-  
+
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
-  
+
   return children;
 };
 
@@ -233,7 +242,7 @@ const routes: RouteObject[] = [
           },
           {
             path: 'coding',
-            element: <CodingHomePage />
+            element: <Coding />
           },
           {
             path: 'access',

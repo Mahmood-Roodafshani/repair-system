@@ -1,13 +1,12 @@
-import { Grid } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
+import { i18n } from 'src/i18n';
 
 function HomePage() {
   return (
     <>
       <Helmet>
-        <title>سامانه کدینگ</title>
+        <title>{i18n.t('coding').toString()}</title>
       </Helmet>
-      <Grid></Grid>
     </>
   );
 }

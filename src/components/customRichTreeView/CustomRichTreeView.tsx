@@ -55,13 +55,11 @@ function CustomRichTreeView({
   }, [clearFlag]);
 
   useEffect(() => {
-    if (expandAllItems) {
-      setExpandedItems(findAllNodesWithChild(items));
-    }
+    if (expandAllItems) setExpandedItems(findAllNodesWithChild(items));
   }, [expandAllItems]);
 
   useEffect(() => {
-    if (expandAllItems) return;
+    if (expandAllItems || expandedItems?.length > 0) return;
     if (defaultValue === undefined || defaultValue.length === 0) {
       setExpandedItems([]);
       return;
