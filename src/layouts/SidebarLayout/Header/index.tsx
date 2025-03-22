@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import {
   Menu as MenuIcon,
+  MenuOpen as MenuOpenIcon,
   Brightness4 as DarkModeIcon,
   Brightness7 as LightModeIcon,
   MilitaryTech as MilitaryIcon,
@@ -26,9 +27,10 @@ import { toast } from 'react-toastify';
 
 interface HeaderProps {
   onMenuClick: () => void;
+  isCollapsed: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
+const Header: React.FC<HeaderProps> = ({ onMenuClick, isCollapsed }) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const { theme: currentTheme, setTheme } = useThemeContext();
@@ -83,9 +85,12 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
             aria-label="open drawer"
             edge="start"
             onClick={onMenuClick}
-            sx={{ mr: 2 }}
+            sx={{
+              p:1.5,
+              ml:2.5
+            }}
           >
-            <MenuIcon />
+            {isCollapsed ? <MenuIcon /> : <MenuOpenIcon />}
           </IconButton>
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             سیستم تعمیرات
