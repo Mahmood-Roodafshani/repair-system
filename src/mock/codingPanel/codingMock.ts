@@ -1,4 +1,4 @@
-import { CodingResponse } from 'src/types';
+import { CodingAccessResponse, CodingResponse } from 'src/types';
 
 const CodingMock: CodingResponse[] = [
   {
@@ -39,4 +39,37 @@ const CodingMock: CodingResponse[] = [
   }
 ];
 
-export { CodingMock };
+const CodingAccessMock: CodingAccessResponse[] = [
+  {
+    id: 1,
+    username: 'حسین مهدوی فر',
+    codingName: 'ساختار سازمانی حفا'
+  },
+  {
+    id: 2,
+    username: 'مهدی دارابی',
+    codingName: 'مدرک تحصیلی'
+  },
+  {
+    id: 3,
+    username: 'محمد بابایی',
+    codingName: 'اقلام و تجهیزات'
+  },
+  {
+    id: 4,
+    username: 'مهدی بهادر',
+    codingName: 'رشته تحصیلی'
+  },
+  {
+    id: 5,
+    username: 'محمد ون دار',
+    codingName: 'رتبه سازمانی'
+  },
+  {
+    id: 6,
+    username: 'حمید لرستانی',
+    codingName: 'اقدامات اجرایی'
+  }
+];
+
+export { CodingMock, CodingAccessMock };

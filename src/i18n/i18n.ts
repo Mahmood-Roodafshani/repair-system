@@ -22,6 +22,7 @@ i18next
           jobs_tree: 'درختواره مشاغل',
           tracking: 'سامانه ردیابی',
           coding: 'سامانه کدینگ',
+          coding_access: 'دسترسی کدینگ',
           // BUTTONS
           add: 'افزودن',
           delete: 'حذف',
@@ -35,6 +36,7 @@ i18next
           print: 'چاپ',
           select: 'انتخاب',
           save: 'ذخیره',
+          submit: 'ثبت',
           ok: 'تایید',
           'create/edit': 'ثبت/ویرایش',
           create: 'ایجاد',
@@ -57,6 +59,7 @@ i18next
           supervisor_national_code: 'کدملی سرپرست',
           supervisor: 'سرپرست',
           relation: 'نسبت',
+          username: 'نام کاربری',
           firstname: 'نام',
           lastname: 'نام خانوادگی',
           grants: 'مجوزهای عطا شده',
@@ -137,6 +140,7 @@ i18next
           choose_activity: 'انتخاب فعالیت',
           new_coding: 'کدینگ جدید',
           choose_coding: 'انتخاب کدینگ',
+          choose_user: 'انتخاب کاربر',
           // FAMILY RELATION
           family_relation_wife_husband: 'همسر',
           family_relation_father: 'پدر',
@@ -255,7 +259,8 @@ i18next
           parent_name_is_req: 'کدینگ را وارد نمایید',
           priority_is_req: 'اولویت را وارد نمایید',
           priority_max: 'حداکثر مقدار برای اولویت، 10000 می‌باشد',
-          priority_min: 'حداقل مقدار برای اولویت، 1 می‌باشد'
+          priority_min: 'حداقل مقدار برای اولویت، 1 می‌باشد',
+          coding_name_is_req: 'نام کدینگ را وارد نمایید'
         }
       }
     }
