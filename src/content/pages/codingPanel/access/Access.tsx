@@ -1,7 +1,7 @@
 import { Delete } from '@mui/icons-material';
 import { Grid, IconButton, Typography } from '@mui/material';
 import { Form, Formik, FormikHelpers } from 'formik';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
@@ -23,17 +23,25 @@ import {
 import {
   CodingAccessRequest,
   CodingAccessResponse,
-  CodingResponse
+  CodingResponse,
+  Pagination
 } from 'src/types';
 import validationSchema from './validationSchema';
 
 function Access() {
   const [loading, setLoading] = useState(false);
   const [codingList, setCodingList] = useState<CodingResponse[]>();
-  const [codingAccessList, setCodingAccessList] =
-    useState<CodingAccessResponse[]>();
+  const [codingAccessList, setCodingAccessList] = useState<
+    CodingAccessResponse[]
+  >([]);
   const [selectedAccess, setSelectedAccess] = useState<string | number>();
   const navigate = useNavigate();
+  const [pagination, setPagination] = useState<Pagination>({
+    pageIndex: 0,
+    pageSize: 10
+  });
+  const [totalCount, setTotalCount] = useState<number>(0);
+  const [refetchingData, setRefetchingData] = useState(false);
 
   const columns = useMemo(
     () => [
@@ -64,11 +72,41 @@ function Access() {
   );
 
   useEffect(() => {
+    refetchData();
+  }, [pagination]);
+
+  const refetchData = useCallback(() => {
+    if (totalCount === 0) return;
+    setCodingAccessList([]);
+    setRefetchingData(true);
+    Promise.all([
+      fetchCodingAccessList({
+        pageIndex: pagination.pageIndex,
+        pageSize: pagination.pageSize
+      })
+    ])
+      .then((res) => {
+        if (res[0].statusCode === 200)
+          setCodingAccessList(res[0].content.content);
+      })
+      .finally(() => setRefetchingData(false));
+  }, [pagination, totalCount]);
+
+  useEffect(() => {
     setLoading(true);
-    Promise.all([fetchCodingList(), fetchCodingAccessList()])
+    Promise.all([
+      fetchCodingList(),
+      fetchCodingAccessList({
+        pageIndex: pagination.pageIndex,
+        pageSize: pagination.pageSize
+      })
+    ])
       .then((res) => {
         if (res[0].statusCode === 200) setCodingList(res[0].content);
-        if (res[1].statusCode === 200) setCodingAccessList(res[1].content);
+        if (res[1].statusCode === 200) {
+          setCodingAccessList(res[1].content.content);
+          setTotalCount(res[1].content.totalCount);
+        }
       })
       .finally(() => setLoading(false));
   }, []);
@@ -82,12 +120,7 @@ function Access() {
     if (res.statusCode === 200) {
       toast(i18n.t('new_access_created').toString(), { type: 'success' });
       actions.resetForm();
-      setLoading(true);
-      Promise.all([fetchCodingAccessList()])
-        .then((res) => {
-          if (res[0].statusCode === 200) setCodingList(res[0].content);
-        })
-        .finally(() => setLoading(false));
+      refetchData();
     }
   };
 
@@ -154,27 +187,30 @@ function Access() {
         </Formik>
       )}
       <Grid mt={'20px'}>
-        {codingAccessList && (
-          <MyCustomTable
-            enableRowActions={true}
-            rowActions={({
-              row
-            }: {
-              row: { original: { id: string | number } };
-            }) => (
-              <Grid display={'flex'} flex={'row'} gap={'10px'}>
-                <IconButton
-                  color="error"
-                  onClick={() => setSelectedAccess(row.original.id)}
-                >
-                  <Delete />
-                </IconButton>
-              </Grid>
-            )}
-            columns={columns}
-            data={codingAccessList}
-          />
-        )}
+        <MyCustomTable
+          rowCount={totalCount}
+          pagination={pagination}
+          onPaginationChange={setPagination}
+          enablePagination={true}
+          enableRowActions={true}
+          isRefetching={refetchingData}
+          rowActions={({
+            row
+          }: {
+            row: { original: { id: string | number } };
+          }) => (
+            <Grid display={'flex'} flex={'row'} gap={'10px'}>
+              <IconButton
+                color="error"
+                onClick={() => setSelectedAccess(row.original.id)}
+              >
+                <Delete />
+              </IconButton>
+            </Grid>
+          )}
+          columns={columns}
+          data={codingAccessList}
+        />
       </Grid>
       {selectedAccess && codingAccessList && (
         <ConfirmationDialog

@@ -12,25 +12,28 @@ export const MainWrapper = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   paddingTop: '64px', // Height of the header
   paddingBottom: '60px', // Height of the footer
-  position: 'relative',
+  position: 'relative'
 }));
 
 export const MainContent = styled(Box, {
-  shouldForwardProp: (prop) => prop !== 'isCollapsed',
+  shouldForwardProp: (prop) => prop !== 'isCollapsed'
 })<{ isCollapsed: boolean }>(({ theme, isCollapsed }) => ({
   flexGrow: 1,
   position: 'absolute',
   left: 0,
   right: 0,
-  padding: theme.spacing(3),
+  paddingTop: theme.spacing(3),
+  paddingLeft: theme.spacing(3),
+  paddingRight: theme.spacing(3),
+  paddingBottom: theme.spacing(12),
   transition: theme.transitions.create('right', {
     easing: theme.transitions.easing.easeOut,
-    duration: theme.transitions.duration.enteringScreen,
+    duration: theme.transitions.duration.enteringScreen
   }),
   '& .MuiContainer-root': {
-    padding: theme.spacing(2),
+    padding: theme.spacing(2)
   },
   '& .MuiCard-root': {
-    marginBottom: theme.spacing(3),
-  },
-})); 
+    marginBottom: theme.spacing(3)
+  }
+}));

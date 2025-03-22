@@ -120,6 +120,10 @@ i18next
           row_number: 'ردیف',
           show_hide_search: 'نمایش/مخفی سازی جست و جو',
           show_hide_filters: 'نمایش/مخفی سازی فیلترها',
+          row_per_page: 'تعداد رکورد در هر صفحه',
+          go_to_next_page: 'رفتن به صفحه بعد',
+          go_to_prev_page: 'رفتن به صفحه قبل',
+          of: 'از',
           // FILTER
           from: 'تاریخ شروع',
           to: 'تاریخ پایان',

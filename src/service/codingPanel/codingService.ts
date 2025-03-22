@@ -1,5 +1,9 @@
-import { CodingAccessMock, CodingMock } from 'src/mock';
-import { CodingAccessRequest, CodingRequest } from 'src/types';
+import {
+  CodingAccessPage1Mock,
+  CodingAccessPage2Mock,
+  CodingMock
+} from 'src/mock';
+import { CodingAccessRequest, CodingRequest, PageableRequest } from 'src/types';
 import { timeout } from 'src/utils/helper';
 import ROUTES from '../routes';
 import { get, post, put, remove } from '../service';
@@ -18,12 +22,15 @@ const fetchCodingList = async () => {
   return response;
 };
 
-const fetchCodingAccessList = async () => {
+const fetchCodingAccessList = async (request: PageableRequest<unknown>) => {
+  console.log('service call');
+
   if (process.env.REACT_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
       statusCode: 200,
-      content: CodingAccessMock
+      content:
+        request.pageIndex === 0 ? CodingAccessPage1Mock : CodingAccessPage2Mock
     };
   }
   const response = await get({

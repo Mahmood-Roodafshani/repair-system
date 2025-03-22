@@ -1,11 +1,11 @@
 import { Delete, Edit } from '@mui/icons-material';
-import { Button, Grid, IconButton, Typography } from '@mui/material';
+import { Grid, IconButton, Typography } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { toast } from 'react-toastify';
 import { Loader, MyCustomTable } from 'src/components';
 import { i18n } from 'src/i18n';
-import { ConfirmationDialog } from 'src/mahmood-components';
+import { Button, ButtonType, ConfirmationDialog } from 'src/mahmood-components';
 import { fetchCodingList, fetchWorkLocations, removeCoding } from 'src/service';
 import { CodingResponse, RichViewType } from 'src/types';
 import CreateOrEditCoding from './CreateOrEditCoding';
@@ -73,13 +73,12 @@ function Coding() {
       {!loading && data && !showCreateOrEditForm && (
         <Grid>
           <Button
-            variant="contained"
-            color="primary"
+            buttonType={ButtonType.ADD}
+            showIcon={false}
+            text={i18n.t('new_coding').toString()}
             sx={{ marginBottom: '20px' }}
             onClick={() => setShowCreateOrEditForm(true)}
-          >
-            {i18n.t('new_coding').toString()}
-          </Button>
+          />
           <MyCustomTable
             rowActions={({
               row

@@ -20,10 +20,8 @@ const FooterWrapper = styled(Box)(
 
 function Footer() {
   return (
-    <FooterWrapper>
-      © {new Date().getFullYear()} - سیستم تعمیرات
-    </FooterWrapper>
+    <FooterWrapper>© {new Date().getFullYear()} - سیستم تعمیرات</FooterWrapper>
   );
 }
 
-export default Footer; 
+export default Footer;
