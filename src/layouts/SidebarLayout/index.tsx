@@ -13,9 +13,9 @@ const SidebarLayout: React.FC = () => {
   return (
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       <Sidebar />
-      <MainWrapper>
+      <MainWrapper className={sidebarToggle ? 'collapsed' : ''}>
         <Header onMenuClick={toggleSidebar} isCollapsed={sidebarToggle} />
-        <MainContent isCollapsed={sidebarToggle}>
+        <MainContent>
           <Outlet />
         </MainContent>
         <Footer />

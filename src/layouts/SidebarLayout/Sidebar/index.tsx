@@ -13,6 +13,10 @@ const StyledDrawer = styled(Drawer, {
   width: isCollapsed ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH,
   flexShrink: 0,
   whiteSpace: 'nowrap',
+  position: 'fixed',
+  right: 0,
+  top: 0,
+  height: '100vh',
   '& .MuiDrawer-paper': {
     width: isCollapsed ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH,
     transition: theme.transitions.create('width', {
