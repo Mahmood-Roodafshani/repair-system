@@ -141,7 +141,7 @@ declare module '@mui/material/styles' {
 
 export type Theme = MuiTheme & CustomThemeExtensions;
 
-export type ThemeName = 'PureLightTheme' | 'PureDarkTheme' | 'MilitaryTheme';
+export type ThemeName = 'PureLightTheme' | 'PureDarkTheme' | 'MilitaryTheme' | 'CorporateTheme';
 
 export interface ExtendedThemeOptions extends MuiThemeOptions {
   colors: CustomThemeColors;

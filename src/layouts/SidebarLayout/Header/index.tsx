@@ -19,6 +19,7 @@ import {
   AccountCircle as AccountCircleIcon,
   Logout as LogoutIcon,
   Person as PersonIcon,
+  Business as BusinessIcon,
 } from '@mui/icons-material';
 import { useThemeContext } from '../../../theme/ThemeProvider';
 import { ThemeName } from '../../../theme/themes';
@@ -33,7 +34,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ onMenuClick, isCollapsed }) => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const { theme: currentTheme, setTheme } = useThemeContext();
+  const { theme: currentTheme, setTheme, themeName } = useThemeContext();
   const [themeAnchorEl, setThemeAnchorEl] = useState<null | HTMLElement>(null);
   const [userAnchorEl, setUserAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -66,14 +67,16 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, isCollapsed }) => {
   };
 
   const getThemeIcon = () => {
-    switch (currentTheme.palette.mode) {
-      case 'dark':
-        return <DarkModeIcon />;
-      case 'light':
-        return currentTheme.palette.primary.main === '#02402B' ? <MilitaryIcon /> : <LightModeIcon />;
-      default:
-        return <LightModeIcon />;
-    }
+    // Map theme names to their corresponding icons
+    const themeIconMap = {
+      PureLightTheme: <LightModeIcon />,
+      PureDarkTheme: <DarkModeIcon />,
+      MilitaryTheme: <MilitaryIcon />,
+      CorporateTheme: <BusinessIcon />,
+    } as const;
+    
+    // Return the corresponding icon or fallback to LightModeIcon
+    return themeIconMap[themeName] || <LightModeIcon />;
   };
 
   return (
@@ -137,6 +140,12 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, isCollapsed }) => {
                 <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
                   <MilitaryIcon sx={{ ml: 1 }} />
                   <Typography>تم نظامی</Typography>
+                </Box>
+              </MenuItem>
+              <MenuItem onClick={() => handleThemeChange('CorporateTheme')}>
+                <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                  <BusinessIcon sx={{ ml: 1 }} />
+                  <Typography>تم سازمانی</Typography>
                 </Box>
               </MenuItem>
             </Menu>

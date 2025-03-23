@@ -1,27 +1,19 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import { ThemeName } from './types';
-import { PureLightTheme } from './themes/PureLightTheme';
-import { PureDarkTheme } from './themes/PureDarkTheme';
-import { MilitaryTheme } from './themes/MilitaryTheme';
+import { themeMap } from './themes';
 
 interface ThemeContextType {
   themeName: ThemeName;
   setThemeName: React.Dispatch<React.SetStateAction<ThemeName>>;
-  theme: typeof PureLightTheme;
+  theme: typeof themeMap.PureLightTheme;
   setTheme: (theme: ThemeName) => void;
 }
-
-const themeMap = {
-  PureLightTheme,
-  PureDarkTheme,
-  MilitaryTheme,
-} as const;
 
 const defaultContext: ThemeContextType = {
   themeName: 'PureLightTheme',
   setThemeName: () => {},
-  theme: PureLightTheme,
+  theme: themeMap.PureLightTheme,
   setTheme: () => {},
 };
 
