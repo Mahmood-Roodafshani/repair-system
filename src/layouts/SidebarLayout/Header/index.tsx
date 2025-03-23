@@ -82,22 +82,27 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, isCollapsed }) => {
   return (
     <>
       <AppBar position="fixed" sx={{ zIndex: theme.zIndex.drawer + 1 }}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={onMenuClick}
-            sx={{
-              p:1.5,
-              ml:2.5
-            }}
-          >
-            {isCollapsed ? <MenuIcon /> : <MenuOpenIcon />}
-          </IconButton>
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-            سیستم تعمیرات
-          </Typography>
+        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <IconButton
+              onClick={onMenuClick}
+              sx={{
+                width: 40,
+                height: 40,
+                ml: 2,
+                padding: '20px',
+                '& .MuiSvgIcon-root': {
+                  width: 24,
+                  height: 24
+                }
+              }}
+            >
+              {isCollapsed ? <MenuIcon /> : <MenuOpenIcon />}
+            </IconButton>
+            <Typography variant="h6" noWrap component="div">
+              سیستم تعمیرات
+            </Typography>
+          </Box>
           <Box>
             <IconButton
               size="large"
