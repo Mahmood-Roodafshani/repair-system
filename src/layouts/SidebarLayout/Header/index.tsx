@@ -99,10 +99,19 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, isCollapsed }) => {
             >
               {isCollapsed ? <MenuIcon /> : <MenuOpenIcon />}
             </IconButton>
-            <Typography variant="h6" noWrap component="div">
-              سیستم تعمیرات
-            </Typography>
           </Box>
+          <Typography 
+            variant="h6" 
+            noWrap 
+            component="div"
+            sx={{ 
+              position: 'absolute',
+              left: '50%',
+              transform: 'translateX(-50%)'
+            }}
+          >
+            سامانه تعمیر و نگهداری
+          </Typography>
           <Box>
             <IconButton
               size="large"

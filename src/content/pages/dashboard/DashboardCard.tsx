@@ -12,6 +12,7 @@ const StyledCard = styled(Grid)(({ theme }) => ({
   fontSize: '1.1rem',
   height: '90px',
   padding: '0 20px',
+  borderRadius: '15px',
   transition: theme.transitions.create(['transform', 'box-shadow']),
   '&:hover': {
     transform: 'translateY(-3px)',

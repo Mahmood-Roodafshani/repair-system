@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material';
+import { Grid, Divider } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import DashboardCard from './DashboardCard';
 import {Helmet} from 'react-helmet-async';
@@ -22,6 +22,18 @@ const CardsContainer = styled(Grid)`
     margin: 20px 20px 0 20px;
     width: calc(100% - 40px);
 `;
+
+const StyledDivider = styled(Divider)(({ theme }) => ({
+  width: '100%',
+  margin: theme.spacing(4, 0),
+  borderColor: theme.palette.mode === 'dark' 
+    ? theme.colors.gradients.orange1 
+    : theme.colors.gradients.blue1,
+  opacity: 0.5,
+  '&::before, &::after': {
+    borderColor: 'inherit',
+  }
+}));
 
 function Dashboard() {
     return (
@@ -54,6 +66,9 @@ function Dashboard() {
                             navigateTo=""
                         />
                     </Grid>
+                </CardsContainer>
+                <StyledDivider />
+                <CardsContainer container spacing={3}>
                     <Grid item xs={12} lg={4}>
                         <DashboardCard
                             variant="bottom"
