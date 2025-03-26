@@ -1,4 +1,4 @@
 export type GetItemsRequest = {
-  staffCode: string;
-  refCode: string;
+  staffCode?: string;
+  refCode?: string;
 };

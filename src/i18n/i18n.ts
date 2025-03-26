@@ -25,6 +25,7 @@ i18next
           coding_access: 'دسترسی کدینگ',
           companies: 'شرکت‌ها',
           items_list: 'لیست اقلام',
+          borrowed_items: 'اقلام امانی',
           // BUTTONS
           add: 'افزودن',
           delete: 'حذف',
@@ -159,6 +160,13 @@ i18next
           new_coding: 'کدینگ جدید',
           choose_coding: 'انتخاب کدینگ',
           choose_user: 'انتخاب کاربر',
+          receiver: 'تحویل گیرنده',
+          deliverer: 'تحویل دهنده',
+          item_category: 'نوع اقلام',
+          submitter_info: 'مشخصات ثبت کننده',
+          submit_at: 'تاریخ ثبت',
+          receive_at: 'تاریخ دریافت کالا',
+          deliver_at: 'تاریخ تحویل کالا',
           // FAMILY RELATION
           family_relation_wife_husband: 'همسر',
           family_relation_father: 'پدر',
