@@ -1,11 +1,15 @@
-import { Delete } from '@mui/icons-material';
-import { Grid, IconButton, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
-import { InlineLoader, Loader, MyCustomTable } from 'src/components';
+import {
+  InlineLoader,
+  Loader,
+  MyCustomTable,
+  TableRowAction
+} from 'src/components';
 import { i18n } from 'src/i18n';
 import {
   Button,
@@ -199,14 +203,9 @@ function Access() {
           }: {
             row: { original: { id: string | number } };
           }) => (
-            <Grid display={'flex'} flex={'row'} gap={'10px'}>
-              <IconButton
-                color="error"
-                onClick={() => setSelectedAccess(row.original.id)}
-              >
-                <Delete />
-              </IconButton>
-            </Grid>
+            <TableRowAction
+              onDelete={() => setSelectedAccess(row.original.id)}
+            />
           )}
           columns={columns}
           data={codingAccessList}

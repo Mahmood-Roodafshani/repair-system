@@ -199,11 +199,33 @@ const ActivityMock: OptionType[] = [
   }
 ];
 
+const ActivityFieldsMock: RichViewType[] = [
+  {
+    id: '1',
+    label: 'خودرویی',
+    children: [
+      {
+        id: '12',
+        label: 'فناوری'
+      },
+      {
+        id: '13',
+        label: 'غیرفناوری'
+      },
+      {
+        id: '14',
+        label: 'ساختمان'
+      }
+    ]
+  }
+];
+
 export {
   RolesMock,
   OrganizationUnitsMock,
   CitiesMock,
   CoursesMock,
   FieldsMock,
-  ActivityMock
+  ActivityMock,
+  ActivityFieldsMock
 };

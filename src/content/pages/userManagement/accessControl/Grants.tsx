@@ -1,19 +1,12 @@
-import {
-  AddTwoTone,
-  Delete,
-  MinimizeTwoTone,
-  PlusOneTwoTone
-} from '@mui/icons-material';
+import { AddTwoTone, MinimizeTwoTone } from '@mui/icons-material';
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Box,
   Checkbox,
-  Collapse,
   FormControlLabel,
   Grid,
-  IconButton,
   Tab,
   Tabs,
   Typography
@@ -22,7 +15,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   CustomRichTreeView,
   InlineLoader,
-  MyCustomTable
+  MyCustomTable,
+  TableRowAction
 } from 'src/components';
 import { i18n } from 'src/i18n';
 import { Button, ButtonType } from 'src/mahmood-components';
@@ -30,7 +24,6 @@ import {
   fetchGrantsByAccess,
   fetchUserGrantsByAccess,
   getGroupAccesses,
-  getGroupAccessRoles,
   getRolesWithGrants
 } from 'src/service';
 import { RichViewType } from 'src/types';
@@ -236,9 +229,8 @@ function Grants({
               }: {
                 row: { original: { id: string | number } };
               }) => (
-                <IconButton
-                  color="error"
-                  onClick={() => {
+                <TableRowAction
+                  onDelete={() => {
                     setUserGrants(
                       userGrants.map((userGrant) => {
                         if (userGrant.access === selectedTab) {
@@ -253,9 +245,7 @@ function Grants({
                       })
                     );
                   }}
-                >
-                  <Delete />
-                </IconButton>
+                />
               )}
               data={
                 userGrants.find((userGrant) => userGrant.access === selectedTab)

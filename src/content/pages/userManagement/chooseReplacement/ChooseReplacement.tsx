@@ -162,7 +162,13 @@ function ChooseReplacement() {
                 }: {
                   row: { original: { id: string | number } };
                 }) => (
-                  <IconButton color="error" onClick={() => console.log('as')}>
+                  <IconButton
+                    color="error"
+                    onClick={() => {
+                      //todo: impl onDelete
+                      console.log('as');
+                    }}
+                  >
                     <Delete />
                   </IconButton>
                 )}
@@ -209,6 +215,21 @@ function ChooseReplacement() {
               <MyCustomTable
                 enableRowNumbers={true}
                 enableRowActions={true}
+                rowActions={({
+                  row
+                }: {
+                  row: { original: { id: string | number } };
+                }) => (
+                  <IconButton
+                    color="error"
+                    onClick={() => {
+                      //todo: impl onDelete
+                      console.log('as');
+                    }}
+                  >
+                    <Delete />
+                  </IconButton>
+                )}
                 columns={rolesColumns}
                 data={takenGrants}
                 caption={i18n.t('taken_grants').toString()}

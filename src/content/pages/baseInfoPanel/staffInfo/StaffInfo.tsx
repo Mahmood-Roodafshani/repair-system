@@ -1,12 +1,7 @@
-import { Delete, Edit } from '@mui/icons-material';
-import { Grid, IconButton, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useEffect, useMemo, useState } from 'react';
-import gregorian from 'react-date-object/calendars/gregorian';
-import persian from 'react-date-object/calendars/persian';
-import gregorian_en from 'react-date-object/locales/gregorian_en';
 import { Helmet } from 'react-helmet-async';
-import { DateObject } from 'react-multi-date-picker';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 import {
@@ -15,14 +10,9 @@ import {
   InlineLoader,
   Loader,
   MyCustomTable,
-  OpGrid
+  OpGrid,
+  TableRowAction
 } from 'src/components';
-import { i18n } from 'src/i18n';
-import {
-  ConfirmationDialog,
-  SelectFormik,
-  TextFieldFormik
-} from 'src/mahmood-components';
 import {
   Degree,
   DegreeOptions,
@@ -33,6 +23,12 @@ import {
   ServiceStatus,
   ServiceStatusOptions
 } from 'src/constants';
+import { i18n } from 'src/i18n';
+import {
+  ConfirmationDialog,
+  SelectFormik,
+  TextFieldFormik
+} from 'src/mahmood-components';
 import {
   fetchCities,
   fetchEducationalFields,
@@ -46,8 +42,8 @@ import {
   StaffInfoRequestType,
   StaffInfoResponseType
 } from 'src/types';
-import { filterValidationSchema } from '../common/validationSchema';
 import CreateOrEditForm from '../common/CreateOrEditForm';
+import { filterValidationSchema } from '../common/validationSchema';
 
 function StaffInfo() {
   const [cities, setCities] = useState<RichViewType[]>();
@@ -323,24 +319,14 @@ function StaffInfo() {
               }: {
                 row: { original: { id: string | number } };
               }) => (
-                <Grid display={'flex'} flex={'row'} gap={'10px'}>
-                  <IconButton
-                    color="secondary"
-                    onClick={() => {
-                      setSelectedStaffForEdit(
-                        staffInfo.find((e) => e.id === row.original.id)
-                      );
-                    }}
-                  >
-                    <Edit />
-                  </IconButton>
-                  <IconButton
-                    color="error"
-                    onClick={() => setSelectedStaffIdForDelete(row.original.id)}
-                  >
-                    <Delete />
-                  </IconButton>
-                </Grid>
+                <TableRowAction
+                  onEdit={() =>
+                    setSelectedStaffForEdit(
+                      staffInfo.find((e) => e.id === row.original.id)
+                    )
+                  }
+                  onDelete={() => setSelectedStaffIdForDelete(row.original.id)}
+                />
               )}
               data={staffInfo}
               columns={columns}

@@ -1,18 +1,16 @@
-import { Grid, IconButton, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router';
-import { i18n } from 'src/i18n';
-import { ConfirmationDialog, TextFieldFormik } from 'src/mahmood-components';
+import { toast } from 'react-toastify';
 import {
-  RichViewType,
-  StaffInfoRequestType,
-  StaffInfoResponseType
-} from 'src/types';
-import { filterValidationSchema } from '../common/validationSchema';
-import { InlineLoader, Loader, MyCustomTable, OpGrid } from 'src/components';
-import CreateOrEditForm from '../common/CreateOrEditForm';
+  InlineLoader,
+  Loader,
+  MyCustomTable,
+  OpGrid,
+  TableRowAction
+} from 'src/components';
 import {
   Degree,
   FamilyRelation,
@@ -20,14 +18,21 @@ import {
   MaritalStatus,
   Religion
 } from 'src/constants';
-import { toast } from 'react-toastify';
-import { Delete, Edit } from '@mui/icons-material';
+import { i18n } from 'src/i18n';
+import { ConfirmationDialog, TextFieldFormik } from 'src/mahmood-components';
 import {
   fetchCities,
   fetchEducationalFields,
   fetchFamilyInfoList,
   removeFamilyInfo
 } from 'src/service';
+import {
+  RichViewType,
+  StaffInfoRequestType,
+  StaffInfoResponseType
+} from 'src/types';
+import CreateOrEditForm from '../common/CreateOrEditForm';
+import { filterValidationSchema } from '../common/validationSchema';
 
 function FamilyInfo() {
   const navigate = useNavigate();
@@ -221,26 +226,14 @@ function FamilyInfo() {
               }: {
                 row: { original: { id: string | number } };
               }) => (
-                <Grid display={'flex'} flex={'row'} gap={'10px'}>
-                  <IconButton
-                    color="secondary"
-                    onClick={() => {
-                      setSelectedMemberForEdit(
-                        familyInfo.find((e) => e.id === row.original.id)
-                      );
-                    }}
-                  >
-                    <Edit />
-                  </IconButton>
-                  <IconButton
-                    color="error"
-                    onClick={() =>
-                      setSelectedMemberIdForDelete(row.original.id)
-                    }
-                  >
-                    <Delete />
-                  </IconButton>
-                </Grid>
+                <TableRowAction
+                  onEdit={() =>
+                    setSelectedMemberForEdit(
+                      familyInfo.find((e) => e.id === row.original.id)
+                    )
+                  }
+                  onDelete={() => setSelectedMemberIdForDelete(row.original.id)}
+                />
               )}
               data={familyInfo}
               columns={columns}

@@ -1,9 +1,8 @@
-import { Delete, Edit } from '@mui/icons-material';
-import { Grid, IconButton, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { toast } from 'react-toastify';
-import { Loader, MyCustomTable } from 'src/components';
+import { Loader, MyCustomTable, TableRowAction } from 'src/components';
 import { i18n } from 'src/i18n';
 import { Button, ButtonType, ConfirmationDialog } from 'src/mahmood-components';
 import { fetchCodingList, fetchWorkLocations, removeCoding } from 'src/service';
@@ -85,25 +84,15 @@ function Coding() {
             }: {
               row: { original: { id: string | number } };
             }) => (
-              <Grid display={'flex'} flex={'row'} gap={'10px'}>
-                <IconButton
-                  color="secondary"
-                  onClick={() => {
-                    setSelectedCodingForEdit(
-                      data.find((e) => e.id === row.original.id).id
-                    );
-                    setShowCreateOrEditForm(true);
-                  }}
-                >
-                  <Edit />
-                </IconButton>
-                <IconButton
-                  color="error"
-                  onClick={() => setSelectedCodingForDelete(row.original.id)}
-                >
-                  <Delete />
-                </IconButton>
-              </Grid>
+              <TableRowAction
+                onEdit={() => {
+                  setSelectedCodingForEdit(
+                    data.find((e) => e.id === row.original.id).id
+                  );
+                  setShowCreateOrEditForm(true);
+                }}
+                onDelete={() => setSelectedCodingForDelete(row.original.id)}
+              />
             )}
             enableRowActions={true}
             columns={columns}

@@ -1,8 +1,8 @@
-import { ArrowBackTwoTone, Delete, Edit } from '@mui/icons-material';
+import { ArrowBackTwoTone } from '@mui/icons-material';
 import { Grid, IconButton, Typography } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
-import { MyCustomTable } from 'src/components';
+import { MyCustomTable, TableRowAction } from 'src/components';
 import { i18n } from 'src/i18n';
 import { ConfirmationDialog } from 'src/mahmood-components';
 import { getSystemRoles, removeRole } from 'src/service';
@@ -93,22 +93,11 @@ function SystemRoles({
         }: {
           row: { original: { id: string | number } };
         }) => (
-          <Grid
-            display={'flex'}
-            flexDirection={'row'}
-            gap={'10px'}
-            justifyContent={'start'}
-          >
-            <IconButton color="secondary" onClick={() => console.info('Edit')}>
-              <Edit />
-            </IconButton>
-            <IconButton
-              color="error"
-              onClick={() => setSelectedRole(row.original.id)}
-            >
-              <Delete />
-            </IconButton>
-          </Grid>
+          //todo: impl onEdit
+          <TableRowAction
+            onEdit={() => console.info('Edit')}
+            onDelete={() => setSelectedRole(row.original.id)}
+          />
         )}
         columns={columns}
         data={roles}

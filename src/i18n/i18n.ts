@@ -23,6 +23,7 @@ i18next
           tracking: 'سامانه ردیابی',
           coding: 'سامانه کدینگ',
           coding_access: 'دسترسی کدینگ',
+          companies: 'شرکت‌ها',
           // BUTTONS
           add: 'افزودن',
           delete: 'حذف',
@@ -115,6 +116,14 @@ i18next
           coding_name: 'نام کدینگ',
           priority: 'اولویت',
           show_priority: 'ترتیب نمایش',
+          activity_field: 'حوزه فعالیت',
+          new_company: 'شرکت جدید',
+          tel: 'شماره تلفن',
+          email_or_social_media_account: 'ایمیل یا آی دی شبکه اجتماعی',
+          ceo: 'مدیرعامل',
+          can_be_partner: 'قابل همکاری',
+          can_not_be_partner: 'غیرقابل همکاری',
+          company_name: 'نام شرکت',
           // TABLE
           operation: 'عملیات',
           row_number: 'ردیف',
@@ -196,6 +205,9 @@ i18next
           coding_removed: 'کدینگ مدنظر حذف گردید',
           coding_created: 'کدینگ با موفقیت ثبت گردید',
           coding_updated: 'کدینگ مدنظر با موفقیت ویرایش گردید',
+          company_removed: 'شرکت مدنظر با موفقیت حذف گردید',
+          company_created: 'شرکت با موفقیت ثبت گردید',
+          company_updated: 'شرکت مدنظر با موفقیت ویرایش گردید',
           // ERRORS
           please_fill_req_fields: 'لطفا تمام موارد لازم را پر نمایید',
           firstname_is_req: 'لطفا فیلد نام را وارد نمایید',
@@ -264,7 +276,25 @@ i18next
           priority_is_req: 'اولویت را وارد نمایید',
           priority_max: 'حداکثر مقدار برای اولویت، 10000 می‌باشد',
           priority_min: 'حداقل مقدار برای اولویت، 1 می‌باشد',
-          coding_name_is_req: 'نام کدینگ را وارد نمایید'
+          coding_name_is_req: 'نام کدینگ را وارد نمایید',
+          company_name_is_req: 'لطفا فیلد نام شرکت را وارد نمایید',
+          company_name_min_length: 'نام شرکت باید حداقل 2 کاراکتر باشد',
+          company_name_max_length: 'نام شرکت باید حداکثر 50 کاراکتر باشد',
+          ceo_is_req: 'لطفا فیلد نام مدیر عامل را وارد نمایید',
+          ceo_min_length: 'نام مدیر عامل باید حداقل 2 کاراکتر باشد',
+          ceo_max_length: 'نام مدیر عامل باید حداکثر 50 کاراکتر باشد',
+          tel_is_req: 'لطفا فیلد شماره تلفن را وارد نمایید',
+          tel_min_length: 'شماره تلفن باید حداقل 6 رقم باشد',
+          tel_max_length: 'شماره تلفن باید حداکثر 11 رقم باشد',
+          email_or_social_id_is_req:
+            'لطفا فیلد ایمیل یا آی دی شبکه اجتماعی را وارد نمایید',
+          email_or_social_id_min_length:
+            'ایمیل یا آی دی شبکه اجتماعی باید حداقل 2 کاراکتر باشد',
+          email_or_social_id_max_length:
+            'ایمیل یا آی دی شبکه اجتماعی باید حداکثر 100 کاراکتر باشد',
+          invalid_tel: 'شماره تلفن وارد شده نامعتیر است',
+          activity_field_is_req: 'لطفا حوزه فعالیت را وارد نمایید',
+          can_be_partner_is_req: 'لطفا فیلد وضعیت را مشخص نمایید'
         }
       }
     }

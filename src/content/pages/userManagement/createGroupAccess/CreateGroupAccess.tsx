@@ -1,24 +1,16 @@
-import { Delete } from '@mui/icons-material';
 import { TabContext, TabPanel } from '@mui/lab';
-import {
-  Grid,
-  IconButton,
-  Tab,
-  Tabs,
-  TextField,
-  useTheme
-} from '@mui/material';
+import { Grid, Tab, Tabs, TextField, useTheme } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
-import { Loader, MyCustomTable, OpGrid } from 'src/components';
+import { Loader, MyCustomTable, OpGrid, TableRowAction } from 'src/components';
 import { i18n } from 'src/i18n';
 import { ConfirmationDialog } from 'src/mahmood-components';
 import {
   addGroupAccess,
-  getGroupAccesses,
   getGroupAccessRoles,
+  getGroupAccesses,
   removeGroupAccess
 } from 'src/service';
 
@@ -116,15 +108,12 @@ function CreateGroupAccess() {
             }: {
               row: { original: { id: string | number } };
             }) => (
-              <IconButton
-                color="error"
-                onClick={() => {
+              <TableRowAction
+                onDelete={() => {
                   setSelectedGroupId(row.original.id);
                   setShowConfirmationForRemove(true);
                 }}
-              >
-                <Delete />
-              </IconButton>
+              />
             )}
             data={groups}
             columns={columns}

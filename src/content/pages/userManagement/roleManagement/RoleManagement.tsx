@@ -1,18 +1,18 @@
-import { Add, Delete, Edit, PersonAdd } from '@mui/icons-material';
+import { Add, PersonAdd } from '@mui/icons-material';
 import { Grid, IconButton, TextField, Typography } from '@mui/material';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
-import { Loader, MyCustomTable, OpGrid } from 'src/components';
+import { Loader, MyCustomTable, OpGrid, TableRowAction } from 'src/components';
 import { i18n } from 'src/i18n';
 import { Button, ButtonType, ConfirmationDialog } from 'src/mahmood-components';
 import { removeSystem, searchRoleBySystemTitle } from 'src/service';
 import { SystemResponseType } from 'src/types';
 import CreateNewRoleDialog from './components/CreateNewRoleDialog';
 import CreateNewSystemDialog from './components/CreateNewSystemDialog';
-import SystemRoles from './components/SystemRoles';
 import EditSystem from './components/EditSystem';
+import SystemRoles from './components/SystemRoles';
 
 function RoleManagement() {
   const [title, setTitle] = useState<string>();
@@ -157,40 +157,27 @@ function RoleManagement() {
               }: {
                 row: { original: { id: string | number } };
               }) => (
-                <Grid
-                  display={'flex'}
-                  flexDirection={'row'}
-                  gap={'10px'}
-                  justifyContent={'start'}
-                >
-                  <IconButton
-                    onClick={() => {
-                      setSelectedSystemId(row.original.id);
-                      setShowCreateNewRoleDialog(true);
-                    }}
-                    color="primary"
-                  >
-                    <PersonAdd />
-                  </IconButton>
-                  <IconButton
-                    color="secondary"
-                    onClick={() => {
-                      setSelectedSystemId(row.original.id);
-                      setShowSystemEditPanel(true);
-                    }}
-                  >
-                    <Edit />
-                  </IconButton>
-                  <IconButton
-                    color="error"
-                    onClick={() => {
-                      setSelectedSystemId(row.original.id);
-                      setShowConfirmationModelForRemove(true);
-                    }}
-                  >
-                    <Delete />
-                  </IconButton>
-                </Grid>
+                <TableRowAction
+                  additionalIconButton={
+                    <IconButton
+                      onClick={() => {
+                        setSelectedSystemId(row.original.id);
+                        setShowCreateNewRoleDialog(true);
+                      }}
+                      color="primary"
+                    >
+                      <PersonAdd />
+                    </IconButton>
+                  }
+                  onEdit={() => {
+                    setSelectedSystemId(row.original.id);
+                    setShowSystemEditPanel(true);
+                  }}
+                  onDelete={() => {
+                    setSelectedSystemId(row.original.id);
+                    setShowConfirmationModelForRemove(true);
+                  }}
+                />
               )}
               columns={columns}
               data={systems}

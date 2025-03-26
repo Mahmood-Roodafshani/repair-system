@@ -1,11 +1,16 @@
-import { Delete, Edit } from '@mui/icons-material';
-import { Grid, IconButton, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
-import { InlineLoader, Loader, MyCustomTable, OpGrid } from 'src/components';
+import {
+  InlineLoader,
+  Loader,
+  MyCustomTable,
+  OpGrid,
+  TableRowAction
+} from 'src/components';
 import { Degree, Gender, MaritalStatus, Religion } from 'src/constants';
 import { i18n } from 'src/i18n';
 import { ConfirmationDialog, TextFieldFormik } from 'src/mahmood-components';
@@ -186,24 +191,14 @@ function OtherInfo() {
               }: {
                 row: { original: { id: string | number } };
               }) => (
-                <Grid display={'flex'} flex={'row'} gap={'10px'}>
-                  <IconButton
-                    color="secondary"
-                    onClick={() => {
-                      setSelectedStaffForEdit(
-                        otherInfo.find((e) => e.id === row.original.id)
-                      );
-                    }}
-                  >
-                    <Edit />
-                  </IconButton>
-                  <IconButton
-                    color="error"
-                    onClick={() => setSelectedStaffIdForDelete(row.original.id)}
-                  >
-                    <Delete />
-                  </IconButton>
-                </Grid>
+                <TableRowAction
+                  onDelete={() => setSelectedStaffIdForDelete(row.original.id)}
+                  onEdit={() =>
+                    setSelectedStaffForEdit(
+                      otherInfo.find((e) => e.id === row.original.id)
+                    )
+                  }
+                />
               )}
               data={otherInfo}
               columns={columns}

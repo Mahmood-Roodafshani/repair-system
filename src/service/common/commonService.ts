@@ -1,4 +1,5 @@
 import {
+  ActivityFieldsMock,
   ActivityMock,
   CitiesMock,
   CoursesMock,
@@ -139,6 +140,20 @@ const fetchActivities = async () => {
   return response;
 };
 
+const fetchActivityFields = async () => {
+  if (process.env.REACT_APP_WORK_WITH_MOCK) {
+    await timeout(1000);
+    return {
+      statusCode: 200,
+      content: ActivityFieldsMock
+    };
+  }
+  const response = await get({
+    url: ROUTES.FETCH_ORGANIZATION_UNITS
+  });
+  return response;
+};
+
 export {
   fetchRoles,
   fetchOrganizationUnits,
@@ -148,5 +163,6 @@ export {
   fetchPositionDegree,
   fetchEducationalFields,
   fetchWorkLocations,
-  fetchActivities
+  fetchActivities,
+  fetchActivityFields
 };

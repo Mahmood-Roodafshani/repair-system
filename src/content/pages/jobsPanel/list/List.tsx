@@ -1,18 +1,20 @@
-import { Delete, Edit } from '@mui/icons-material';
-import { Grid, IconButton, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router';
+import { toast } from 'react-toastify';
 import {
   CustomRichTreeView,
   InlineLoader,
   Loader,
   MyCustomTable,
-  OpGrid
+  OpGrid,
+  TableRowAction
 } from 'src/components';
-import { i18n } from 'src/i18n';
 import { JobLevel, JobStatus } from 'src/constants';
+import { i18n } from 'src/i18n';
+import { ConfirmationDialog } from 'src/mahmood-components';
 import {
   fetchCourses,
   fetchFields,
@@ -23,8 +25,6 @@ import {
 } from 'src/service';
 import { JobResponseType, RichViewType } from 'src/types';
 import CreateOrEditForm from './CreateOrEditForm';
-import { ConfirmationDialog } from 'src/mahmood-components';
-import { toast } from 'react-toastify';
 
 type FormFilter = {
   organizationUnits?: string[];
@@ -180,24 +180,14 @@ function List() {
               }: {
                 row: { original: { id: string | number } };
               }) => (
-                <Grid display={'flex'} flex={'row'} gap={'10px'}>
-                  <IconButton
-                    color="secondary"
-                    onClick={() => {
-                      setSelectedJobForEdit(
-                        jobs.find((e) => e.id === row.original.id)
-                      );
-                    }}
-                  >
-                    <Edit />
-                  </IconButton>
-                  <IconButton
-                    color="error"
-                    onClick={() => setSelectedJobIdForDelete(row.original.id)}
-                  >
-                    <Delete />
-                  </IconButton>
-                </Grid>
+                <TableRowAction
+                  onEdit={() =>
+                    setSelectedJobForEdit(
+                      jobs.find((e) => e.id === row.original.id)
+                    )
+                  }
+                  onDelete={() => setSelectedJobIdForDelete(row.original.id)}
+                />
               )}
               data={jobs}
               columns={columns}
