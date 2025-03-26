@@ -7,8 +7,11 @@ import {
   TextFieldFormik
 } from 'src/mahmood-components';
 import { createCompany, updateCompany } from 'src/service';
-import { CompaniesResponse, RichViewType } from 'src/types';
-import { CreateCompanyRequest } from 'src/types/requests/repairPanel/createCompanyRequest';
+import {
+  CompaniesResponse,
+  CreateCompanyRequest,
+  RichViewType
+} from 'src/types';
 import { mapAllIdsInNestedArray } from 'src/utils/helper';
 import { createValidationSchema } from './validationSchema';
 import { useState } from 'react';
@@ -100,18 +103,15 @@ function CreateOrEditForm({
                   <TextFieldFormik
                     name="name"
                     label={i18n.t('company_name').toString()}
-                    sx={{ width: '250px' }}
                   />
                   <TextFieldFormik
                     name="tel"
                     type="tel"
                     label={i18n.t('tel').toString()}
-                    sx={{ width: '250px' }}
                   />
                   <TextFieldFormik
                     name="ceo"
                     label={i18n.t('ceo').toString()}
-                    sx={{ width: '250px' }}
                   />
                 </Grid>
               </Grid>

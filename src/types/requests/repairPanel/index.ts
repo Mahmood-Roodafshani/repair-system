@@ -1,1 +1,2 @@
-export type { GetCompaniesRequest } from './getCompaniesRequest';
+export * from './company';
+export * from './items';

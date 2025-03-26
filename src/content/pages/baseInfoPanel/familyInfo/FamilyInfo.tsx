@@ -170,34 +170,28 @@ function FamilyInfo() {
                       flexWrap="wrap"
                     >
                       <TextFieldFormik
-                        sx={{ width: '250px' }}
                         name="firstname"
                         label={i18n.t('firstname').toString()}
                       />
                       <TextFieldFormik
-                        sx={{ width: '250px' }}
                         name="lastname"
                         label={i18n.t('lastname').toString()}
                       />
                       <TextFieldFormik
-                        sx={{ width: '250px' }}
                         name="fatherName"
                         label={i18n.t('father_name').toString()}
                       />
                       <TextFieldFormik
-                        sx={{ width: '250px' }}
                         name="idNumber"
                         label={i18n.t('id_number').toString()}
                         type="number"
                       />
                       <TextFieldFormik
-                        sx={{ width: '250px' }}
                         name="nationalCode"
                         label={i18n.t('national_code').toString()}
                         type="number"
                       />
                       <TextFieldFormik
-                        sx={{ width: '250px' }}
                         name="supervisorNationalCode"
                         label={i18n.t('supervisor_national_code').toString()}
                         type="number"

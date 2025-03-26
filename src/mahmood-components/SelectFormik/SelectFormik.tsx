@@ -15,8 +15,20 @@ interface SelectProps extends Partial<OutlinedTextFieldProps> {
 
 const SelectFormik = (props: SelectProps) => {
   const { isHandledByFormik = true, ...otherProps } = props;
-  if (isHandledByFormik) return <SelectWithFormik {...otherProps} />;
-  else return <SelectWithoutFormik {...otherProps} />;
+  if (isHandledByFormik)
+    return (
+      <SelectWithFormik
+        sx={props.sx ? props.sx : { width: '250px' }}
+        {...otherProps}
+      />
+    );
+  else
+    return (
+      <SelectWithoutFormik
+        sx={props.sx ? props.sx : { width: '250px' }}
+        {...otherProps}
+      />
+    );
 };
 
 const SelectWithFormik = (props: SelectProps) => {

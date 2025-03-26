@@ -142,35 +142,29 @@ function CreateOrEditForm({
                 flexWrap="wrap"
               >
                 <TextFieldFormik
-                  sx={{ width: '250px' }}
                   name="firstname"
                   label={i18n.t('firstname').toString()}
                 />
                 <TextFieldFormik
-                  sx={{ width: '250px' }}
                   name="lastname"
                   label={i18n.t('lastname').toString()}
                 />
                 <TextFieldFormik
-                  sx={{ width: '250px' }}
                   name="fatherName"
                   label={i18n.t('father_name').toString()}
                 />
                 <TextFieldFormik
-                  sx={{ width: '250px' }}
                   name="idNumber"
                   label={i18n.t('id_number').toString()}
                   type="number"
                 />
                 <TextFieldFormik
-                  sx={{ width: '250px' }}
                   name="nationalCode"
                   label={i18n.t('national_code').toString()}
                   type="number"
                 />
                 {mode === 'staff' && (
                   <TextFieldFormik
-                    sx={{ width: '250px' }}
                     name="staffCode"
                     label={i18n.t('staff_code').toString()}
                     type="number"
@@ -191,7 +185,6 @@ function CreateOrEditForm({
                 )}
                 {(mode === 'staff' || mode === 'nonStaff') && (
                   <TextFieldFormik
-                    sx={{ width: '250px' }}
                     name="mobile"
                     label={i18n.t('mobile').toString()}
                     type="number"
@@ -199,55 +192,47 @@ function CreateOrEditForm({
                 )}
                 {mode === 'family' && (
                   <TextFieldFormik
-                    sx={{ width: '250px' }}
                     name="supervisorNationalCode"
                     label={i18n.t('supervisor_national_code').toString()}
                     type="number"
                   />
                 )}
                 <SelectFormik
-                  sx={{ width: '250px' }}
                   options={ReligionOptions}
                   name="religion"
                   label={i18n.t('religion').toString()}
                 />
                 <SelectFormik
-                  sx={{ width: '250px' }}
                   options={DegreeOptions}
                   name="degree"
                   label={i18n.t('degree').toString()}
                 />
                 {mode === 'staff' && (
                   <SelectFormik
-                    sx={{ width: '250px' }}
                     options={ServiceStatusOptions}
                     name="serviceStatus"
                     label={i18n.t('service_status').toString()}
                   />
                 )}
                 <SelectFormik
-                  sx={{ width: '250px' }}
                   options={GenderOptions}
                   name="gender"
                   label={i18n.t('gender').toString()}
                 />
                 {mode === 'staff' && (
                   <SelectFormik
-                    sx={{ width: '250px' }}
                     options={positionDegrees}
                     name="positionDegree"
                     label={i18n.t('position_degree').toString()}
                   />
                 )}
                 <SelectFormik
-                  sx={{ width: '250px' }}
                   options={MaritalStatusOptions}
                   name="martialStatus"
                   label={i18n.t('martial_status').toString()}
                 />
                 {mode === 'family' && (
                   <SelectFormik
-                    sx={{ width: '250px' }}
                     options={FamilyRelationOptions}
                     name="familyRelation"
                     label={i18n.t('family_relation').toString()}

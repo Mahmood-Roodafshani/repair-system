@@ -151,7 +151,6 @@ function Access() {
               <Grid display={'flex'} flexDirection={'column'} gap={'10px'}>
                 <Grid display={'flex'} flexDirection={'row'} gap={'20px'}>
                   <TextFieldFormik
-                    sx={{ width: '250px' }}
                     type="number"
                     placeholder={i18n.t('national_code').toString()}
                     name="nationalCode"
@@ -159,7 +158,6 @@ function Access() {
                   />
                   <SelectFormik
                     label={i18n.t('coding_name').toString()}
-                    sx={{ width: '250px' }}
                     name="codingId"
                     options={codingAccessList.map((item) => ({
                       id: item.id,

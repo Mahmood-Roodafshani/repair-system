@@ -3,7 +3,7 @@ import { get, post, put, remove } from '../service';
 import ROUTES from '../routes';
 import { GetCompaniesRequest } from 'src/types';
 import { CompaniesMock, CompanyMock } from 'src/mock';
-import { CreateCompanyRequest } from 'src/types/requests/repairPanel/createCompanyRequest';
+import { CreateCompanyRequest } from 'src/types/requests/repairPanel/company/createCompanyRequest';
 
 const fetchCompaniesList = async (request: GetCompaniesRequest) => {
   if (process.env.REACT_APP_WORK_WITH_MOCK) {

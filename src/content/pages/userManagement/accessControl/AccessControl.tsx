@@ -204,24 +204,20 @@ function AccessControl() {
                   flexWrap={'wrap'}
                 >
                   <TextFieldFormik
-                    sx={{ width: '250px' }}
                     name="staffCode"
                     label={i18n.t('staff_code').toString()}
                     type="number"
                   />
                   <TextFieldFormik
-                    sx={{ width: '250px' }}
                     name="nationalCode"
                     label={i18n.t('national_code').toString()}
                     type="number"
                   />
                   <TextFieldFormik
-                    sx={{ width: '250px' }}
                     name="firstname"
                     label={i18n.t('firstname').toString()}
                   />
                   <TextFieldFormik
-                    sx={{ width: '250px' }}
                     name="lastname"
                     label={i18n.t('lastname').toString()}
                   />

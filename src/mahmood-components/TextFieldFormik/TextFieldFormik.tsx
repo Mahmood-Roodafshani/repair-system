@@ -13,7 +13,13 @@ interface LocalTextFieldProps extends Partial<OutlinedTextFieldProps> {
 const TextFieldFormik = (props: LocalTextFieldProps) => {
   const { isHandledByFormik = true, type = 'text', ...otherProps } = props;
   // if (isHandledByFormik)
-  return <TextFieldWithFormik type={type} {...otherProps} />;
+  return (
+    <TextFieldWithFormik
+      sx={props.sx ? props.sx : { width: '250px' }}
+      type={type}
+      {...otherProps}
+    />
+  );
   // else
   //     return <TextFieldWithoutFormik type={type} {...otherProps}/>
 };

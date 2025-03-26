@@ -24,6 +24,7 @@ i18next
           coding: 'سامانه کدینگ',
           coding_access: 'دسترسی کدینگ',
           companies: 'شرکت‌ها',
+          items_list: 'لیست اقلام',
           // BUTTONS
           add: 'افزودن',
           delete: 'حذف',
@@ -72,6 +73,7 @@ i18next
           role: 'نقش',
           roles: 'نقش‌ها',
           title: 'عنوان',
+          group: 'گروه',
           status: 'وضعیت',
           name: 'نام',
           fullname: 'نام و نام خانوادگی',
@@ -124,6 +126,9 @@ i18next
           can_be_partner: 'قابل همکاری',
           can_not_be_partner: 'غیرقابل همکاری',
           company_name: 'نام شرکت',
+          asset_number: 'شماره اموال',
+          fetch_from_central_asset_system:
+            'فراخوانی از سامانه اموال براساس آخرین تاریخ بروزرسانی',
           // TABLE
           operation: 'عملیات',
           row_number: 'ردیف',

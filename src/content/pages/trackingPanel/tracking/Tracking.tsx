@@ -182,7 +182,6 @@ function Tracking() {
                     clearFlag={clearFlag}
                   />
                   <TextFieldFormik
-                    sx={{ width: '250px' }}
                     name="nationalCode"
                     type="number"
                     placeholder={i18n.t('enter_national_code')}
