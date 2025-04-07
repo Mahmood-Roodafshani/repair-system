@@ -5,6 +5,7 @@ import {
   CoursesMock,
   EducationalFieldMock,
   FieldsMock,
+  ItemCategoryFieldsMock,
   OrganizationUnitsMock,
   PositionDegreeMock,
   RolesMock,
@@ -154,6 +155,20 @@ const fetchActivityFields = async () => {
   return response;
 };
 
+const fetchItemCategoryFields = async () => {
+  if (process.env.REACT_APP_WORK_WITH_MOCK) {
+    await timeout(1000);
+    return {
+      statusCode: 200,
+      content: ItemCategoryFieldsMock
+    };
+  }
+  const response = await get({
+    url: ROUTES.FETCH_ORGANIZATION_UNITS
+  });
+  return response;
+};
+
 export {
   fetchRoles,
   fetchOrganizationUnits,
@@ -164,5 +179,6 @@ export {
   fetchEducationalFields,
   fetchWorkLocations,
   fetchActivities,
-  fetchActivityFields
+  fetchActivityFields,
+  fetchItemCategoryFields
 };

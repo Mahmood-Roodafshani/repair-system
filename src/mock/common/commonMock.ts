@@ -220,6 +220,43 @@ const ActivityFieldsMock: RichViewType[] = [
   }
 ];
 
+const ItemCategoryFieldsMock: RichViewType[] = [
+  {
+    id: '1',
+    label: 'خودرویی',
+    children: [
+      {
+        id: '12',
+        label: 'فناوری',
+        children: [
+          {
+            id: '121',
+            label: 'شبکه'
+          },
+          {
+            id: '122',
+            label: 'رایانه',
+            children: [
+              {
+                id: '1221',
+                label: 'کیس'
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: '13',
+        label: 'غیرفناوری'
+      },
+      {
+        id: '14',
+        label: 'ساختمان'
+      }
+    ]
+  }
+];
+
 export {
   RolesMock,
   OrganizationUnitsMock,
@@ -227,5 +264,6 @@ export {
   CoursesMock,
   FieldsMock,
   ActivityMock,
-  ActivityFieldsMock
+  ActivityFieldsMock,
+  ItemCategoryFieldsMock
 };

@@ -130,6 +130,8 @@ i18next
           asset_number: 'شماره اموال',
           fetch_from_central_asset_system:
             'فراخوانی از سامانه اموال براساس آخرین تاریخ بروزرسانی',
+          give_back_borrowed_items: 'تحویل اقلام امانی',
+          enter_staff_code: 'کد پرسنلی را وارد نمایید',
           // TABLE
           operation: 'عملیات',
           row_number: 'ردیف',
@@ -167,6 +169,9 @@ i18next
           submit_at: 'تاریخ ثبت',
           receive_at: 'تاریخ دریافت کالا',
           deliver_at: 'تاریخ تحویل کالا',
+          choose_deliverer: 'انتخاب تحویل دهنده',
+          choose_receiver: 'انتخاب تحویل گیرنده',
+          choose_item_category: 'انتخاب نوع اقلام',
           // FAMILY RELATION
           family_relation_wife_husband: 'همسر',
           family_relation_father: 'پدر',
@@ -241,6 +246,7 @@ i18next
           message_min_length: 'متن پیام باید حداقل 2 کاراکتر باشد',
           message_max_length: 'متن پیام باید حداکثر 1000 کاراکتر باشد',
           message_is_req: 'لطفا متن پیام را وارد نمایید',
+          invalid_asset_number: 'شماره اموال وارد شده نامعتبر است',
           from_is_req: 'لطفا تاریخ شروع را وارد نمایید',
           to_is_req: 'لطفا تاریخ پایان را وارد نمایید',
           invalid_national_code: 'کدملی وارد شده نامعتبر است',

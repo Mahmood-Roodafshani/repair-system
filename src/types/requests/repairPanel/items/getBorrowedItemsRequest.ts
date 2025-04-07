@@ -6,4 +6,5 @@ export type GetBorrowedItemsRequest = {
   assetNumber?: string;
   deliverAt?: string | Date | DateObject;
   receiveAt?: string | Date | DateObject;
+  itemCategories?: string[];
 };
