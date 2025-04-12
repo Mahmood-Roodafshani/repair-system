@@ -1,4 +1,4 @@
-const BASE_URL = process.env.REACT_APP_BASE_URL;
+const BASE_URL = import.meta.env.VITE_APP_BASE_URL;
 const ROUTES = {
   // SIGN IN / SIGN UP SERVICES
   USER_LOGIN: `${BASE_URL}test`,

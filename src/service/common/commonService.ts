@@ -16,7 +16,7 @@ import { get } from '../service';
 import ROUTES from '../routes';
 
 const fetchRoles = async () => {
-  if (process.env.REACT_APP_WORK_WITH_MOCK) {
+  if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
       statusCode: 200,
@@ -30,7 +30,7 @@ const fetchRoles = async () => {
 };
 
 const fetchCities = async () => {
-  if (process.env.REACT_APP_WORK_WITH_MOCK) {
+  if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
       statusCode: 200,
@@ -44,7 +44,7 @@ const fetchCities = async () => {
 };
 
 const fetchOrganizationUnits = async () => {
-  if (process.env.REACT_APP_WORK_WITH_MOCK) {
+  if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
       statusCode: 200,
@@ -58,7 +58,7 @@ const fetchOrganizationUnits = async () => {
 };
 
 const fetchFields = async () => {
-  if (process.env.REACT_APP_WORK_WITH_MOCK) {
+  if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
       statusCode: 200,
@@ -72,7 +72,7 @@ const fetchFields = async () => {
 };
 
 const fetchCourses = async () => {
-  if (process.env.REACT_APP_WORK_WITH_MOCK) {
+  if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
       statusCode: 200,
@@ -86,7 +86,7 @@ const fetchCourses = async () => {
 };
 
 const fetchPositionDegree = async () => {
-  if (process.env.REACT_APP_WORK_WITH_MOCK) {
+  if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
       statusCode: 200,
@@ -100,7 +100,7 @@ const fetchPositionDegree = async () => {
 };
 
 const fetchEducationalFields = async () => {
-  if (process.env.REACT_APP_WORK_WITH_MOCK) {
+  if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
       statusCode: 200,
@@ -114,7 +114,7 @@ const fetchEducationalFields = async () => {
 };
 
 const fetchWorkLocations = async () => {
-  if (process.env.REACT_APP_WORK_WITH_MOCK) {
+  if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
       statusCode: 200,
@@ -128,7 +128,7 @@ const fetchWorkLocations = async () => {
 };
 
 const fetchActivities = async () => {
-  if (process.env.REACT_APP_WORK_WITH_MOCK) {
+  if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
       statusCode: 200,
@@ -142,7 +142,7 @@ const fetchActivities = async () => {
 };
 
 const fetchActivityFields = async () => {
-  if (process.env.REACT_APP_WORK_WITH_MOCK) {
+  if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
       statusCode: 200,
@@ -156,7 +156,7 @@ const fetchActivityFields = async () => {
 };
 
 const fetchItemCategoryFields = async () => {
-  if (process.env.REACT_APP_WORK_WITH_MOCK) {
+  if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
       statusCode: 200,
