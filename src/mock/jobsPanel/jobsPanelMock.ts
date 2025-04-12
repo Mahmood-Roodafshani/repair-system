@@ -1,4 +1,4 @@
-import { JobLevel, JobStatus } from 'src/constants';
+import { JobLevel, JobStatus } from 'src/constant/enums';
 import { JobResponseType, RichViewType } from 'src/types';
 
 const JobsFullInfoMock: JobResponseType[] = [

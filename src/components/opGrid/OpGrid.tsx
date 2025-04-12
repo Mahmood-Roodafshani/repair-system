@@ -1,6 +1,6 @@
 import { Grid, SxProps } from '@mui/material';
 import { Theme } from '@mui/material/styles';
-import { Button, ButtonType } from 'src/mahmood-components';
+import { Button, ButtonType } from '@/components/form';
 
 function OpGrid({
   sx,

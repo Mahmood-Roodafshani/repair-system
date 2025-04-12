@@ -6,7 +6,7 @@ import {
   MaritalStatus,
   Religion,
   ServiceStatus
-} from 'src/constants';
+} from 'src/constant/options';
 
 export type StaffInfoRequestType = {
   id?: string | number;

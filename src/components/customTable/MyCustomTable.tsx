@@ -1,8 +1,8 @@
 import { Grid, useTheme } from '@mui/material';
 import { MaterialReactTable } from 'material-react-table';
 import { Dispatch, SetStateAction } from 'react';
-import { i18n } from 'src/i18n';
-import { Pagination } from 'src/types';
+import i18n from '../../localization/i18n';
+import { Pagination } from '../../types/pagination';
 
 function MyCustomTable({
   data,

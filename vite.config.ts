@@ -9,6 +9,10 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src'),
       'src': path.resolve(__dirname, './src'),
+      'localization': path.resolve(__dirname, './src/localization'),
+      '@/localization': path.resolve(__dirname, './src/localization'),
+      '@/types': path.resolve(__dirname, './src/types'),
+      '@/types/pagination': path.resolve(__dirname, './src/types/pagination.ts'),
     },
   },
   server: {

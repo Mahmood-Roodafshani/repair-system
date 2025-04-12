@@ -1,13 +1,12 @@
 import {
-  Degree,
-  FamilyRelation,
-  Gender,
-  MaritalStatus,
-  OptionType,
-  Religion,
-  ServiceStatus
-} from 'src/constants';
+  OptionType
+} from 'src/constant/options';
 import { RichViewType, StaffInfoResponseType } from 'src/types';
+import {Gender,  Degree,
+  FamilyRelation,
+  MaritalStatus,
+  Religion,
+  ServiceStatus} from "@/constant";
 
 const PositionDegreeMock: OptionType[] = [
   {
