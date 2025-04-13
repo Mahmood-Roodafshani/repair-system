@@ -1,20 +1,20 @@
 import { RichViewType } from 'src/types';
 
-export function timeout(delay: number) {
+export function timeout(delay: number): Promise<void> {
   return new Promise((res) => setTimeout(res, delay));
 }
 
-export function extractIds(obj) {
-  let ids = [];
+export function extractIds(obj: Record<string, unknown>): string[] {
+  const ids: string[] = [];
 
   // Iterate over the keys of the object
-  for (let key in obj) {
+  for (const key in obj) {
     if (obj[key] && typeof obj[key] === 'object') {
       // If it's an object, recurse into it
-      ids = ids.concat(extractIds(obj[key]));
+      ids.push(...extractIds(obj[key] as Record<string, unknown>));
     } else if (key === 'id') {
       // If we find the ID, add it to the list
-      ids.push(obj[key]);
+      ids.push(obj[key] as string);
     }
   }
 
@@ -70,7 +70,7 @@ export const CKEditorToolbar = {
   }
 };
 
-export function findItemById(array: RichViewType[], id: string) {
+export function findItemById(array: RichViewType[], id: string): RichViewType | null {
   for (let i = 0; i < array.length; i++) {
     const item = array[i];
 
@@ -95,8 +95,8 @@ export function findItemById(array: RichViewType[], id: string) {
 export function findNodeWithParents(
   node: RichViewType,
   targetId: string,
-  parentChain = []
-) {
+  parentChain: RichViewType[] = []
+): { node: RichViewType; parents: RichViewType[] } | null {
   if (node.id === targetId) {
     return { node, parents: parentChain };
   }
@@ -111,7 +111,7 @@ export function findNodeWithParents(
 }
 
 // Function to find all parents of a node, bottom to top
-export function findAllParents(nodeId: string, tree: RichViewType[]) {
+export function findAllParents(nodeId: string, tree: RichViewType[]): RichViewType[] {
   for (const node of tree) {
     const result = findNodeWithParents(node, nodeId);
     if (result) return result.parents;
@@ -120,8 +120,8 @@ export function findAllParents(nodeId: string, tree: RichViewType[]) {
   return [];
 }
 
-function getIdsWithNonZeroChildren(objects: RichViewType[]) {
-  let result = [];
+function getIdsWithNonZeroChildren(objects: RichViewType[]): string[] {
+  let result: string[] = [];
 
   objects.forEach((obj) => {
     if (obj.children && obj.children.length > 0) {
@@ -133,12 +133,12 @@ function getIdsWithNonZeroChildren(objects: RichViewType[]) {
   return result;
 }
 
-export function findAllNodesWithChild(tree: RichViewType[]) {
+export function findAllNodesWithChild(tree: RichViewType[]): string[] {
   return getIdsWithNonZeroChildren(tree);
 }
 
-export function mapAllIdsInNestedArray(prefix: string, tree: RichViewType[]) {
-  if (tree === undefined) return [];
+export function mapAllIdsInNestedArray(prefix: string, tree: RichViewType[] | undefined): RichViewType[] {
+  if (!tree) return [];
   return tree.map((e) => ({
     id: prefix + e.id,
     label: e.label,
@@ -146,7 +146,7 @@ export function mapAllIdsInNestedArray(prefix: string, tree: RichViewType[]) {
   }));
 }
 
-export function findLeafs(arr: RichViewType[]): any[] {
+export function findLeafs(arr: RichViewType[]): string[] {
   let leafs: string[] = [];
 
   for (const item of arr) {

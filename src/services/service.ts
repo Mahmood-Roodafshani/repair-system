@@ -11,13 +11,11 @@ export const post = async ({
   needToken?: boolean;
   acceptJson?: boolean;
 }): Promise<{ statusCode: number; content?: any }> => {
-  let headers = {
+  const headers = {
     Accept: 'application/json',
     'Content-Type': 'application/json',
-    Authorization: undefined
+    Authorization: needToken ? `Bearer ${localStorage.getItem('token')}` : undefined
   };
-  if (needToken)
-    headers.Authorization = 'Bearer ' + localStorage.getItem('token');
   const config = {
     method: 'post',
     headers: headers,
@@ -64,13 +62,11 @@ export const put = async ({
   needToken?: boolean;
   acceptJson?: boolean;
 }): Promise<{ statusCode: number; content?: any }> => {
-  let headers = {
+  const headers = {
     Accept: 'application/json',
     'Content-Type': 'application/json',
-    Authorization: undefined
+    Authorization: needToken ? `Bearer ${localStorage.getItem('token')}` : undefined
   };
-  if (needToken)
-    headers.Authorization = 'Bearer ' + localStorage.getItem('token');
   const config = {
     method: 'put',
     headers: headers,
@@ -111,7 +107,7 @@ export const remove = async ({ url, data }: { url: string; data?: any }) => {
     method: 'delete',
     headers: {
       'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + localStorage.getItem('token')
+      Authorization: `Bearer ${localStorage.getItem('token')}`
     },
     body: undefined
   };
@@ -133,12 +129,10 @@ export const get = async ({
   needToken?: boolean;
   acceptJson?: boolean;
 }): Promise<{ statusCode: number; content?: any }> => {
-  let headers = {
+  const headers = {
     Accept: 'application/json',
-    Authorization: undefined
+    Authorization: needToken ? `Bearer ${localStorage.getItem('token')}` : undefined
   };
-  if (needToken)
-    headers.Authorization = 'Bearer ' + localStorage.getItem('token');
   const config = {
     method: 'get',
     headers: headers

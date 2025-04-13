@@ -62,7 +62,7 @@ function CustomRichTreeView({
             setExpandedItems([]);
             return;
         }
-        let allParents: string[] = [];
+        const allParents: string[] = [];
         for (const node of defaultValue) {
             const parents = findAllParents(node, items);
             for (const parent of parents) {

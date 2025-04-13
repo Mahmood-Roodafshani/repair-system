@@ -25,6 +25,6 @@
       "@/types/pagination": ["./src/types/pagination.ts"]
     }
   },
-  "include": ["src"],
+  "include": ["src/**/*", "vite.config.ts", "src/pages/Components/**/*"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
