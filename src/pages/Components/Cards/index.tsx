@@ -137,7 +137,7 @@ function Cards() {
                       height: 0,
                       paddingTop: '56.25%' // 16:9
                     }}
-                    image="/static/images/placeholders/covers/1.jpg"
+                    image="/src/assets/images/placeholders/covers/1.jpg"
                     title="Paella dish"
                   />
                   <CardContent>
@@ -190,7 +190,7 @@ function Cards() {
                         tucking them down into the rice, and cook again without
                         stirring, until mussels have opened and rice is just
                         tender, 5 to 7 minutes more. (Discard any mussels that
-                        don’t open.)
+                        don't open.)
                       </Typography>
                       <Typography>
                         Set aside off of the heat to let rest for 10 minutes,
@@ -210,7 +210,7 @@ function Cards() {
                 <Card sx={{ maxWidth: 345 }}>
                   <CardMedia
                     sx={{ height: 140 }}
-                    image="/static/images/placeholders/covers/6.jpg"
+                    image="/src/assets/images/placeholders/covers/6.jpg"
                     title="Contemplative Reptile"
                   />
                   <CardContent>

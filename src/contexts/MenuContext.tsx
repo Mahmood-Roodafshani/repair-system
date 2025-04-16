@@ -6,9 +6,13 @@ interface MenuContextType {
   setVisibleSection: (section: string) => void;
 }
 
-const MenuContext = createContext<MenuContextType | undefined>(undefined);
+export const MenuContext = createContext<MenuContextType | undefined>(
+  undefined
+);
 
-export const MenuProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const MenuProvider: React.FC<{ children: React.ReactNode }> = ({
+  children
+}) => {
   const [visibleSection, setVisibleSection] = useState<string>('all');
   const location = useLocation();
 
@@ -23,7 +27,7 @@ export const MenuProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const section = path.split('/')[1];
 
     const sectionMap: { [key: string]: string } = {
-      'usermanagement': 'user',
+      usermanagement: 'user',
       'repair-panel': 'repair',
       'jobs-panel': 'jobs',
       'tracking-panel': 'tracking',
@@ -47,4 +51,4 @@ export const useMenu = () => {
     throw new Error('useMenu must be used within a MenuProvider');
   }
   return context;
-}; 
+};

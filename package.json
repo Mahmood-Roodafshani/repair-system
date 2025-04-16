@@ -52,11 +52,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "lint": "eslint .",
     "preview": "vite preview",
-    "lint": "eslint . --config eslint.config.js",
-    "lint:fix": "eslint . --config eslint.config.js --fix",
-    "format": "prettier --write \"./**/*.{ts,tsx,js,jsx,json}\" --config ./.prettierrc",
-    "prepare": "husky",
+    "prepare": "husky install",
     "type-check": "tsc --noEmit"
   },
   "devDependencies": {
@@ -85,7 +83,7 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
+      "eslint",
       "prettier --write"
     ],
     "*.{json,css,md}": [

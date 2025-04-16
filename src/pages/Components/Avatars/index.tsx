@@ -16,6 +16,11 @@ import { deepOrange, deepPurple, green, pink } from '@mui/material/colors';
 import FolderIcon from '@mui/icons-material/Folder';
 import PageviewIcon from '@mui/icons-material/Pageview';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import Avatar1 from '@/assets/images/avatars/1.jpg';
+import Avatar2 from '@/assets/images/avatars/2.jpg';
+import Avatar3 from '@/assets/images/avatars/3.jpg';
+import Avatar4 from '@/assets/images/avatars/4.jpg';
+import Avatar5 from '@/assets/images/avatars/5.jpg';
 
 function stringToColor(string: string) {
   let hash = 0;
@@ -73,15 +78,9 @@ function Avatars() {
               <Divider />
               <CardContent>
                 <Stack direction="row" spacing={2}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatars/1.jpg" />
-                  <Avatar
-                    alt="Travis Howard"
-                    src="/static/images/avatars/2.jpg"
-                  />
-                  <Avatar
-                    alt="Cindy Baker"
-                    src="/static/images/avatars/3.jpg"
-                  />
+                  <Avatar alt="Remy Sharp" src={Avatar1} />
+                  <Avatar alt="Travis Howard" src={Avatar2} />
+                  <Avatar alt="Cindy Baker" src={Avatar3} />
                 </Stack>
               </CardContent>
             </Card>
@@ -113,13 +112,13 @@ function Avatars() {
                 <Stack direction="row" spacing={2}>
                   <Avatar
                     alt="Remy Sharp"
-                    src="/static/images/avatars/4.jpg"
+                    src={Avatar4}
                     sx={{ width: 24, height: 24 }}
                   />
-                  <Avatar alt="Remy Sharp" src="/static/images/avatars/5.jpg" />
+                  <Avatar alt="Remy Sharp" src={Avatar5} />
                   <Avatar
                     alt="Remy Sharp"
-                    src="/static/images/avatars/3.jpg"
+                    src={Avatar3}
                     sx={{ width: 56, height: 56 }}
                   />
                 </Stack>

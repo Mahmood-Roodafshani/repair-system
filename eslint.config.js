@@ -29,7 +29,8 @@ export default [
       react: react,
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
-      prettier: prettier
+      prettier: prettier,
+      '@typescript-eslint': tseslint.plugin
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
@@ -54,7 +55,23 @@ export default [
       'import/no-extraneous-dependencies': 'off',
       'react/no-unescaped-entities': 'off',
       'react/forbid-prop-types': 'off',
-      'react/prop-types': 'off'
+      'react/prop-types': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          varsIgnorePattern: '^_|^[A-Z]',
+          argsIgnorePattern: '^_',
+          ignoreRestSiblings: true,
+          caughtErrorsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_'
+        }
+      ]
+    }
+  },
+  {
+    files: ['src/routes/index.tsx'],
+    rules: {
+      '@typescript-eslint/no-unused-vars': 'off'
     }
   }
 ];

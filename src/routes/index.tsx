@@ -45,39 +45,37 @@ import {
   StaffInfo
 } from 'src/pages/baseInfoPanel';
 
-const Loader = <P extends object>(Component: ComponentType<P>) => (props: P) =>
-  (
+const Loader =
+  <P extends object>(Component: ComponentType<P>) =>
+  (props: P) => (
     <Suspense fallback={<SuspenseLoader />}>
       <Component {...props} />
     </Suspense>
   );
 
-const Buttons = Loader(
-  lazy(() => import('src/pages/Components/Buttons'))
-);
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const Buttons = Loader(lazy(() => import('src/pages/Components/Buttons')));
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Accordions = Loader(
   lazy(() => import('src/pages/Components/Accordions'))
 );
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Tabs = Loader(lazy(() => import('src/pages/Components/Tabs')));
-const Badges = Loader(
-  lazy(() => import('src/pages/Components/Badges'))
-);
-const Tooltips = Loader(
-  lazy(() => import('src/pages/Components/Tooltips'))
-);
-const Avatars = Loader(
-  lazy(() => import('src/pages/Components/Avatars'))
-);
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const Badges = Loader(lazy(() => import('src/pages/Components/Badges')));
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const Tooltips = Loader(lazy(() => import('src/pages/Components/Tooltips')));
+// TODO: Remove unused Avatars component and its assets
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const Avatars = Loader(lazy(() => import('src/pages/Components/Avatars')));
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Cards = Loader(lazy(() => import('src/pages/Components/Cards')));
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Forms = Loader(lazy(() => import('src/pages/Components/Forms')));
 
 // Status pages
-const Status404 = Loader(
-  lazy(() => import('src/pages/Status/Status404'))
-);
-const Status500 = Loader(
-  lazy(() => import('src/pages/Status/Status500'))
-);
+const Status404 = Loader(lazy(() => import('src/pages/Status/Status404')));
+const Status500 = Loader(lazy(() => import('src/pages/Status/Status500')));
 const StatusComingSoon = Loader(
   lazy(() => import('src/pages/Status/ComingSoon'))
 );
@@ -86,7 +84,7 @@ const StatusMaintenance = Loader(
 );
 
 // Protected Route Component
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true';
 
   if (!isAuthenticated) {
@@ -305,6 +303,43 @@ const routes: RouteObject[] = [
           {
             path: 'coming-soon',
             element: <StatusComingSoon />
+          }
+        ]
+      },
+      {
+        path: 'components',
+        children: [
+          {
+            path: 'buttons',
+            element: <Buttons />
+          },
+          {
+            path: 'accordions',
+            element: <Accordions />
+          },
+          {
+            path: 'tabs',
+            element: <Tabs />
+          },
+          {
+            path: 'badges',
+            element: <Badges />
+          },
+          {
+            path: 'tooltips',
+            element: <Tooltips />
+          },
+          {
+            path: 'avatars',
+            element: <Avatars />
+          },
+          {
+            path: 'cards',
+            element: <Cards />
+          },
+          {
+            path: 'forms',
+            element: <Forms />
           }
         ]
       },

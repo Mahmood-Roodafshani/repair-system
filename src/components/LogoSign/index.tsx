@@ -3,9 +3,10 @@ import {
   Tooltip,
   TooltipProps,
   tooltipClasses,
-  styled,
+  styled
 } from '@mui/material';
 import { Link } from 'react-router-dom';
+import logoImage from '@/assets/images/logo/material-ui.svg';
 
 const LogoWrapper = styled(Link)(
   ({ theme }) => `
@@ -45,12 +46,9 @@ const TooltipWrapper = styled(({ className, ...props }: TooltipProps) => (
 
 function Logo() {
   return (
-    <TooltipWrapper
-      title="متن پیشنهادی"
-      arrow
-    >
+    <TooltipWrapper title="متن پیشنهادی" arrow>
       <LogoWrapper to="/overview">
-        <LogoImage src="/logo.ico.png" alt="Logo" />
+        <LogoImage src={logoImage} alt="Logo" />
       </LogoWrapper>
     </TooltipWrapper>
   );
