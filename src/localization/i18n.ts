@@ -26,6 +26,7 @@ i18next
           companies: 'شرکت‌ها',
           items_list: 'لیست اقلام',
           borrowed_items: 'اقلام امانی',
+          commision: 'کمیسیون',
           // BUTTONS
           add: 'افزودن',
           delete: 'حذف',
@@ -111,6 +112,7 @@ i18next
           job_courses: 'دوره‌های تخصصی مورد نیاز',
           change_pass: 'تغییر رمزعبور',
           work_unit: 'یگان خدمتی',
+          choose_work_unit: 'انتخاب یگان',
           enter_national_code: 'کد ملی را وارد نمایید',
           form_name: 'نام فرم',
           time: 'ساعت',
@@ -128,10 +130,23 @@ i18next
           can_not_be_partner: 'غیرقابل همکاری',
           company_name: 'نام شرکت',
           asset_number: 'شماره اموال',
+          submit_number: 'شماره ثبت',
           fetch_from_central_asset_system:
             'فراخوانی از سامانه اموال براساس آخرین تاریخ بروزرسانی',
           give_back_borrowed_items: 'تحویل اقلام امانی',
           enter_staff_code: 'کد پرسنلی را وارد نمایید',
+          commision_date: 'تاریخ برگزاری کمیسیون',
+          commision_decision: 'تصمیم کمیسیون',
+          new_comission: 'کمیسیون جدید',
+          description: 'توضیحات',
+          items_in_commission_queue: 'لیست اقلام در صف کمیسیون',
+          refer_to_commission: 'ارجاع به کمیسیون',
+          commission_member_info: 'مشخصات اعضای کمیسیون',
+          organization_job: 'شغل سازمانی',
+          organization_grade: 'رده سازمانی',
+          add_attach: 'افزودن پیوست',
+          personal_pay: 'هزینه شخصی',
+          inquiry: 'استعلام',
           // TABLE
           operation: 'عملیات',
           row_number: 'ردیف',
@@ -172,6 +187,10 @@ i18next
           choose_deliverer: 'انتخاب تحویل دهنده',
           choose_receiver: 'انتخاب تحویل گیرنده',
           choose_item_category: 'انتخاب نوع اقلام',
+          submit_from: 'تاریخ ثبت از',
+          submit_to: 'تاریخ ثبت تا',
+          refer_from: 'تاریخ ارجاع از',
+          refer_to: 'تاریخ ارجاع تا',
           // FAMILY RELATION
           family_relation_wife_husband: 'همسر',
           family_relation_father: 'پدر',
@@ -203,6 +222,12 @@ i18next
           // RELIGION
           religion_shia: 'شیعه',
           religion_sunni: 'سنی',
+          // COMMISSION_FIX_DECISION
+          dont_fix: 'تعمیر نگردد',
+          fix_with_personal_pay: 'با پرداخت هزینه شخصی تعمیر گردد',
+          fix_with_office_pay: 'با پرداخت هزینه اداری تعمیر گردد',
+          fix_with_personal_and_office_pay:
+            'با پرداخت هزینه شخصی و اداری تعمیر گردد',
           // MESSAGES
           op_done_successfully: 'عملیات موردنظر با موفقیت انجام شد',
           ckeditor_placeholder: 'متن پیام را وارد نمایید',
@@ -226,6 +251,7 @@ i18next
           company_removed: 'شرکت مدنظر با موفقیت حذف گردید',
           company_created: 'شرکت با موفقیت ثبت گردید',
           company_updated: 'شرکت مدنظر با موفقیت ویرایش گردید',
+          commission_created: 'کمیسیون جدید اضافه گردید',
           // ERRORS
           please_fill_req_fields: 'لطفا تمام موارد لازم را پر نمایید',
           firstname_is_req: 'لطفا فیلد نام را وارد نمایید',

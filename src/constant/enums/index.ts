@@ -7,3 +7,4 @@ export { Gender } from './gender';
 export { FamilyRelation } from './familyRelation';
 export { JobLevel } from './jobLevel';
 export { JobStatus } from './jobStatus';
+export { CommissionFixDecision } from './commissionFixDecision';

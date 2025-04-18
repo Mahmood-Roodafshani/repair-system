@@ -7,4 +7,5 @@ export { GenderOptions } from './genderOptions';
 export { FamilyRelationOptions } from './familyRelationOptions';
 export { JobStatusOptions } from './jobStatusOptions';
 export { JobLevelOptions } from './jobLevelOptions';
+export { CommissionFixDecisionOptions } from './commissionFixDecisionOptions';
 export type { OptionType } from './optionType';

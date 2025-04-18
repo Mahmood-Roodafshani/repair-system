@@ -13,7 +13,7 @@ function CustomDatePicker({
   error
 }: {
   label: string;
-  value: Date | DateObject | string;
+  value?: Date | DateObject | string;
   width?: string;
   maxDate?: Date;
   onChange: (date: any) => void;

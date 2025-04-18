@@ -1,0 +1,6 @@
+export enum CommissionFixDecision {
+  DONT_FIX,
+  FIX_WITH_OFFICE_PAY,
+  FIX_WITH_PERSONAL_PAY,
+  FIX_WITH_PERSONAL_AND_OFFICE_PAY
+}

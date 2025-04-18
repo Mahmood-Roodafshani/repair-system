@@ -18,10 +18,9 @@ import {
   RichViewType
 } from 'src/types';
 import { Button, ButtonType, TextFieldFormik } from '@/components/form';
-import { fetchBorrowedItemsList } from 'src/services/repairPanel/borrowedItemsService';
 import validationSchema from './validationSchema';
 import { mapAllIdsInNestedArray } from 'src/utils/helper';
-import { fetchItemCategoryFields } from 'src/services';
+import { fetchBorrowedItemsList, fetchItemCategoryFields } from 'src/services';
 
 function BorrowedItems() {
   const navigate = useNavigate();

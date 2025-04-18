@@ -1,4 +1,4 @@
-import { CompaniesResponse } from 'src/types';
+import { CommisionListResponse, CompaniesResponse } from 'src/types';
 
 const CompaniesMock: CompaniesResponse[] = [
   {
@@ -29,4 +29,33 @@ const CompanyMock: CompaniesResponse = {
   email: '@test_test'
 };
 
-export { CompaniesMock, CompanyMock };
+const CommissionListMock: CommisionListResponse[] = [
+  {
+    id: '1',
+    date: '1401/12/15',
+    decision: 'با پرداخت هزینه اداری تعمیر شود',
+    description: 'آسیب به علت نوسان برق',
+    assetNumber: '14786592',
+    category: 'فناوری/رایانه/کیس',
+    submitAt: '1401/12/18',
+    submitter: 'حسین مهدوی فر'
+  }
+];
+
+const ItemsInCommissionQueueListMock: CommisionListResponse[] = [
+  {
+    id: '1',
+    description: 'آسیب به علت نوسان برق',
+    assetNumber: '14786592',
+    category: 'فناوری/رایانه/کیس',
+    submitAt: '1401/12/18',
+    submitter: 'حسین مهدوی فر'
+  }
+];
+
+export {
+  CompaniesMock,
+  CompanyMock,
+  CommissionListMock,
+  ItemsInCommissionQueueListMock
+};
