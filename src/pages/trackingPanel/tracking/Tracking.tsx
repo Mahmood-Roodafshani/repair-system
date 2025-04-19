@@ -12,7 +12,7 @@ import {
 } from 'src/components';
 import { i18n } from 'src/localization';
 import { SelectFormik, TextFieldFormik } from '@/components/form';
-import { fetchActivities, fetchOrganizationUnits } from 'src/services';
+import CommonService from 'src/services/CommonService';
 import {
   fetchMainSystems,
   fetchTrackingList
@@ -24,21 +24,36 @@ import {
 } from 'src/types';
 import { mapAllIdsInNestedArray } from 'src/utils/helper';
 import validationSchema from './validationSchema';
+import { OptionType } from 'src/constant/options';
+
+interface ApiResponse<T> {
+  statusCode: number;
+  content: T;
+}
 
 function Tracking() {
   const [organizationUnits, setOrganizationUnits] = useState<RichViewType[]>();
-  const [activities, setActivities] = useState<RichViewType[]>();
+  const [activities, setActivities] = useState<OptionType[]>();
   const [systems, setSystems] = useState<RichViewType[]>();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<TrackingResponseType[]>();
   const [clearFlag, setClearFlag] = useState(false);
+
+  const initialValues: TrackingFilterRequestType = {
+    activity: '',
+    nationalCode: '',
+    forms: [],
+    organizationUnits: [],
+    from: undefined,
+    to: undefined
+  };
 
   const onSubmit = async (
     values: TrackingFilterRequestType,
     actions: FormikHelpers<TrackingFilterRequestType>
   ) => {
     setData([]);
-    const res = await fetchTrackingList({ filter: values });
+    const res = await fetchTrackingList();
     actions.setSubmitting(false);
     if (res.statusCode === 200) setData(res.content);
   };
@@ -46,14 +61,14 @@ function Tracking() {
   useEffect(() => {
     setLoading(true);
     Promise.all([
-      fetchOrganizationUnits(),
+      CommonService.getOrganizationUnits(),
       fetchMainSystems(),
-      fetchActivities()
+      CommonService.getActivities()
     ])
-      .then((res) => {
-        if (res[0].statusCode === 200) setOrganizationUnits(res[0].content);
-        if (res[1].statusCode === 200) setSystems(res[1].content);
-        if (res[2].statusCode === 200) setActivities(res[2].content);
+      .then(([orgUnits, systemsRes, activities]) => {
+        setOrganizationUnits(orgUnits);
+        if (systemsRes.statusCode === 200) setSystems(systemsRes.content);
+        setActivities(activities);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -63,7 +78,7 @@ function Tracking() {
       {
         header: i18n.t('row_number'),
         enableHiding: false,
-        Cell: ({ row }) => {
+        Cell: ({ row }: { row: { index: number } }) => {
           return (
             <Typography sx={{ textAlign: 'right' }} key={'row_' + row.index}>
               {row.index + 1}
@@ -114,7 +129,7 @@ function Tracking() {
       {activities && systems && (
         <Formik
           onSubmit={onSubmit}
-          initialValues={{ activity: '', nationalCode: '' }}
+          initialValues={initialValues}
           validationSchema={validationSchema}
           validateOnBlur={false}
           validateOnChange={false}
@@ -144,7 +159,7 @@ function Tracking() {
                     onSelectedItemsChange={(_, itemIds) =>
                       setValues((prevValues) => ({
                         ...prevValues,
-                        forms: itemIds
+                        forms: Array.isArray(itemIds) ? itemIds : [itemIds]
                       }))
                     }
                     clearFlag={clearFlag}
@@ -161,11 +176,11 @@ function Tracking() {
                     onSelectedItemsChange={(_, itemIds) =>
                       setValues((prevValues) => ({
                         ...prevValues,
-                        organizationUnits: itemIds
+                        organizationUnits: Array.isArray(itemIds) ? itemIds : [itemIds]
                       }))
                     }
                     clearFlag={clearFlag}
-                    error={errors.forms?.toString()}
+                    error={errors.organizationUnits?.toString()}
                   />
                 </Grid>
                 <Grid

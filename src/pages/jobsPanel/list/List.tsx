@@ -16,13 +16,10 @@ import { JobLevel, JobStatus } from 'src/constant';
 import { i18n } from 'src/localization';
 import { ConfirmationDialog } from '@/components/form';
 import {
-  fetchCourses,
-  fetchFields,
   fetchJobsList,
-  fetchOrganizationUnits,
-  fetchPositionDegree,
   removeJob
 } from 'src/services';
+import CommonService from 'src/services/CommonService';
 import { JobResponseType, RichViewType } from 'src/types';
 import CreateOrEditForm from './CreateOrEditForm';
 
@@ -91,7 +88,7 @@ function List() {
   useEffect(() => {
     if ((selectedJobForEdit || showCreateForm) && !fields) {
       setLoading(true);
-      Promise.all([fetchFields(), fetchCourses(), fetchPositionDegree()])
+      Promise.all([CommonService.getFields(), CommonService.getCourses(), CommonService.getPositionDegrees()])
         .then((res) => {
           if (res[0].statusCode === 200) setFields(res[0].content);
           if (res[1].statusCode === 200) setCourses(res[1].content);
@@ -99,11 +96,11 @@ function List() {
         })
         .finally(() => setLoading(false));
     }
-  }, [selectedJobForEdit, showCreateForm]);
+  }, [selectedJobForEdit, showCreateForm, fields]);
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([fetchOrganizationUnits()])
+    Promise.all([CommonService.getOrganizationUnits()])
       .then((res) => {
         if (res[0].statusCode === 200) setOrganizationUnits(res[0].content);
       })

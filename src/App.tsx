@@ -1,6 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { BrowserRouter } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { KeycloakProvider } from './providers/KeycloakProvider';
@@ -9,7 +8,6 @@ import AppRoutes from './routes';
 import { setupAxiosInterceptors } from './services/baseService';
 import { useKeycloakInstance } from './hooks/useKeycloakInstance';
 import { useEffect } from 'react';
-import './App.css';
 import CssBaseline from '@mui/material/CssBaseline';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -26,7 +24,7 @@ const queryClient = new QueryClient({
   },
 });
 
-function App() {
+function KeycloakInitializer() {
   const keycloak = useKeycloakInstance();
 
   useEffect(() => {
@@ -35,11 +33,15 @@ function App() {
     }
   }, [keycloak]);
 
+  return null;
+}
+
+function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <KeycloakProvider>
+        <KeycloakInitializer />
         <CustomThemeProvider>
-          <BrowserRouter>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <SidebarProvider>
                 <MenuProvider>
@@ -51,19 +53,18 @@ function App() {
                     hideProgressBar={false}
                     newestOnTop={false}
                     closeOnClick
-                    rtl={true}
+                    rtl={false}
                     pauseOnFocusLoss
                     draggable
                     pauseOnHover
                     theme="light"
                   />
+                  <ReactQueryDevtools initialIsOpen={false} />
                 </MenuProvider>
               </SidebarProvider>
             </LocalizationProvider>
-          </BrowserRouter>
         </CustomThemeProvider>
       </KeycloakProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 }

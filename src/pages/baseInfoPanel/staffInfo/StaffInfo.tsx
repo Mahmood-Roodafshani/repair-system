@@ -21,15 +21,29 @@ import {
     fetchStaffInfoList,
     removeStaff
 } from 'src/services/baseInfoPanel';
-import {
-    fetchCities,
-    fetchEducationalFields,
-    fetchPositionDegree,
-    fetchWorkLocations
-} from 'src/services/common';
+import CommonService from 'src/services/CommonService';
 import {RichViewType, StaffInfoRequestType, StaffInfoResponseType} from 'src/types';
 import CreateOrEditForm from '../common/CreateOrEditForm';
 import {filterValidationSchema} from '../common/validationSchema';
+import {AxiosResponse} from 'axios';
+
+interface MockResponse<T> {
+    statusCode: number;
+    content: T;
+}
+
+interface ApiResponse<T> {
+    statusCode: number;
+    content: T;
+}
+
+function isMockResponse<T>(response: any): response is MockResponse<T> {
+    return 'statusCode' in response && 'content' in response;
+}
+
+function isAxiosResponse<T>(response: any): response is AxiosResponse<ApiResponse<T>> {
+    return 'data' in response && 'status' in response;
+}
 
 interface FormValues extends Omit<StaffInfoRequestType, 'hireDate'> {
     firstname?: string;
@@ -87,42 +101,105 @@ function StaffInfo() {
     useEffect(() => {
         if ((selectedStaffForEdit || showCreateForm) && !cities) {
             setLoading(true);
-            Promise.all([fetchCities()])
+            CommonService.getCities()
                 .then((res) => {
-                    if (res[0].statusCode === 200) setCities(res[0].content);
+                    setCities(res);
                 })
                 .finally(() => setLoading(false));
         }
     }, [selectedStaffForEdit, showCreateForm]);
 
     useEffect(() => {
-        setLoading(true);
-        Promise.all([
-            fetchPositionDegree(),
-            fetchEducationalFields(),
-            fetchWorkLocations()
-        ])
-            .then((res) => {
-                if (res[0].statusCode === 200) setPositionDegrees(res[0].content);
-                if (res[1].statusCode === 200) setEducationalFields(res[1].content);
-                if (res[2].statusCode === 200) setWorkLocations(res[2].content);
-            })
-            .finally(() => setLoading(false));
-    }, []);
+        if ((selectedStaffForEdit || showCreateForm) && !educationalFields) {
+            setLoading(true);
+            CommonService.getEducationalFields()
+                .then((res) => {
+                    setEducationalFields(res);
+                })
+                .finally(() => setLoading(false));
+        }
+    }, [selectedStaffForEdit, showCreateForm]);
+
+    useEffect(() => {
+        if ((selectedStaffForEdit || showCreateForm) && !workLocations) {
+            setLoading(true);
+            CommonService.getWorkLocations()
+                .then((res) => {
+                    setWorkLocations(res);
+                })
+                .finally(() => setLoading(false));
+        }
+    }, [selectedStaffForEdit, showCreateForm]);
+
+    useEffect(() => {
+        if ((selectedStaffForEdit || showCreateForm) && !positionDegrees) {
+            setLoading(true);
+            CommonService.getPositionDegrees()
+                .then((res) => {
+                    setPositionDegrees(res);
+                })
+                .finally(() => setLoading(false));
+        }
+    }, [selectedStaffForEdit, showCreateForm]);
 
     const onSubmit = async (
-        values: FormValues,
-        actions: FormikHelpers<FormValues>
+        values: StaffInfoRequestType,
+        actions: FormikHelpers<StaffInfoRequestType>
     ) => {
-        const requestValues: StaffInfoRequestType = {
-            ...values,
-            hireDate: values.hireDate
-        };
-        setFilter(requestValues);
+        setFilter(values);
         setStaffInfo([]);
-        const res = await fetchStaffInfoList({filter: requestValues});
-        actions.setSubmitting(false);
-        if (res.statusCode === 200) setStaffInfo(res.content);
+        try {
+            const res = await fetchStaffInfoList({ filter: values });
+            if (import.meta.env.VITE_APP_WORK_WITH_MOCK === 'true') {
+                const mockRes = res as { statusCode: number; content: StaffInfoResponseType[] };
+                if (mockRes.statusCode === 200) {
+                    setStaffInfo(mockRes.content);
+                }
+            } else {
+                const apiRes = res as { data: StaffInfoResponseType[] };
+                setStaffInfo(apiRes.data);
+            }
+        } finally {
+            actions.setSubmitting(false);
+        }
+    };
+
+    const onEdit = (id: string | number) => {
+        const staff = staffInfo?.find((e) => e.id === id);
+        if (staff) {
+            setSelectedStaffForEdit(staff);
+            setShowCreateForm(true);
+        }
+    };
+
+    const onDelete = async (id: string | number) => {
+        setLoading(true);
+        try {
+            const res = await removeStaff({ staffId: id });
+            const success = import.meta.env.VITE_APP_WORK_WITH_MOCK === 'true'
+                ? (res as { statusCode: number }).statusCode === 200
+                : (res as { status: number }).status === 200;
+
+            if (success) {
+                toast.success(i18n.t('delete_successful'));
+                setSelectedStaffIdForDelete(null);
+                
+                const listRes = await fetchStaffInfoList({ filter });
+                if (import.meta.env.VITE_APP_WORK_WITH_MOCK === 'true') {
+                    const mockRes = listRes as { statusCode: number; content: StaffInfoResponseType[] };
+                    if (mockRes.statusCode === 200) {
+                        setStaffInfo(mockRes.content);
+                    }
+                } else {
+                    const apiRes = listRes as { data: StaffInfoResponseType[] };
+                    setStaffInfo(apiRes.data);
+                }
+            }
+        } catch (error) {
+            toast.error(i18n.t('error_occurred'));
+        } finally {
+            setLoading(false);
+        }
     };
 
     const navigate = useNavigate();
@@ -190,7 +267,7 @@ function StaffInfo() {
             </Helmet>
             {!selectedStaffForEdit && !showCreateForm && (
                 <Grid display={'flex'} flexDirection={'column'} gap={'20px'}>
-                    <Formik<FormValues>
+                    <Formik<StaffInfoRequestType>
                         onSubmit={onSubmit}
                         initialValues={{
                             hireDate: ''
@@ -340,11 +417,7 @@ function StaffInfo() {
                             enableRowActions={true}
                             rowActions={({row}: {row: TableRow}) => (
                                 <TableRowAction
-                                    onEdit={() =>
-                                        setSelectedStaffForEdit(
-                                            staffInfo.find((e) => e.id === row.original.id) || null
-                                        )
-                                    }
+                                    onEdit={() => onEdit(row.original.id)}
                                     onDelete={() => setSelectedStaffIdForDelete(row.original.id)}
                                 />
                             )}
@@ -360,17 +433,7 @@ function StaffInfo() {
                         dialogTitle={i18n.t('confirm_remove')}
                         dialogOkBtnAction={() => {
                             if (selectedStaffIdForDelete !== null) {
-                                setLoading(true);
-                                removeStaff({staffId: selectedStaffIdForDelete})
-                                    .then((res) => {
-                                        if (res.statusCode === 200 && staffInfo) {
-                                            setStaffInfo(
-                                                staffInfo.filter((e) => e.id !== selectedStaffIdForDelete)
-                                            );
-                                            toast.success(i18n.t('user_removed').toString());
-                                        }
-                                    })
-                                    .finally(() => setLoading(false));
+                                onDelete(selectedStaffIdForDelete);
                             }
                         }}
                     />
@@ -413,7 +476,7 @@ function StaffInfo() {
                         if (filter) {
                             const res = await fetchStaffInfoList({filter});
                             setLoading(false);
-                            if (res.statusCode === 200) setStaffInfo(res.content);
+                            if (res.data) setStaffInfo(res.data);
                         }
                     }}
                     onClose={() => {

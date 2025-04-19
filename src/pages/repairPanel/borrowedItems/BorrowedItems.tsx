@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 import { Form, Formik, FormikHelpers } from 'formik';
-import { Grid, Typography } from '@mui/material';
+import { Grid } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router';
 import { i18n } from 'src/localization';
@@ -21,45 +21,70 @@ import { Button, ButtonType, TextFieldFormik } from '@/components/form';
 import { getBorrowedItemsList } from '../../../services/repairPanel/borrowedItemsService';
 import validationSchema from './validationSchema';
 import { mapAllIdsInNestedArray } from 'src/utils/helper';
-import { fetchItemCategoryFields } from 'src/services';
+import CommonService from 'src/services/CommonService';
+import { SyntheticEvent } from 'react';
+
+interface ApiResponse<T> {
+  statusCode: number;
+  content: T;
+  data?: {
+    statusCode: number;
+    content: T;
+  };
+}
 
 function BorrowedItems() {
   const navigate = useNavigate();
   const [data, setData] = useState<BorrowedItemsResponse[]>([]);
   const [clearFlag, setClearFlag] = useState(false);
-  const [itemCategories, setItemCategories] = useState<RichViewType[]>();
+  const [itemCategories, setItemCategories] = useState<RichViewType[]>([]);
   const [loading, setLoading] = useState(false);
+
+  const initialValues: GetBorrowedItemsRequest = {
+    assetNumber: '',
+    receiver: '',
+    deliverer: '',
+    deliverAt: undefined,
+    receiveAt: undefined,
+    itemCategories: []
+  };
+
   const onSubmit = async (
     values: GetBorrowedItemsRequest,
     actions: FormikHelpers<GetBorrowedItemsRequest>
   ) => {
     setData([]);
-    const res = await getBorrowedItemsList({
-      assetNumber:
-        values.assetNumber && values.assetNumber.length > 0
-          ? values.assetNumber
-          : undefined,
-      deliverer:
-        values.deliverer && values.deliverer.length > 0
-          ? values.deliverer
-          : undefined,
-      receiver:
-        values.receiver && values.receiver.length > 0
-          ? values.receiver
-          : undefined,
-      deliverAt: values.deliverAt,
-      receiveAt: values.receiveAt,
-      itemCategories: values.itemCategories
-    });
-    actions.setSubmitting(false);
-    if (res.statusCode === 200) setData(res.content);
+    try {
+      const requestParams: GetBorrowedItemsRequest = {
+        assetNumber: values.assetNumber || undefined,
+        deliverer: values.deliverer || undefined,
+        receiver: values.receiver || undefined,
+        deliverAt: values.deliverAt,
+        receiveAt: values.receiveAt,
+        itemCategories: values.itemCategories?.length ? values.itemCategories : undefined
+      };
+      const res = await getBorrowedItemsList(requestParams);
+      actions.setSubmitting(false);
+      if (res.data?.statusCode === 200) {
+        setData(res.data.content);
+      }
+    } catch (error) {
+      actions.setSubmitting(false);
+      console.error('Error fetching borrowed items:', error);
+    }
   };
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([fetchItemCategoryFields()])
-      .then((res) => {
-        if (res[0].statusCode === 200) setItemCategories(res[0].content);
+    CommonService.getItemCategoryFields()
+      .then((response: unknown) => {
+        const res = response as ApiResponse<RichViewType[]>;
+        if (res.statusCode === 200) {
+          setItemCategories(res.content);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching item categories:', error);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -67,56 +92,44 @@ function BorrowedItems() {
   const columns = useMemo(
     () => [
       {
-        header: i18n.t('row_number'),
-        enableHiding: false,
-        Cell: ({ row }) => {
-          return (
-            <Typography sx={{ textAlign: 'right' }} key={'row_' + row.index}>
-              {row.index + 1}
-            </Typography>
-          );
-        },
-        size: 40
+        field: 'assetNumber',
+        headerName: i18n.t('asset_number'),
+        width: 150
       },
       {
-        header: i18n.t('receiver'),
-        accessorKey: 'receiver',
-        size: 150
+        field: 'category',
+        headerName: i18n.t('category'),
+        width: 200
       },
       {
-        header: i18n.t('deliverer'),
-        accessorKey: 'deliverer',
-        size: 100
+        field: 'deliverer',
+        headerName: i18n.t('deliverer'),
+        width: 150
       },
       {
-        header: i18n.t('deliver_at'),
-        accessorKey: 'deliverAt',
-        size: 100
+        field: 'receiver',
+        headerName: i18n.t('receiver'),
+        width: 150
       },
       {
-        header: i18n.t('receive_at'),
-        accessorKey: 'receiveAt',
-        size: 100
+        field: 'deliverAt',
+        headerName: i18n.t('deliver_at'),
+        width: 150
       },
       {
-        header: i18n.t('asset_number'),
-        accessorKey: 'assetNumber',
-        size: 100
+        field: 'receiveAt',
+        headerName: i18n.t('receive_at'),
+        width: 150
       },
       {
-        header: i18n.t('item_category'),
-        accessorKey: 'category',
-        size: 120
+        field: 'submitter',
+        headerName: i18n.t('submitter'),
+        width: 150
       },
       {
-        header: i18n.t('submit_at'),
-        accessorKey: 'submitAt',
-        size: 120
-      },
-      {
-        header: i18n.t('submitter_info'),
-        accessorKey: 'submitter',
-        size: 120
+        field: 'submitAt',
+        headerName: i18n.t('submit_at'),
+        width: 150
       }
     ],
     []
@@ -131,11 +144,7 @@ function BorrowedItems() {
       {!loading && (
         <Formik
           onSubmit={onSubmit}
-          initialValues={{
-            assetNumber: '',
-            receiver: '',
-            deliverer: ''
-          }}
+          initialValues={initialValues}
           validationSchema={validationSchema}
           validateOnBlur={false}
           validateOnChange={false}
@@ -156,49 +165,47 @@ function BorrowedItems() {
                 gap={'30px'}
                 mb={'20px'}
               >
-                <Grid
-                  display={'flex'}
-                  flexDirection={'row'}
-                  gap={'10px'}
-                  flexWrap={'wrap'}
-                >
+                <Grid display={'flex'} gap={'30px'} flexWrap={'wrap'}>
                   <TextFieldFormik
-                    name="deliverer"
-                    label={i18n.t('choose_deliverer').toString()}
-                    type="number"
-                    placeholder={i18n.t('enter_staff_code').toString()}
+                    name="assetNumber"
+                    label={i18n.t('asset_number')}
+                    sx={{ width: '330px' }}
                   />
                   <TextFieldFormik
                     name="receiver"
-                    label={i18n.t('choose_receiver').toString()}
-                    type="number"
-                    placeholder={i18n.t('enter_staff_code').toString()}
+                    label={i18n.t('receiver')}
+                    sx={{ width: '330px' }}
                   />
                   <TextFieldFormik
-                    name="assetNumber"
-                    label={i18n.t('asset_number').toString()}
+                    name="deliverer"
+                    label={i18n.t('deliverer')}
+                    sx={{ width: '330px' }}
+                  />
+                </Grid>
+                <Grid display={'flex'} gap={'30px'} flexWrap={'wrap'}>
+                  <CustomDatePicker
+                    label={i18n.t('deliver_at')}
+                    value={values.deliverAt}
+                    onChange={(date) => {
+                      setValues((prevValues) => ({
+                        ...prevValues,
+                        deliverAt: date
+                      }));
+                    }}
+                    error={errors.deliverAt}
+                    width="330px"
                   />
                   <CustomDatePicker
                     label={i18n.t('receive_at')}
                     value={values.receiveAt}
-                    onChange={(e) => {
+                    onChange={(date) => {
                       setValues((prevValues) => ({
                         ...prevValues,
-                        receiveAt: e
+                        receiveAt: date
                       }));
                     }}
                     error={errors.receiveAt}
-                  />
-                  <CustomDatePicker
-                    label={i18n.t('deliver_at')}
-                    value={values.deliverAt}
-                    onChange={(e) => {
-                      setValues((prevValues) => ({
-                        ...prevValues,
-                        deliverAt: e
-                      }));
-                    }}
-                    error={errors.deliverAt}
+                    width="330px"
                   />
                   <CustomRichTreeView
                     label={i18n.t('choose_item_category')}
@@ -211,14 +218,21 @@ function BorrowedItems() {
                     )}
                     multiSelect={true}
                     checkboxSelection={true}
-                    onSelectedItemsChange={(_, itemIds) =>
+                    onSelectedItemsChange={(
+                      event: SyntheticEvent<Element, Event>,
+                      itemIds: string | string[]
+                    ) => {
+                      const selectedIds = Array.isArray(itemIds)
+                        ? itemIds
+                        : [itemIds];
+                      const selectedCategories = selectedIds.map((id) =>
+                        id.toString().replace('item_category_', '')
+                      );
                       setValues((prevValues) => ({
                         ...prevValues,
-                        itemCategories: itemIds.map((e) =>
-                          e.toString().replace('item_category_', '')
-                        )
-                      }))
-                    }
+                        itemCategories: selectedCategories
+                      }));
+                    }}
                     clearFlag={clearFlag}
                   />
                 </Grid>

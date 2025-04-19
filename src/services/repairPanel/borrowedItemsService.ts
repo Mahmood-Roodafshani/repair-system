@@ -1,11 +1,5 @@
 import axiosInstance from '../baseService';
-
-interface GetBorrowedItemsRequest {
-  page?: number;
-  size?: number;
-  sort?: string;
-  search?: string;
-}
+import { GetBorrowedItemsRequest } from 'src/types';
 
 interface BorrowedItem {
   id: string;

@@ -37,7 +37,7 @@ import { StaffInfoResponseType } from '../../../types/responses/baseInfoPanel/st
 import { i18n } from '../../../localization';
 import { ConfirmationDialog } from '../../../components/form/ConfirmationDialog';
 import { TextFieldFormik } from '../../../components/form/TextFieldFormik';
-import { fetchCities, fetchEducationalFields } from '../../../services/common';
+import CommonService from '../../../services/CommonService';
 import {
   fetchFamilyInfoList,
   removeFamilyInfo,
@@ -46,13 +46,12 @@ import {
 import CreateOrEditForm from '../common/CreateOrEditForm';
 import { filterValidationSchema } from '../common/validationSchema';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+import { AxiosResponse } from 'axios';
 
 interface TableRow {
   index: number;
-  original: {
-    id: number;
-    familyRelation?: FamilyRelation;
-  };
+  original: ExtendedStaffInfoResponseType;
 }
 
 interface FamilyInfoItem {
@@ -60,7 +59,7 @@ interface FamilyInfoItem {
   label: string;
 }
 
-interface ExtendedStaffInfoResponseType extends StaffInfoResponseType {
+interface ExtendedStaffInfoResponseType extends Omit<StaffInfoResponseType, 'familyRelation'> {
   familyInfo?: FamilyInfoItem[];
   familyRelation?: FamilyRelation;
   index: number;
@@ -119,9 +118,9 @@ function FamilyInfo() {
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([fetchEducationalFields()])
+    Promise.all([CommonService.getEducationalFields()])
       .then((res) => {
-        if (res[0].statusCode === 200) setEducationalFields(res[0].content);
+        setEducationalFields(res[0]);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -129,9 +128,9 @@ function FamilyInfo() {
   useEffect(() => {
     if ((selectedMemberForEdit || showCreateForm) && !cities) {
       setLoading(true);
-      Promise.all([fetchCities()])
+      Promise.all([CommonService.getCities()])
         .then((res) => {
-          if (res[0].statusCode === 200) setCities(res[0].content);
+          setCities(res[0]);
         })
         .finally(() => setLoading(false));
     }
@@ -155,7 +154,8 @@ function FamilyInfo() {
     if (familyInfo) {
       const mappedData = familyInfo.map((item, index) => ({
         ...item,
-        index
+        index,
+        original: item
       }));
       setTableData(mappedData);
     }
@@ -167,9 +167,40 @@ function FamilyInfo() {
   ) => {
     setFilter(values);
     setFamilyInfo([]);
-    const res = await fetchFamilyInfoList({ filter: values });
-    actions.setSubmitting(false);
-    if (res.statusCode === 200) setFamilyInfo(res.content);
+    try {
+      const res = await fetchFamilyInfoList({ filter: values });
+      if (import.meta.env.VITE_APP_WORK_WITH_MOCK === 'true') {
+        const mockRes = res as { statusCode: number; content: StaffInfoResponseType[] };
+        if (mockRes.statusCode === 200) {
+          const mappedData = mockRes.content.map((item, index) => ({
+            ...item,
+            index,
+            familyRelation: item.familyRelation as FamilyRelation,
+            original: {
+              ...item,
+              index,
+              familyRelation: item.familyRelation as FamilyRelation
+            }
+          }));
+          setFamilyInfo(mappedData);
+        }
+      } else {
+        const apiRes = res as AxiosResponse<StaffInfoResponseType[]>;
+        const mappedData = apiRes.data.map((item, index) => ({
+          ...item,
+          index,
+          familyRelation: item.familyRelation as FamilyRelation,
+          original: {
+            ...item,
+            index,
+            familyRelation: item.familyRelation as FamilyRelation
+          }
+        }));
+        setFamilyInfo(mappedData);
+      }
+    } catch (error) {
+      toast.error(i18n.t('error'));
+    }
   };
 
   const dialogOkBtnAction = async () => {
@@ -207,8 +238,34 @@ function FamilyInfo() {
     setLoading(true);
     try {
       const response = await fetchFamilyInfoList({ filter: {} });
-      if (response.statusCode === 200) {
-        setFamilyInfo(response.content);
+      if (import.meta.env.VITE_APP_WORK_WITH_MOCK === 'true') {
+        const mockRes = response as { statusCode: number; content: StaffInfoResponseType[] };
+        if (mockRes.statusCode === 200) {
+          const mappedData = mockRes.content.map((item, index) => ({
+            ...item,
+            index,
+            familyRelation: item.familyRelation as FamilyRelation,
+            original: {
+              ...item,
+              index,
+              familyRelation: item.familyRelation as FamilyRelation
+            }
+          }));
+          setFamilyInfo(mappedData);
+        }
+      } else {
+        const apiRes = response as AxiosResponse<StaffInfoResponseType[]>;
+        const mappedData = apiRes.data.map((item, index) => ({
+          ...item,
+          index,
+          familyRelation: item.familyRelation as FamilyRelation,
+          original: {
+            ...item,
+            index,
+            familyRelation: item.familyRelation as FamilyRelation
+          }
+        }));
+        setFamilyInfo(mappedData);
       }
     } finally {
       setLoading(false);
@@ -371,7 +428,36 @@ function FamilyInfo() {
             setLoading(true);
             setFamilyInfo([]);
             const res = await fetchFamilyInfoList({ filter: filter || {} });
-            if (res.statusCode === 200) setFamilyInfo(res.content);
+            if (import.meta.env.VITE_APP_WORK_WITH_MOCK === 'true') {
+              const mockRes = res as { statusCode: number; content: StaffInfoResponseType[] };
+              if (mockRes.statusCode === 200) {
+                const mappedData = mockRes.content.map((item, index) => ({
+                  ...item,
+                  index,
+                  familyRelation: item.familyRelation as FamilyRelation,
+                  original: {
+                    ...item,
+                    index,
+                    familyRelation: item.familyRelation as FamilyRelation
+                  }
+                }));
+                setFamilyInfo(mappedData);
+              }
+            } else {
+              const apiRes = res as AxiosResponse<StaffInfoResponseType[]>;
+              const mappedData = apiRes.data.map((item, index) => ({
+                ...item,
+                index,
+                familyRelation: item.familyRelation as FamilyRelation,
+                original: {
+                  ...item,
+                  index,
+                  familyRelation: item.familyRelation as FamilyRelation
+                }
+              }));
+              setFamilyInfo(mappedData);
+            }
+            setLoading(false);
           }}
           onClose={() => {
             setShowCreateForm(false);

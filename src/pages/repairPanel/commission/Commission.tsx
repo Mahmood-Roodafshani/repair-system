@@ -8,7 +8,8 @@ import {
 } from '@/components';
 import { Button, ButtonType, TextFieldFormik } from '@/components/form';
 import { i18n } from '@/localization';
-import { fetchCommissionList, fetchOrganizationUnits } from '@/services';
+import { fetchCommissionList } from '@/services';
+import CommonService from '@/services/CommonService';
 import {
   CommisionListResponse,
   GetCommissionListRequest,
@@ -56,6 +57,15 @@ export default function () {
   useEffect(() => {
     setShowCreateOrEditForm(selectedCommissionForEdit !== undefined);
   }, [selectedCommissionForEdit]);
+
+  useEffect(() => {
+    setLoading(true);
+    Promise.all([CommonService.getOrganizationUnits()])
+      .then((res) => {
+        if (res[0].statusCode === 200) setOrganizationUnits(res[0].content);
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   const onSubmit = async (
     values: GetCommissionListRequest,

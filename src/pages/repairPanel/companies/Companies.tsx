@@ -13,11 +13,11 @@ import {
 } from 'src/components';
 import { i18n } from 'src/localization';
 import {
-  fetchActivityFields,
   fetchCompaniesList,
   fetchCompanyInfo,
   deleteCompany
 } from 'src/services';
+import CommonService from 'src/services/CommonService';
 import {
   CompaniesResponse,
   GetCompaniesRequest,
@@ -30,7 +30,7 @@ import CreateOrEditForm from './CreateOrEditForm';
 import { filterValidationSchema } from './validationSchema';
 
 export default function Companies() {
-  const [activityFields, setActivityFields] = useState<RichViewType[]>();
+  const [activityFields, setActivityFields] = useState<RichViewType[]>([]);
   const [data, setData] = useState<CompaniesResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [refetching, setRefetching] = useState(false);
@@ -42,14 +42,14 @@ export default function Companies() {
   >();
   const [companyFullInfo, setCompanyFullInfo] = useState<CompaniesResponse>();
   const [showCreateOrEditForm, setShowCreateOrEditForm] = useState(false);
-  const [filter, setFilter] = useState<GetCompaniesRequest>();
+  const [filter, setFilter] = useState<GetCompaniesRequest>({});
   const [clearFlag, setClearFlag] = useState(false);
   const navigate = useNavigate();
 
   const refetchData = useCallback(() => {
     setData([]);
     setRefetching(true);
-    Promise.all([fetchCompaniesList(filter)])
+    Promise.all([fetchCompaniesList(filter || {})])
       .then((res) => {
         if (res[0].statusCode === 200) setData(res[0].content);
       })
@@ -69,7 +69,7 @@ export default function Companies() {
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([fetchActivityFields()])
+    Promise.all([CommonService.getActivityFields()])
       .then((res) => {
         if (res[0].statusCode === 200) setActivityFields(res[0].content);
       })
@@ -79,7 +79,7 @@ export default function Companies() {
   useEffect(() => {
     if (selectedCompanyForUpdate === undefined) return;
     setLoading(true);
-    Promise.all([fetchCompanyInfo({ companyId: selectedCompanyForUpdate })])
+    Promise.all([fetchCompanyInfo(selectedCompanyForUpdate.toString())])
       .then((res) => {
         if (res[0].statusCode === 200) {
           setCompanyFullInfo(res[0].content);
@@ -94,7 +94,7 @@ export default function Companies() {
       {
         header: i18n.t('row_number'),
         enableHiding: false,
-        Cell: ({ row }) => {
+        Cell: ({ row }: { row: { index: number } }) => {
           return (
             <Typography sx={{ textAlign: 'right' }} key={'row_' + row.index}>
               {row.index + 1}
@@ -138,12 +138,12 @@ export default function Companies() {
   };
 
   const handleConfirmDelete = async () => {
+    if (!selectedCompanyForDelete) return;
     try {
-      await deleteCompany(selectedCompanyForDelete);
+      await deleteCompany(selectedCompanyForDelete.toString());
       toast.success('Company deleted successfully');
       await fetchCompaniesList({});
-      setSelectedCompanyForDelete(null);
-      setDeleteDialogOpen(false);
+      setSelectedCompanyForDelete(undefined);
     } catch (error) {
       toast.error('Failed to delete company');
     }

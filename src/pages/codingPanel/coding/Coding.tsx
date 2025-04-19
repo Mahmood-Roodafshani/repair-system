@@ -5,7 +5,8 @@ import { toast } from 'react-toastify';
 import { Loader, MyCustomTable, TableRowAction } from 'src/components';
 import { i18n } from 'src/localization';
 import { Button, ButtonType, ConfirmationDialog } from '@/components/form';
-import { fetchCodingList, fetchWorkLocations, removeCoding } from 'src/services';
+import { fetchCodingList, removeCoding } from 'src/services';
+import CommonService from 'src/services/CommonService';
 import { CodingResponse, RichViewType } from 'src/types';
 import CreateOrEditCoding from './CreateOrEditCoding';
 
@@ -33,9 +34,9 @@ function Coding() {
   useEffect(() => {
     if (!showCreateOrEditForm || workLocations !== undefined) return;
     setLoading(true);
-    Promise.all([fetchWorkLocations()])
-      .then((res) => {
-        if (res[0].statusCode === 200) setWorkLocations(res[0].content);
+    CommonService.getWorkLocations()
+      .then((locations) => {
+        setWorkLocations(locations);
       })
       .finally(() => setLoading(false));
   }, [showCreateOrEditForm, workLocations]);

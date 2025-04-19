@@ -7,7 +7,8 @@ import {useNavigate} from 'react-router';
 import {CustomRichTreeView, Loader, MyCustomTable, OpGrid} from 'src/components';
 import {i18n} from 'src/localization';
 import {TextFieldFormik} from '@/components/form';
-import {accessControlFetchList, fetchJobsTree, fetchOrganizationUnits, fetchRoles} from 'src/services';
+import {accessControlFetchList, fetchJobsTree} from 'src/services';
+import CommonService from 'src/services/CommonService';
 import {AccessControlFilterType, AccessControlListResponseType, RichViewType} from 'src/types';
 import {mapAllIdsInNestedArray} from 'src/utils/helper';
 import Grants from './Grants';
@@ -30,7 +31,7 @@ function AccessControl() {
 
     useEffect(() => {
         setLoading(true);
-        Promise.all([fetchRoles(), fetchOrganizationUnits()])
+        Promise.all([CommonService.getRoles(), CommonService.getOrganizationUnits()])
             .then((res) => {
                 if (res[0].statusCode === 200) setRoles(res[0].content);
                 if (res[1].statusCode === 200) setOrganizationUnits(res[1].content);

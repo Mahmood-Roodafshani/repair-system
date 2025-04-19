@@ -24,11 +24,10 @@ import {
 import { i18n } from 'src/localization';
 import { ConfirmationDialog, TextFieldFormik } from 'src/components/form';
 import {
-  fetchCities,
-  fetchEducationalFields,
   fetchNonStaffInfoList,
   removeNonStaff
 } from 'src/services';
+import CommonService from 'src/services/CommonService';
 import {
   RichViewType,
   StaffInfoRequestType,
@@ -36,15 +35,17 @@ import {
 } from 'src/types';
 import CreateOrEditForm from '../common/CreateOrEditForm';
 import { filterValidationSchema } from '../common/validationSchema';
+import { AxiosResponse } from 'axios';
 
 function OtherInfo() {
   const navigate = useNavigate();
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const columns = useMemo(
     () => [
       {
         header: i18n.t('row_number'),
         enableHiding: false,
-        Cell: ({ row }) => {
+        Cell: ({ row }: { row: { index: number } }) => {
           return (
             <Typography sx={{ textAlign: 'right' }} key={'row_' + row.index}>
               {row.index + 1}
@@ -95,9 +96,9 @@ function OtherInfo() {
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([fetchEducationalFields()])
+    Promise.all([CommonService.getEducationalFields()])
       .then((res) => {
-        if (res[0].statusCode === 200) setEducationalFields(res[0].content);
+        setEducationalFields(res[0]);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -105,9 +106,9 @@ function OtherInfo() {
   useEffect(() => {
     if ((selectedStaffForEdit || showCreateForm) && !cities) {
       setLoading(true);
-      Promise.all([fetchCities()])
+      Promise.all([CommonService.getCities()])
         .then((res) => {
-          if (res[0].statusCode === 200) setCities(res[0].content);
+          setCities(res[0]);
         })
         .finally(() => setLoading(false));
     }
@@ -119,9 +120,72 @@ function OtherInfo() {
   ) => {
     setFilter(values);
     setOtherInfo([]);
-    const res = await fetchNonStaffInfoList({ filter: values });
-    actions.setSubmitting(false);
-    if (res.statusCode === 200) setOtherInfo(res.content);
+    try {
+      const res = await fetchNonStaffInfoList({ filter: values });
+      if (import.meta.env.VITE_APP_WORK_WITH_MOCK === 'true') {
+        const mockRes = res as { statusCode: number; content: StaffInfoResponseType[] };
+        if (mockRes.statusCode === 200) {
+          setOtherInfo(mockRes.content);
+        }
+      } else {
+        const apiRes = res as AxiosResponse<StaffInfoResponseType[]>;
+        setOtherInfo(apiRes.data);
+      }
+    } catch (error) {
+      toast.error(i18n.t('error'));
+    } finally {
+      actions.setSubmitting(false);
+    }
+  };
+
+  const dialogOkBtnAction = async () => {
+    if (selectedStaffIdForDelete) {
+      setLoading(true);
+      try {
+        const res = await removeNonStaff({ staffId: selectedStaffIdForDelete });
+        if (import.meta.env.VITE_APP_WORK_WITH_MOCK === 'true') {
+          const mockRes = res as { statusCode: number };
+          if (mockRes.statusCode === 200) {
+            setSelectedStaffIdForDelete(undefined);
+            setShowDeleteDialog(false);
+            await fetchData();
+          }
+        } else {
+          setSelectedStaffIdForDelete(undefined);
+          setShowDeleteDialog(false);
+          await fetchData();
+        }
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const res = await fetchNonStaffInfoList({ filter: {} });
+      if (import.meta.env.VITE_APP_WORK_WITH_MOCK === 'true') {
+        const mockRes = res as { statusCode: number; content: StaffInfoResponseType[] };
+        if (mockRes.statusCode === 200) {
+          setOtherInfo(mockRes.content);
+        }
+      } else {
+        const apiRes = res as AxiosResponse<StaffInfoResponseType[]>;
+        setOtherInfo(apiRes.data);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getEnumValue = <T extends Record<string, string | number>>(
+    enumObj: T,
+    key: string | number | boolean | undefined
+  ): T[keyof T] | undefined => {
+    if (key === undefined || key === false) return undefined;
+    if (typeof key === 'boolean') return undefined;
+    return enumObj[key as keyof T];
   };
 
   return (
@@ -208,29 +272,9 @@ function OtherInfo() {
               columns={columns}
             />
           )}
-          <ConfirmationDialog
-            id="remove_modal"
-            open={selectedStaffIdForDelete !== undefined}
-            onClose={() => setSelectedStaffIdForDelete(undefined)}
-            closeOnEsc={true}
-            dialogTitle={i18n.t('confirm_remove')}
-            dialogOkBtnAction={() => {
-              setLoading(true);
-              removeNonStaff({ staffId: selectedStaffIdForDelete })
-                .then((res) => {
-                  if (res.statusCode === 200) {
-                    setOtherInfo(
-                      otherInfo.filter((e) => e.id !== selectedStaffIdForDelete)
-                    );
-                    toast.success(i18n.t('user_removed').toString());
-                  }
-                })
-                .finally(() => setLoading(false));
-            }}
-          />
         </Grid>
       )}
-      {(selectedStaffForEdit || showCreateForm) && cities && (
+      {(selectedStaffForEdit || showCreateForm) && cities && educationalFields && (
         <CreateOrEditForm
           cities={cities}
           educationalFields={educationalFields}
@@ -238,28 +282,42 @@ function OtherInfo() {
           initialValues={
             showCreateForm
               ? {}
-              : {
-                  firstname: selectedStaffForEdit.name.split(' ')[0],
-                  lastname: selectedStaffForEdit.name.split(' ')[1],
-                  fatherName: selectedStaffForEdit.fatherName,
-                  nationalCode: selectedStaffForEdit.nationalCode,
-                  idNumber: selectedStaffForEdit.idNumber,
-                  address: selectedStaffForEdit.address,
-                  mobile: selectedStaffForEdit.mobile,
-                  degree: Degree[selectedStaffForEdit.degree],
-                  birthLocation: selectedStaffForEdit.birthLocation,
-                  educationalField: selectedStaffForEdit.educationalField,
-                  gender: Gender[selectedStaffForEdit.gender as string],
-                  martialStatus:
-                    MaritalStatus[selectedStaffForEdit.maritalStatus],
-                  religion: Religion[selectedStaffForEdit.religion]
-                }
+              : selectedStaffForEdit
+                ? {
+                    firstname: selectedStaffForEdit.name?.split(' ')[0] || '',
+                    lastname: selectedStaffForEdit.name?.split(' ')[1] || '',
+                    fatherName: selectedStaffForEdit.fatherName || '',
+                    nationalCode: selectedStaffForEdit.nationalCode || '',
+                    idNumber: selectedStaffForEdit.idNumber || '',
+                    degree: getEnumValue(Degree, selectedStaffForEdit.degree),
+                    birthLocation: selectedStaffForEdit.birthLocation || '',
+                    gender: getEnumValue(Gender, selectedStaffForEdit.gender),
+                    martialStatus: getEnumValue(
+                      MaritalStatus,
+                      selectedStaffForEdit.maritalStatus
+                    ),
+                    religion: getEnumValue(
+                      Religion,
+                      selectedStaffForEdit.religion
+                    ),
+                    educationalField:
+                      selectedStaffForEdit.educationalField || ''
+                  }
+                : {}
           }
           onSuccess={async () => {
             setLoading(true);
             setOtherInfo([]);
-            const res = await fetchNonStaffInfoList({ filter: filter });
-            if (res.statusCode === 200) setOtherInfo(res.content);
+            const res = await fetchNonStaffInfoList({ filter: filter || {} });
+            if (import.meta.env.VITE_APP_WORK_WITH_MOCK === 'true') {
+              const mockRes = res as { statusCode: number; content: StaffInfoResponseType[] };
+              if (mockRes.statusCode === 200) {
+                setOtherInfo(mockRes.content);
+              }
+            } else {
+              const apiRes = res as AxiosResponse<StaffInfoResponseType[]>;
+              setOtherInfo(apiRes.data);
+            }
             setLoading(false);
           }}
           onClose={() => {
@@ -269,6 +327,14 @@ function OtherInfo() {
         />
       )}
       {loading && <Loader />}
+      <ConfirmationDialog
+        id="remove_modal"
+        open={selectedStaffIdForDelete !== undefined}
+        onClose={() => setSelectedStaffIdForDelete(undefined)}
+        closeOnEsc={true}
+        dialogTitle={i18n.t('confirm_remove')}
+        dialogOkBtnAction={dialogOkBtnAction}
+      />
     </>
   );
 }

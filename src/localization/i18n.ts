@@ -27,6 +27,7 @@ i18next
           items_list: 'لیست اقلام',
           borrowed_items: 'اقلام امانی',
           commision: 'کمیسیون',
+          in_progress: 'در حال انجام',
           // BUTTONS
           add: 'افزودن',
           delete: 'حذف',
