@@ -1,10 +1,9 @@
 import { PermissionDto } from './permissionDto';
+import { ApiResponse } from '../../index';
 
-export type SystemRolesResponse = {
+export interface SystemRolesApiResponse extends ApiResponse<{
   id: number;
   name: string;
   description?: string;
   permissions?: PermissionDto[];
-  status?: boolean;
-  children?: SystemRolesResponse[];
-};
+}[]> {} 

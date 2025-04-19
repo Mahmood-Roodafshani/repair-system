@@ -7,15 +7,15 @@ import { toast } from 'react-toastify';
 import { Loader, MyCustomTable, OpGrid, TableRowAction } from 'src/components';
 import { i18n } from 'src/localization';
 import { Button, ButtonType, ConfirmationDialog } from '@/components/form';
-import { removeSystem, searchRoleBySystemTitle } from 'src/services';
-import { SystemResponseType } from 'src/types';
+import { roleManagementService } from 'src/services';
+import { SystemResponseType, SystemRolesResponse } from 'src/types';
 import CreateNewRoleDialog from './components/CreateNewRoleDialog';
 import CreateNewSystemDialog from './components/CreateNewSystemDialog';
 import EditSystem from './components/EditSystem';
 import SystemRoles from './components/SystemRoles';
 
 function RoleManagement() {
-  const [title, setTitle] = useState<string>();
+  const [title, setTitle] = useState<string>('');
   const [systems, setSystems] = useState<SystemResponseType[]>([]);
   const [selectedSystemId, setSelectedSystemId] = useState<string | number>();
   const [loading, setLoading] = useState(false);
@@ -34,7 +34,7 @@ function RoleManagement() {
       {
         header: ' ',
         enableHiding: false,
-        Cell: ({ row }) => {
+        Cell: ({ row }: { row: { index: number; original: SystemResponseType } }) => {
           return (
             <Grid
               display={'flex'}
@@ -94,19 +94,22 @@ function RoleManagement() {
     []
   );
 
-  const fetchData = useCallback(() => {
-    setLoading(true);
-    setSystems([]);
-    searchRoleBySystemTitle({ title: title })
-      .then((res) => {
-        if (res.statusCode === 200) setSystems(res.content);
-      })
-      .finally(() => setLoading(false));
+  const fetchData = useCallback(async () => {
+    if (!title) return;
+    const response = await roleManagementService.getSystemRoles({ systemId: title });
+    const transformedSystems: SystemResponseType[] = response.content.map(role => ({
+      id: role.id,
+      title: role.name,
+      status: (role.status ?? true).toString()
+    }));
+    setSystems(transformedSystems);
   }, [title]);
 
   useEffect(() => {
     setSelectedSystemId(undefined);
   }, [systems]);
+
+  const selectedSystem = selectedSystemId ? systems.find((e) => e.id === selectedSystemId) : null;
 
   return (
     <>
@@ -185,12 +188,8 @@ function RoleManagement() {
           )}
 
           <CreateNewRoleDialog
-            systemId={selectedSystemId}
-            systemName={
-              selectedSystemId === undefined
-                ? ''
-                : systems.find((e) => e.id === selectedSystemId)?.title
-            }
+            systemId={selectedSystemId ?? ''}
+            systemName={selectedSystem?.title ?? ''}
             open={showCreateNewRoleDialog}
             onClose={() => setShowCreateNewRoleDialog(false)}
             onAdd={() => {
@@ -213,13 +212,12 @@ function RoleManagement() {
             closeOnEsc={true}
             dialogTitle={i18n.t('confirm_remove')}
             dialogOkBtnAction={() => {
+              if (!selectedSystemId) return;
               setRemoving(true);
-              removeSystem({ systemId: selectedSystemId })
+              roleManagementService.removeSystem({ systemId: selectedSystemId })
                 .then((res) => {
                   if (res.statusCode === 200) {
-                    setSystems(
-                      systems.filter((e) => e.id !== selectedSystemId)
-                    );
+                    setSystems(systems.filter((e) => e.id !== selectedSystemId));
                     toast.success('سامانه مورد نظر با موفقیت حذف گردید');
                   }
                 })
@@ -234,17 +232,13 @@ function RoleManagement() {
             setSelectedSystemId(undefined);
             setShowSystemRoles(false);
           }}
-          systemId={selectedSystemId}
+          systemId={selectedSystemId ?? ''}
         />
       )}
       {showSystemEditPanel && (
         <EditSystem
-          systemId={selectedSystemId}
-          systemName={
-            selectedSystemId === undefined
-              ? ''
-              : systems.find((e) => e.id === selectedSystemId)?.title
-          }
+          systemId={selectedSystemId ?? ''}
+          systemName={selectedSystem?.title ?? ''}
           onBack={() => {
             setSelectedSystemId(undefined);
             setShowSystemEditPanel(false);
