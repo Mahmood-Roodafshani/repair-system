@@ -16,7 +16,7 @@ import {
   fetchActivityFields,
   fetchCompaniesList,
   fetchCompanyInfo,
-  removeCompany
+  deleteCompany
 } from 'src/services';
 import {
   CompaniesResponse,
@@ -126,6 +126,28 @@ export default function Companies() {
     ],
     []
   );
+
+  const handleDelete = async (companyId: string) => {
+    try {
+      await deleteCompany(companyId);
+      toast.success('Company deleted successfully');
+      await fetchCompaniesList({});
+    } catch (error) {
+      toast.error('Failed to delete company');
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      await deleteCompany(selectedCompanyForDelete);
+      toast.success('Company deleted successfully');
+      await fetchCompaniesList({});
+      setSelectedCompanyForDelete(null);
+      setDeleteDialogOpen(false);
+    } catch (error) {
+      toast.error('Failed to delete company');
+    }
+  };
 
   return (
     <>
@@ -245,19 +267,7 @@ export default function Companies() {
           onClose={() => setSelectedCompanyForDelete(undefined)}
           closeOnEsc={true}
           dialogTitle={i18n.t('confirm_remove')}
-          dialogOkBtnAction={() => {
-            setLoading(true);
-            removeCompany({ companyId: selectedCompanyForDelete })
-              .then((res) => {
-                if (res.statusCode === 200) {
-                  setData(
-                    data.filter((e) => e.id !== selectedCompanyForDelete)
-                  );
-                  toast.success(i18n.t('company_removed').toString());
-                }
-              })
-              .finally(() => setLoading(false));
-          }}
+          dialogOkBtnAction={handleConfirmDelete}
         />
       )}
     </>
