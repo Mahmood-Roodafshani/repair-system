@@ -1,22 +1,25 @@
-import { GetBorrowedItemsRequest } from 'src/types';
-import { timeout } from 'src/utils/helper';
-import ROUTES from '../routes';
-import { get } from '../service';
-import { BorrowedItemsMock } from 'src/mock';
+import axiosInstance from '../baseService';
 
-const fetchBorrowedItemsList = async (request: GetBorrowedItemsRequest) => {
-  if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
-    await timeout(1000);
-    return {
-      statusCode: 200,
-      content: BorrowedItemsMock
-    };
-  }
-  //todo: build query params from filter
-  const response = await get({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST
+interface GetBorrowedItemsRequest {
+  page?: number;
+  size?: number;
+  sort?: string;
+  search?: string;
+}
+
+interface BorrowedItem {
+  id: string;
+  itemName: string;
+  borrowerName: string;
+  borrowDate: string;
+  returnDate?: string;
+}
+
+const getBorrowedItemsList = async (request: GetBorrowedItemsRequest) => {
+  const response = await axiosInstance.get('/api/repair-panel/borrowed-items', {
+    params: request
   });
-  return response;
+  return response.data;
 };
 
-export { fetchBorrowedItemsList };
+export { getBorrowedItemsList };
