@@ -1,6 +1,10 @@
+import { PermissionDto } from './permissionDto';
+
 export type SystemRolesResponse = {
-  label: string;
-  id: string;
+  id: number;
+  name: string;
+  description?: string;
+  permissions?: PermissionDto[];
   status?: boolean;
   children?: SystemRolesResponse[];
 };
