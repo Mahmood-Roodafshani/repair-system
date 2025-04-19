@@ -18,9 +18,10 @@ import {
   RichViewType
 } from 'src/types';
 import { Button, ButtonType, TextFieldFormik } from '@/components/form';
+import { getBorrowedItemsList } from '../../../services/repairPanel/borrowedItemsService';
 import validationSchema from './validationSchema';
 import { mapAllIdsInNestedArray } from 'src/utils/helper';
-import { fetchBorrowedItemsList, fetchItemCategoryFields } from 'src/services';
+import { fetchItemCategoryFields } from 'src/services';
 
 function BorrowedItems() {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ function BorrowedItems() {
     actions: FormikHelpers<GetBorrowedItemsRequest>
   ) => {
     setData([]);
-    const res = await fetchBorrowedItemsList({
+    const res = await getBorrowedItemsList({
       assetNumber:
         values.assetNumber && values.assetNumber.length > 0
           ? values.assetNumber

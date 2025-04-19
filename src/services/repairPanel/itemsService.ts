@@ -1,39 +1,33 @@
-import { timeout } from 'src/utils/helper';
-import { get } from '../service';
-import ROUTES from '../routes';
-import { ItemsMock } from 'src/mock';
-import { GetItemsRequest } from 'src/types';
+import axiosInstance from '../baseService';
 
-const fetchItemsList = async (request: GetItemsRequest) => {
-  if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
-    await timeout(1000);
-    return {
-      statusCode: 200,
-      content: ItemsMock
-    };
-  }
-  //todo: build query params from filter
-  const response = await get({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST
+interface GetItemsRequest {
+  page?: number;
+  size?: number;
+  sort?: string;
+  search?: string;
+  categoryId?: string;
+}
+
+interface Item {
+  id: string;
+  name: string;
+  categoryId: string;
+  serialNumber: string;
+  status: string;
+}
+
+const getItemsList = async (request: GetItemsRequest) => {
+  const response = await axiosInstance.get('/api/repair-panel/items', {
+    params: request
   });
-  return response;
+  return response.data;
 };
 
-const fetchItemsListFromCentralAssetPanel = async (
-  request: GetItemsRequest
-) => {
-  if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
-    await timeout(1000);
-    return {
-      statusCode: 200,
-      content: ItemsMock
-    };
-  }
-  //todo: build query params from filter
-  const response = await get({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST
+const getItemsListFromCentralAssetPanel = async (request: GetItemsRequest) => {
+  const response = await axiosInstance.get('/api/central-asset-panel/items', {
+    params: request
   });
-  return response;
+  return response.data;
 };
 
-export { fetchItemsList, fetchItemsListFromCentralAssetPanel };
+export { getItemsList, getItemsListFromCentralAssetPanel }; 

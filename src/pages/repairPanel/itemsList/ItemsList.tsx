@@ -7,9 +7,9 @@ import { InlineLoader, MyCustomTable, OpGrid } from 'src/components';
 import { i18n } from 'src/localization';
 import { Button, ButtonType, TextFieldFormik } from '@/components/form';
 import {
-  fetchItemsList,
-  fetchItemsListFromCentralAssetPanel
-} from 'src/services';
+  getItemsList,
+  getItemsListFromCentralAssetPanel
+} from '../../../services/repairPanel/itemsService';
 import { GetItemsRequest, ItemsResponse } from 'src/types';
 import validationSchema from './validationSchema';
 
@@ -19,14 +19,14 @@ function ItemsList() {
   const onSubmit = async (values: GetItemsRequest) => {
     setIsSubmitting(true);
     setData([]);
-    const res = await fetchItemsList(values);
+    const res = await getItemsList(values);
     setIsSubmitting(false);
     if (res.statusCode === 200) setData(res.content);
   };
   const onSearchFromCentralAssetPanel = async (values: GetItemsRequest) => {
     setIsSubmitting(true);
     setData([]);
-    const res = await fetchItemsListFromCentralAssetPanel(values);
+    const res = await getItemsListFromCentralAssetPanel(values);
     setIsSubmitting(false);
     if (res.statusCode === 200) setData(res.content);
   };

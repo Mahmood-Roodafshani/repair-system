@@ -3,7 +3,7 @@ import {
   SystemsMock
 } from 'src/mock/userManagement/systemRolesMock';
 import ROUTES from '../routes';
-import { get, post, remove } from '../service';
+import axiosInstance from '../baseService';
 import { timeout } from 'src/utils/helper';
 
 const searchRoleBySystemTitle = async ({ title }: { title: string }) => {
@@ -14,9 +14,7 @@ const searchRoleBySystemTitle = async ({ title }: { title: string }) => {
       content: SystemsMock
     };
   }
-  const response = await get({
-    url: ROUTES.SEARCH_ROLE_BY_SYSTEM_TITLE
-  });
+  const response = await axiosInstance.get(ROUTES.SEARCH_ROLE_BY_SYSTEM_TITLE);
   return response;
 };
 
@@ -28,9 +26,7 @@ const getSystemRoles = async ({ systemId }: { systemId: string | number }) => {
       content: SystemRolesMock
     };
   }
-  const response = await get({
-    url: ROUTES.STORE_NEW_SYSTEM + systemId
-  });
+  const response = await axiosInstance.get(ROUTES.STORE_NEW_SYSTEM + systemId);
   return response;
 };
 
@@ -41,11 +37,8 @@ const storeNewSystem = async ({ title }: { title: string }) => {
       statusCode: 200
     };
   }
-  const response = await post({
-    url: ROUTES.STORE_NEW_SYSTEM,
-    data: {
-      title: title
-    }
+  const response = await axiosInstance.post(ROUTES.STORE_NEW_SYSTEM, {
+    title: title
   });
   return response;
 };
@@ -65,11 +58,10 @@ const storeNewRole = async ({
       statusCode: 200
     };
   }
-  const response = await post({
-    url: ROUTES.STORE_NEW_ROLE + systemId,
-    data: {
-      title: title
-    }
+  const response = await axiosInstance.post(ROUTES.STORE_NEW_ROLE, {
+    systemId,
+    roleId,
+    title
   });
   return response;
 };
@@ -81,9 +73,7 @@ const removeSystem = async ({ systemId }: { systemId: string | number }) => {
       statusCode: 200
     };
   }
-  const response = await remove({
-    url: ROUTES.REMOVE_ROLE + systemId
-  });
+  const response = await axiosInstance.delete(ROUTES.STORE_NEW_SYSTEM + systemId);
   return response;
 };
 
@@ -94,17 +84,15 @@ const removeRole = async ({ roleId }: { roleId: string | number }) => {
       statusCode: 200
     };
   }
-  const response = await remove({
-    url: ROUTES.REMOVE_ROLE + roleId
-  });
+  const response = await axiosInstance.delete(ROUTES.STORE_NEW_ROLE + roleId);
   return response;
 };
 
 export {
   searchRoleBySystemTitle,
+  getSystemRoles,
   storeNewSystem,
   storeNewRole,
-  removeRole,
   removeSystem,
-  getSystemRoles
+  removeRole
 };

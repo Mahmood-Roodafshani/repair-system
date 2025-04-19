@@ -1,5 +1,5 @@
 import { timeout } from 'src/utils/helper';
-import { post } from '../service';
+import axiosInstance from '../baseService';
 import ROUTES from '../routes';
 import { SampleSignitureRequestType } from 'src/types';
 
@@ -15,10 +15,7 @@ const addSampleSigniture = async ({
     };
   }
 
-  const response = await post({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST,
-    data: sampleSigniture
-  });
+  const response = await axiosInstance.post(ROUTES.ACCESS_CONTROL_FETCH_LIST, sampleSigniture);
   return response;
 };
 

@@ -1,95 +1,50 @@
-import { timeout } from 'src/utils/helper';
-import { get, post, put, remove } from '../service';
-import ROUTES from '../routes';
-import { GetCompaniesRequest } from 'src/types';
-import { CompaniesMock, CompanyMock } from 'src/mock';
-import { CreateCompanyRequest } from 'src/types/requests/repairPanel/company/createCompanyRequest';
+import axiosInstance from '../baseService';
+
+interface GetCompaniesRequest {
+  page?: number;
+  size?: number;
+  sort?: string;
+  search?: string;
+}
+
+interface Company {
+  id: string;
+  name: string;
+  address: string;
+  phone: string;
+  email: string;
+}
 
 const fetchCompaniesList = async (request: GetCompaniesRequest) => {
-  if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
-    await timeout(1000);
-    return {
-      statusCode: 200,
-      content: CompaniesMock
-    };
-  }
-  //todo: build query params from filter
-  const response = await get({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST
+  const response = await axiosInstance.get('/api/repair-panel/companies', {
+    params: request
   });
-  return response;
+  return response.data;
 };
 
-const fetchCompanyInfo = async ({
-  companyId
-}: {
-  companyId: string | number;
-}) => {
-  if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
-    await timeout(1000);
-    return {
-      statusCode: 200,
-      content: CompanyMock
-    };
-  }
-  //todo: build query params from filter
-  const response = await get({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST + companyId
-  });
-  return response;
+const fetchCompanyInfo = async (companyId: string) => {
+  const response = await axiosInstance.get(`/api/repair-panel/companies/${companyId}`);
+  return response.data;
 };
 
-const removeCompany = async ({ companyId }: { companyId: string | number }) => {
-  if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
-    await timeout(1000);
-    return {
-      statusCode: 200
-    };
-  }
-  const response = await remove({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST + companyId
-  });
-  return response;
+const createCompany = async (companyData: Omit<Company, 'id'>) => {
+  const response = await axiosInstance.post('/api/repair-panel/companies', companyData);
+  return response.data;
 };
 
-const createCompany = async (form: CreateCompanyRequest) => {
-  if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
-    await timeout(1000);
-    return {
-      statusCode: 200
-    };
-  }
-  const response = await post({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST,
-    data: form
-  });
-  return response;
+const updateCompany = async (companyId: string, companyData: Partial<Company>) => {
+  const response = await axiosInstance.put(`/api/repair-panel/companies/${companyId}`, companyData);
+  return response.data;
 };
 
-const updateCompany = async ({
-  form,
-  companyId
-}: {
-  form: CreateCompanyRequest;
-  companyId: string | number;
-}) => {
-  if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
-    await timeout(1000);
-    return {
-      statusCode: 200
-    };
-  }
-  const response = await put({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST + companyId,
-    data: form
-  });
-  return response;
+const deleteCompany = async (companyId: string) => {
+  await axiosInstance.delete(`/api/repair-panel/companies/${companyId}`);
 };
 
 export {
   fetchCompaniesList,
   fetchCompanyInfo,
-  removeCompany,
   createCompany,
-  updateCompany
-};
+  updateCompany,
+  deleteCompany
+}; 

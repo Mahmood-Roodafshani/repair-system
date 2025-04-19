@@ -1,6 +1,6 @@
 import { AccessControlFilterType } from 'src/types';
 import { timeout } from 'src/utils/helper';
-import { get, post } from '../service';
+import axiosInstance from '../baseService';
 import ROUTES from '../routes';
 import {
   AccessControlListMock,
@@ -27,9 +27,7 @@ const accessControlFetchList = async ({
     };
   }
   //todo: build query params from filter
-  const response = await get({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST
-  });
+  const response = await axiosInstance.get(ROUTES.ACCESS_CONTROL_FETCH_LIST);
   return response;
 };
 
@@ -46,9 +44,7 @@ const findStaffByCode = async ({ staffCode }: { staffCode: string }) => {
     };
   }
   //todo: build query params from filter
-  const response = await get({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST
-  });
+  const response = await axiosInstance.get(ROUTES.ACCESS_CONTROL_FETCH_LIST);
   return response;
 };
 
@@ -66,12 +62,9 @@ const createNewAccessControl = async ({
     };
   }
   //todo: build query params from filter
-  const response = await post({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST,
-    data: {
-      staffCode: staffCode,
-      grants: grants
-    }
+  const response = await axiosInstance.post(ROUTES.ACCESS_CONTROL_FETCH_LIST, {
+    staffCode: staffCode,
+    grants: grants
   });
   return response;
 };
@@ -96,9 +89,7 @@ const fetchGrantsByAccess = async ({
     };
   }
   //todo: build query params from filter
-  const response = await get({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST
-  });
+  const response = await axiosInstance.get(ROUTES.ACCESS_CONTROL_FETCH_LIST);
   return response;
 };
 
@@ -126,9 +117,7 @@ const fetchUserGrantsByAccess = async ({
     };
   }
   //todo: build query params from filter
-  const response = await get({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST
-  });
+  const response = await axiosInstance.get(ROUTES.ACCESS_CONTROL_FETCH_LIST);
   return response;
 };
 
@@ -140,9 +129,7 @@ const getRolesWithGrants = async () => {
       content: RolesWithGrantsMock
     };
   }
-  const response = await get({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST
-  });
+  const response = await axiosInstance.get(ROUTES.ACCESS_CONTROL_FETCH_LIST);
   return response;
 };
 

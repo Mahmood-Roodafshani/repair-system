@@ -6,7 +6,7 @@ import {
 import { CodingAccessRequest, CodingRequest, PageableRequest } from 'src/types';
 import { timeout } from 'src/utils/helper';
 import ROUTES from '../routes';
-import { get, post, put, remove } from '../service';
+import axiosInstance from '../baseService';
 
 const fetchCodingList = async () => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
@@ -16,9 +16,7 @@ const fetchCodingList = async () => {
       content: CodingMock
     };
   }
-  const response = await get({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST
-  });
+  const response = await axiosInstance.get(ROUTES.ACCESS_CONTROL_FETCH_LIST);
   return response;
 };
 
@@ -33,9 +31,7 @@ const fetchCodingAccessList = async (request: PageableRequest<unknown>) => {
         request.pageIndex === 0 ? CodingAccessPage1Mock : CodingAccessPage2Mock
     };
   }
-  const response = await get({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST
-  });
+  const response = await axiosInstance.get(ROUTES.ACCESS_CONTROL_FETCH_LIST);
   return response;
 };
 
@@ -47,9 +43,7 @@ const removeCoding = async ({ codingId }: { codingId: string | number }) => {
     };
   }
 
-  const response = await remove({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST + codingId
-  });
+  const response = await axiosInstance.delete(ROUTES.ACCESS_CONTROL_FETCH_LIST + codingId);
   return response;
 };
 
@@ -61,10 +55,7 @@ const createCoding = async (data: CodingRequest) => {
     };
   }
 
-  const response = await post({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST,
-    data: data
-  });
+  const response = await axiosInstance.post(ROUTES.ACCESS_CONTROL_FETCH_LIST, data);
   return response;
 };
 
@@ -76,10 +67,7 @@ const createCodingAccess = async (data: CodingAccessRequest) => {
     };
   }
 
-  const response = await post({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST,
-    data: data
-  });
+  const response = await axiosInstance.post(ROUTES.ACCESS_CONTROL_FETCH_LIST, data);
   return response;
 };
 
@@ -97,10 +85,7 @@ const updateCoding = async ({
     };
   }
 
-  const response = await put({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST + id,
-    data: data
-  });
+  const response = await axiosInstance.put(ROUTES.ACCESS_CONTROL_FETCH_LIST + id, data);
   return response;
 };
 
@@ -116,9 +101,7 @@ const removeCodingAccess = async ({
     };
   }
 
-  const response = await remove({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST + accessId
-  });
+  const response = await axiosInstance.delete(ROUTES.ACCESS_CONTROL_FETCH_LIST + accessId);
   return response;
 };
 

@@ -13,7 +13,10 @@ const ROUTES = {
   // ACCESS CONTROL
   ACCESS_CONTROL_FETCH_LIST: `${BASE_URL}fetchList/`,
   // ########## JOBS MANAGEMENT ##########
-  FETCH_ORGANIZATION_UNITS: `${BASE_URL}organizationUnits/`
+  FETCH_ORGANIZATION_UNITS: `${BASE_URL}organizationUnits/`,
+  // ########## REPAIR MANAGEMENT ##########
+  COMMISSION_LIST: `${BASE_URL}commission/list`,
+  ITEMS_IN_COMMISSION_QUEUE_LIST: `${BASE_URL}commission/items`
 };
 
 export default ROUTES;

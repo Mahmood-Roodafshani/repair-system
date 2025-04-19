@@ -1,6 +1,6 @@
 import { timeout } from 'src/utils/helper';
 import ROUTES from '../routes';
-import { get, post, put } from '../service';
+import axiosInstance from '../baseService';
 import {
   CreateNewCommissionRequest,
   GetCommissionListRequest,
@@ -9,18 +9,13 @@ import {
 import { CommissionListMock, ItemsInCommissionQueueListMock } from '@/mock';
 
 const fetchCommissionList = async (request: GetCommissionListRequest) => {
-  if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
-    await timeout(1000);
-    return {
-      statusCode: 200,
-      content: CommissionListMock
-    };
+  try {
+    const response = await axiosInstance.get(ROUTES.COMMISSION_LIST, { params: request });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching commission list:', error);
+    throw error;
   }
-  //todo: build query params from filter
-  const response = await get({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST
-  });
-  return response;
 };
 
 const fetchItemsInCommissionQueue = async (
@@ -34,10 +29,8 @@ const fetchItemsInCommissionQueue = async (
     };
   }
   //todo: build query params from filter
-  const response = await get({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST
-  });
-  return response;
+  const response = await axiosInstance.get(ROUTES.ITEMS_IN_COMMISSION_QUEUE_LIST, { params: request });
+  return response.data;
 };
 
 const createNewCommission = async (data: CreateNewCommissionRequest) => {
@@ -47,11 +40,8 @@ const createNewCommission = async (data: CreateNewCommissionRequest) => {
       statusCode: 200
     };
   }
-  const response = await post({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST,
-    data: data
-  });
-  return response;
+  const response = await axiosInstance.post(ROUTES.ACCESS_CONTROL_FETCH_LIST, data);
+  return response.data;
 };
 
 const updateCommission = async ({
@@ -67,11 +57,8 @@ const updateCommission = async ({
       statusCode: 200
     };
   }
-  const response = await put({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST + id,
-    data: form
-  });
-  return response;
+  const response = await axiosInstance.put(ROUTES.ACCESS_CONTROL_FETCH_LIST + id, form);
+  return response.data;
 };
 
 export {

@@ -2,13 +2,14 @@ import { Box, Container, TextField, Grid, Button, Typography, Paper, InputAdornm
 import { Helmet } from 'react-helmet-async';
 import { styled } from '@mui/material/styles';
 import Logo from 'src/components/LogoSign';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import PhoneIcon from '@mui/icons-material/Phone';
 import LockIcon from '@mui/icons-material/Lock';
 import { toast } from 'react-toastify';
+import { useKeycloak } from '@react-keycloak/web';
 
 const LoginWrapper = styled(Box)(
   ({ theme }) => `
@@ -95,21 +96,46 @@ const LoginButton = styled(Button)(
 );
 
 function LoginForm() {
-  const [data, setData] = useState({
+  const { keycloak, initialized } = useKeycloak();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
     username: '',
     password: ''
   });
-  const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
 
-  const handleLogin = async () => {
-    if (data.username === 'admin' && data.password === 'admin') {
-      localStorage.setItem('isAuthenticated', 'true');
-      toast.success('ورود موفقیت‌آمیز');
-      navigate('/dashboard');
-    } else {
-      toast.error('نام کاربری یا رمز عبور اشتباه است');
+  useEffect(() => {
+    if (initialized && keycloak.authenticated) {
+      const from = (location.state as any)?.from?.pathname || '/dashboard';
+      navigate(from, { replace: true });
     }
+  }, [initialized, keycloak.authenticated, navigate, location]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      setIsLoading(true);
+      await keycloak.login({
+        redirectUri: window.location.origin + '/dashboard',
+        loginHint: formData.username,
+        prompt: 'login'
+      });
+    } catch (error) {
+      console.error('Login error:', error);
+      toast.error('نام کاربری یا رمز عبور اشتباه است');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   return (
@@ -146,13 +172,9 @@ function LoginForm() {
                 dir="rtl"
                 label="نام کاربری"
                 placeholder="نام کاربری خود را وارد کنید"
-                value={data.username}
-                onChange={(e) =>
-                  setData((prevValues) => ({
-                    ...prevValues,
-                    username: e.target.value
-                  }))
-                }
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -170,13 +192,9 @@ function LoginForm() {
                 type={showPassword ? 'text' : 'password'}
                 label="رمز عبور"
                 placeholder="رمز عبور خود را وارد کنید"
-                value={data.password}
-                onChange={(e) =>
-                  setData((prevValues) => ({
-                    ...prevValues,
-                    password: e.target.value
-                  }))
-                }
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -200,7 +218,7 @@ function LoginForm() {
             <Grid item xs={12}>
               <LoginButton
                 fullWidth
-                onClick={handleLogin}
+                onClick={handleSubmit}
               >
                 ورود به سیستم
               </LoginButton>

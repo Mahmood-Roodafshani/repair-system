@@ -1,6 +1,6 @@
 import { AnnouncementRequestType } from 'src/types/requests/userManagement/announcement/announcementRequestType';
 import { timeout } from 'src/utils/helper';
-import { post } from '../service';
+import axiosInstance from '../baseService';
 import ROUTES from '../routes';
 
 const sendPublicAnnouncement = async ({
@@ -15,10 +15,7 @@ const sendPublicAnnouncement = async ({
     };
   }
   //todo: build query params from filter
-  const response = await post({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST,
-    data: request
-  });
+  const response = await axiosInstance.post(ROUTES.ACCESS_CONTROL_FETCH_LIST, request);
   return response;
 };
 
@@ -34,10 +31,7 @@ const sendSecurityAnnouncement = async ({
     };
   }
   //todo: build query params from filter
-  const response = await post({
-    url: ROUTES.ACCESS_CONTROL_FETCH_LIST,
-    data: request
-  });
+  const response = await axiosInstance.post(ROUTES.ACCESS_CONTROL_FETCH_LIST, request);
   return response;
 };
 

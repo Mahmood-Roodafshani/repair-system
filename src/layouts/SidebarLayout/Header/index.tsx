@@ -9,6 +9,7 @@ import {
   Box,
   useTheme,
   Backdrop,
+  Button,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
@@ -25,6 +26,8 @@ import { useThemeContext } from '../../../theme/ThemeProvider';
 import { ThemeName } from '../../../theme/themes';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useKeycloak } from '@react-keycloak/web';
+import { logout } from 'src/services/userService';
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -37,6 +40,7 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, isCollapsed }) => {
   const { theme: currentTheme, setTheme, themeName } = useThemeContext();
   const [themeAnchorEl, setThemeAnchorEl] = useState<null | HTMLElement>(null);
   const [userAnchorEl, setUserAnchorEl] = useState<null | HTMLElement>(null);
+  const { keycloak } = useKeycloak();
 
   const handleThemeMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setThemeAnchorEl(event.currentTarget);
@@ -54,8 +58,8 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, isCollapsed }) => {
     setUserAnchorEl(null);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('isAuthenticated');
+  const handleLogout = async () => {
+    await logout(keycloak);
     toast.success('خروج موفقیت‌آمیز');
     handleUserMenuClose();
     navigate('/login');
