@@ -213,9 +213,12 @@ i18next
           // SERVICE STATUS
           service_in_progress_status: 'در حال خدمت',
           service_retried_status: 'بازنشسته',
+          retried: 'بازنشسته',
           // MARITAL STATUS
           marital_single_status: 'مجرد',
           marital_married_status: 'متاهل',
+          single: 'مجرد',
+          married: 'متاهل',
           // JOB LEVEL
           job_level_manager: 'مدیر',
           job_level_expert: 'کارشناس',
@@ -340,7 +343,8 @@ i18next
             'ایمیل یا آی دی شبکه اجتماعی باید حداکثر 100 کاراکتر باشد',
           invalid_tel: 'شماره تلفن وارد شده نامعتیر است',
           activity_field_is_req: 'لطفا حوزه فعالیت را وارد نمایید',
-          can_be_partner_is_req: 'لطفا فیلد وضعیت را مشخص نمایید'
+          can_be_partner_is_req: 'لطفا فیلد وضعیت را مشخص نمایید',
+          'سامانه جدید': 'سامانه جدید'
         }
       }
     }
