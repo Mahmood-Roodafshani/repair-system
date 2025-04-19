@@ -93,19 +93,16 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     return <SuspenseLoader />;
   }
 
-  // If user is not authenticated, redirect to login
+  // If user is not authenticated, redirect to Keycloak login
   if (!keycloak?.authenticated) {
-    return <Navigate to="/login" replace />;
+    keycloak?.login();
+    return <SuspenseLoader />;
   }
 
   return children;
 };
 
 const routes: RouteObject[] = [
-  {
-    path: '/login',
-    element: <LoginPage />
-  },
   {
     path: '/',
     element: (

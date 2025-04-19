@@ -14,7 +14,7 @@ export const KeycloakProvider = ({ children }: KeycloakProviderProps) => {
     <ReactKeycloakProvider
       authClient={keycloak}
       initOptions={{
-        onLoad: 'check-sso',
+        onLoad: 'login-required',
         silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
         pkceMethod: 'S256',
         checkLoginIframe: false
@@ -24,6 +24,7 @@ export const KeycloakProvider = ({ children }: KeycloakProviderProps) => {
           setIsAuthenticated(true);
         } else if (event === 'onAuthLogout') {
           setIsAuthenticated(false);
+          keycloak.logout();
         }
       }}
     >

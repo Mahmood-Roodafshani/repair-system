@@ -25,10 +25,10 @@ const keycloakConfig = {
   // Disable nonce for now to simplify debugging
   useNonce: false,
   // Add redirect URI
-  redirectUri: window.location.origin + '/dashboard',
+  redirectUri: window.location.origin,
   // Add additional redirect URIs
   redirectUris: [
-    window.location.origin + '/*',
+    window.location.origin,
     window.location.origin + '/dashboard',
     window.location.origin + '/silent-check-sso.html'
   ]
