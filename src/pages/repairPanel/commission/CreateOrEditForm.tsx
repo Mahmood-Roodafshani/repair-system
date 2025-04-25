@@ -1,4 +1,9 @@
-import { CustomDatePicker, InlineLoader, MyCustomTable } from '@/components';
+import {
+  CustomDatePicker,
+  DropzoneArea,
+  InlineLoader,
+  MyCustomTable
+} from '@/components';
 import {
   Button,
   ButtonType,
@@ -19,8 +24,7 @@ import { toast } from 'react-toastify';
 import { createNewCommissionValidationSchema } from './validationSchema';
 import { CommissionFixDecisionOptions } from '@/constant';
 import { useMemo, useState } from 'react';
-import { DropzoneArea } from 'react-mui-dropzone';
-import { CameraAltTwoTone, TextFields } from '@mui/icons-material';
+import { CameraAltTwoTone } from '@mui/icons-material';
 
 function CreateOrEditForm({
   selectedItemForEdit,
@@ -148,7 +152,7 @@ function CreateOrEditForm({
                   onChange={(e) =>
                     setValues((prevValues) => ({
                       ...prevValues,
-                      attachFile: e[0]
+                      attachFile: e
                     }))
                   }
                 />

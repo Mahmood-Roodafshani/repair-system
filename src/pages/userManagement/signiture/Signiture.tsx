@@ -2,10 +2,9 @@ import { CameraAltTwoTone } from '@mui/icons-material';
 import { Button, Dialog, DialogTitle, Grid, TextField } from '@mui/material';
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { DropzoneArea } from 'react-mui-dropzone';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
-import { Loader, OpGrid } from 'src/components';
+import { DropzoneArea, Loader, OpGrid } from 'src/components';
 import { i18n } from 'src/localization';
 import { addSampleSigniture } from 'src/services';
 import { SampleSignitureRequestType } from 'src/types';
@@ -44,12 +43,12 @@ function Signiture() {
               Icon={CameraAltTwoTone}
               filesLimit={1}
               maxFileSize={5000000}
-              onChange={(e) =>
-                setSigniture((prevValues) => ({
-                  ...prevValues,
-                  file: e[0]
-                }))
-              }
+              // onChange={(e) =>
+              //   setSigniture((prevValues) => ({
+              //     ...prevValues,
+              //     file: e
+              //   }))
+              // }
             />
           </Grid>
         </Grid>
