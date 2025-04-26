@@ -14,10 +14,18 @@ export const KeycloakProvider = ({ children }: KeycloakProviderProps) => {
     <ReactKeycloakProvider
       authClient={keycloak}
       initOptions={{
-        onLoad: 'login-required',
+        onLoad: 'check-sso',
         silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
         pkceMethod: 'S256',
-        checkLoginIframe: false
+        checkLoginIframe: false,
+        enableLogging: true,
+        scope: 'openid profile email',
+        redirectUri: window.location.origin + '/dashboard',
+        checkLoginIframeInterval: 0,
+        flow: 'standard',
+        responseMode: 'fragment',
+        responseType: 'code',
+        useNonce: true
       }}
       onEvent={(event) => {
         if (event === 'onAuthSuccess') {

@@ -10,6 +10,9 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import LockIcon from '@mui/icons-material/Lock';
 import { toast } from 'react-toastify';
 import { useKeycloak } from '@react-keycloak/web';
+import { loginService } from 'src/services/auth/loginService';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 const LoginWrapper = styled(Box)(
   ({ theme }) => `
@@ -95,15 +98,54 @@ const LoginButton = styled(Button)(
 `
 );
 
+const validationSchema = Yup.object().shape({
+  username: Yup.string()
+    .required('نام کاربری الزامی است')
+    .min(3, 'نام کاربری باید حداقل 3 کاراکتر باشد')
+    .max(50, 'نام کاربری نمی‌تواند بیشتر از 50 کاراکتر باشد'),
+  password: Yup.string()
+    .required('رمز عبور الزامی است')
+    .min(6, 'رمز عبور باید حداقل 6 کاراکتر باشد')
+    .max(50, 'رمز عبور نمی‌تواند بیشتر از 50 کاراکتر باشد')
+});
+
 function LoginForm() {
   const { keycloak, initialized } = useKeycloak();
   const navigate = useNavigate();
   const location = useLocation();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    username: '',
-    password: ''
+
+  const formik = useFormik({
+    initialValues: {
+      username: '',
+      password: ''
+    },
+    validationSchema,
+    onSubmit: async (values) => {
+      try {
+        setIsLoading(true);
+        const response = await loginService.login(values);
+        
+        if (response.access_token) {
+          keycloak.token = response.access_token;
+          keycloak.refreshToken = response.refresh_token;
+          keycloak.authenticated = true;
+          
+          // Store tokens in localStorage for persistence
+          localStorage.setItem('access_token', response.access_token);
+          localStorage.setItem('refresh_token', response.refresh_token);
+          
+          const from = (location.state as any)?.from?.pathname || '/dashboard';
+          navigate(from, { replace: true });
+        }
+      } catch (error) {
+        // Error is already handled by loginService
+        console.error('Login error:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
   });
 
   useEffect(() => {
@@ -112,31 +154,6 @@ function LoginForm() {
       navigate(from, { replace: true });
     }
   }, [initialized, keycloak.authenticated, navigate, location]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      setIsLoading(true);
-      await keycloak.login({
-        redirectUri: window.location.origin + '/dashboard',
-        loginHint: formData.username,
-        prompt: 'login'
-      });
-    } catch (error) {
-      console.error('Login error:', error);
-      toast.error('نام کاربری یا رمز عبور اشتباه است');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
 
   return (
     <LoginWrapper>
@@ -164,66 +181,75 @@ function LoginForm() {
             لطفاً برای ورود به سیستم، اطلاعات خود را وارد کنید
           </Typography>
 
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <StyledTextField
-                fullWidth
-                required
-                dir="rtl"
-                label="نام کاربری"
-                placeholder="نام کاربری خود را وارد کنید"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <PhoneIcon />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Grid>
-            
-            <Grid item xs={12}>
-              <StyledTextField
-                fullWidth
-                required
-                type={showPassword ? 'text' : 'password'}
-                label="رمز عبور"
-                placeholder="رمز عبور خود را وارد کنید"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LockIcon />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => setShowPassword(!showPassword)}
-                        edge="end"
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Grid>
+          <form onSubmit={formik.handleSubmit}>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <StyledTextField
+                  fullWidth
+                  required
+                  dir="rtl"
+                  label="نام کاربری"
+                  placeholder="نام کاربری خود را وارد کنید"
+                  name="username"
+                  value={formik.values.username}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched.username && Boolean(formik.errors.username)}
+                  helperText={formik.touched.username && formik.errors.username}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <PhoneIcon />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+              
+              <Grid item xs={12}>
+                <StyledTextField
+                  fullWidth
+                  required
+                  type={showPassword ? 'text' : 'password'}
+                  label="رمز عبور"
+                  placeholder="رمز عبور خود را وارد کنید"
+                  name="password"
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched.password && Boolean(formik.errors.password)}
+                  helperText={formik.touched.password && formik.errors.password}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <LockIcon />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={() => setShowPassword(!showPassword)}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
 
-            <Grid item xs={12}>
-              <LoginButton
-                fullWidth
-                onClick={handleSubmit}
-              >
-                ورود به سیستم
-              </LoginButton>
+              <Grid item xs={12}>
+                <LoginButton
+                  fullWidth
+                  type="submit"
+                  disabled={isLoading || !formik.isValid}
+                >
+                  {isLoading ? 'در حال ورود...' : 'ورود به سیستم'}
+                </LoginButton>
+              </Grid>
             </Grid>
-          </Grid>
+          </form>
         </LoginCard>
       </Container>
     </LoginWrapper>

@@ -1,5 +1,5 @@
 import { Suspense, lazy, ComponentType } from 'react';
-import { RouteObject, Navigate, useRoutes } from 'react-router-dom';
+import { RouteObject, Navigate, useRoutes, useLocation } from 'react-router-dom';
 import { useKeycloak } from '@react-keycloak/web';
 
 import SidebarLayout from 'src/layouts/SidebarLayout';
@@ -87,22 +87,26 @@ const StatusMaintenance = Loader(
 // Protected Route Component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { keycloak, initialized } = useKeycloak();
+  const location = useLocation();
   
   // If Keycloak is not initialized yet, show loading
   if (!initialized) {
     return <SuspenseLoader />;
   }
 
-  // If user is not authenticated, redirect to Keycloak login
+  // If user is not authenticated, redirect to local login page
   if (!keycloak?.authenticated) {
-    keycloak?.login();
-    return <SuspenseLoader />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   return children;
 };
 
 const routes: RouteObject[] = [
+  {
+    path: 'login',
+    element: <LoginPage />
+  },
   {
     path: '/',
     element: (
