@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 
 const TOKEN_REFRESH_THRESHOLD = Number(import.meta.env.VITE_TOKEN_REFRESH_THRESHOLD) || 70; // seconds before token expiration to refresh
 const SESSION_TIMEOUT = Number(import.meta.env.VITE_SESSION_TIMEOUT) || 30 * 60 * 1000; // 30 minutes
+const MAX_RETRIES = Number(import.meta.env.VITE_TOKEN_REFRESH_MAX_RETRIES) || 3;
+const INITIAL_RETRY_DELAY = Number(import.meta.env.VITE_TOKEN_REFRESH_INITIAL_DELAY) || 1000; // 1 second
 
 const useAuth = () => {
   const { keycloak, initialized } = useKeycloak();
@@ -96,23 +98,45 @@ const useAuth = () => {
   const refreshToken = async () => {
     if (isRefreshing) return;
     
-    try {
-      setIsRefreshing(true);
-      const refreshToken = localStorage.getItem('refresh_token');
-      if (!refreshToken) {
-        throw new Error('No refresh token available');
-      }
+    let retryCount = 0;
+    let retryDelay = INITIAL_RETRY_DELAY;
 
-      const response = await loginService.refreshToken(refreshToken);
-      updateKeycloakState(response.access_token, response.refresh_token);
-      return true;
-    } catch (error) {
-      console.error('Token refresh failed:', error);
-      clearAuthState();
-      throw error;
-    } finally {
-      setIsRefreshing(false);
-    }
+    const attemptRefresh = async (): Promise<boolean> => {
+      try {
+        setIsRefreshing(true);
+        const refreshToken = localStorage.getItem('refresh_token');
+        if (!refreshToken) {
+          throw new Error('No refresh token available');
+        }
+
+        const response = await loginService.refreshToken(refreshToken);
+        updateKeycloakState(response.access_token, response.refresh_token);
+        return true;
+      } catch (error) {
+        console.error(`Token refresh attempt ${retryCount + 1} failed:`, error);
+        
+        // If we've reached max retries, give up
+        if (retryCount >= MAX_RETRIES - 1) {
+          console.error('Max retry attempts reached, clearing auth state');
+          clearAuthState();
+          throw error;
+        }
+
+        // Wait before retrying with exponential backoff
+        await new Promise(resolve => setTimeout(resolve, retryDelay));
+        retryCount++;
+        retryDelay *= 2; // Exponential backoff
+        
+        // Try again
+        return attemptRefresh();
+      } finally {
+        if (retryCount >= MAX_RETRIES - 1) {
+          setIsRefreshing(false);
+        }
+      }
+    };
+
+    return attemptRefresh();
   };
 
   // Auto-refresh token when it's about to expire
