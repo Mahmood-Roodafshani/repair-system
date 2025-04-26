@@ -9,7 +9,20 @@ import { AnnouncementRequestType } from 'src/types';
 import { validationSchema } from '../validationSchema';
 import AnnouncementForm from '../AnnouncementForm';
 import { Loader, OpGrid } from 'src/components';
-import { sendSecurityAnnouncement } from 'src/services';
+import { sendSecurityAnnouncement } from 'src/services/userManagement/announcementService';
+import { AxiosResponse } from 'axios';
+
+type MockResponse = {
+  statusCode: number;
+};
+
+function isMockResponse(response: any): response is MockResponse {
+  return 'statusCode' in response;
+}
+
+function isAxiosResponse(response: any): response is AxiosResponse {
+  return 'status' in response;
+}
 
 function SecurityAnnouncements() {
   const [showForm, setShowForm] = useState(true);
@@ -18,9 +31,10 @@ function SecurityAnnouncements() {
     values: AnnouncementRequestType,
     actions: FormikHelpers<AnnouncementRequestType>
   ) => {
-    const res = await sendSecurityAnnouncement({ request: values });
+    const response = await sendSecurityAnnouncement({ request: values });
     actions.setSubmitting(false);
-    if (res.statusCode === 200) {
+    if ((isMockResponse(response) && response.statusCode === 200) || 
+        (isAxiosResponse(response) && response.status === 200)) {
       toast(i18n.t('op_done_successfully').toString(), { type: 'success' });
     }
   };

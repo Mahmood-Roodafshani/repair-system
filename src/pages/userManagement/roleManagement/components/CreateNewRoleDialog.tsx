@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { CustomRichTreeView } from 'src/components';
 import { i18n } from 'src/localization';
-import { getSystemRoles, storeNewRole } from 'src/services';
+import { getSystemRoles, storeNewRole } from 'src/services/userManagement/roleManagementService';
 import { RichViewType } from 'src/types';
 import { mapAllIdsInNestedArray } from 'src/utils/helper';
 

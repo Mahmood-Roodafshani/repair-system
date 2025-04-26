@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { Loader, MyCustomTable, OpGrid, TableRowAction } from 'src/components';
 import { i18n } from 'src/localization';
 import { Button, ButtonType, ConfirmationDialog } from '@/components/form';
-import { roleManagementService } from 'src/services';
+import { roleManagementService } from 'src/services/userManagement/roleManagementService';
 import { SystemResponseType, SystemRolesResponse } from 'src/types';
 import CreateNewRoleDialog from './components/CreateNewRoleDialog';
 import CreateNewSystemDialog from './components/CreateNewSystemDialog';

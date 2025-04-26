@@ -23,19 +23,57 @@ import { Button, ButtonType } from '@/components/form';
 import {
   fetchGrantsByAccess,
   fetchUserGrantsByAccess,
-  getGroupAccesses,
   getRolesWithGrants
-} from 'src/services';
+} from 'src/services/userManagement/accessControlService';
+import { getGroupAccesses } from 'src/services/userManagement/groupAccessService';
 import { RichViewType } from 'src/types';
 import { findItemById, mapAllIdsInNestedArray } from 'src/utils/helper';
+import { AxiosResponse } from 'axios';
+
+type GroupAccess = { id: string; name: string };
+
+interface Grant extends RichViewType {
+  id: string;
+  name: string;
+}
+
+interface UserGrant {
+  access: TABS;
+  grants: Array<{
+    id: string;
+    name: string;
+  }>;
+}
 
 type TABS = 'HEFAZAT' | 'FARAJA' | 'JOBS' | 'ROLES' | 'GROUP_ACCESS';
-type UserGrants = {
-  access: TABS;
-  grants?: {
-    name: string;
-    id: string | number;
-  }[];
+
+type MockResponse<T> = {
+  statusCode: number;
+  content: T[];
+};
+
+type GroupAccessResponse = MockResponse<GroupAccess>;
+type RolesResponse = MockResponse<RichViewType>;
+type UserGrantsResponse = MockResponse<UserGrant>;
+
+type ServiceResponse<T> = AxiosResponse<T> | MockResponse<T>;
+
+const isMockResponse = <T,>(response: ServiceResponse<T>): response is MockResponse<T> => {
+  return 'statusCode' in response && 'content' in response;
+};
+
+const isAxiosResponse = <T,>(response: ServiceResponse<T>): response is AxiosResponse<T> => {
+  return 'status' in response && 'data' in response;
+};
+
+const getResponseData = <T,>(response: ServiceResponse<T>): T[] => {
+  if (isMockResponse(response)) {
+    return response.content;
+  }
+  if (isAxiosResponse(response)) {
+    return Array.isArray(response.data) ? response.data : [response.data];
+  }
+  return [];
 };
 
 function Grants({
@@ -45,29 +83,24 @@ function Grants({
   userId: string | number;
   onClose: () => void;
 }) {
-  const [selectedTab, setSelectedTab] = useState<TABS>('HEFAZAT');
-  const [loading, setLoading] = useState(false);
-  const handleChange = (_: React.SyntheticEvent, newValue: TABS) => {
-    setSelectedTab(newValue);
-  };
+  const [selectedTab, setSelectedTab] = useState<TABS>('FARAJA');
+  const [loading, setLoading] = useState<boolean>(true);
   const [selectedOpenTab, setSelectedOpenTab] = useState<number | false>(false);
-  const [grants, setGrants] = useState<RichViewType[]>();
+  const [grants, setGrants] = useState<Grant[]>([]);
   const [groupAccesses, setGroupAccesses] = useState<any[]>();
   const [roles, setRoles] = useState<any[]>();
-  const [userGrants, setUserGrants] = useState<UserGrants[]>([
-    { access: 'FARAJA' },
-    { access: 'HEFAZAT' },
-    { access: 'JOBS' },
-    { access: 'GROUP_ACCESS' },
-    { access: 'ROLES' }
+  const [userGrants, setUserGrants] = useState<UserGrant[]>([
+    { access: 'FARAJA', grants: [] },
+    { access: 'HEFAZAT', grants: [] },
+    { access: 'JOBS', grants: [] },
+    { access: 'GROUP_ACCESS', grants: [] },
+    { access: 'ROLES', grants: [] }
   ]);
+  const [error, setError] = useState<string | null>(null);
 
   const changeAccess = useCallback(() => {
-    if (
-      userGrants.find((userGrant) => userGrant.access === selectedTab)
-        .grants !== undefined
-    )
-      return;
+    const currentUserGrant = userGrants.find((userGrant) => userGrant.access === selectedTab);
+    if (currentUserGrant?.grants !== undefined) return;
 
     setLoading(true);
     if (selectedTab === 'GROUP_ACCESS') {
@@ -75,16 +108,23 @@ function Grants({
         getGroupAccesses({}),
         fetchUserGrantsByAccess({ userId: userId, accessId: selectedTab })
       ])
-        .then((res) => {
-          if (res[0].statusCode === 200) setGroupAccesses(res[0].content);
-          if (res[1].statusCode === 200) {
+        .then((responses) => {
+          const [groupAccessResponse, userGrantsResponse] = responses;
+          
+          const groupAccesses = getResponseData<GroupAccess>(groupAccessResponse as ServiceResponse<GroupAccess>);
+          if (groupAccesses && groupAccesses.length > 0) {
+            setGroupAccesses(groupAccesses);
+          }
+          
+          const userGrantsData = getResponseData<UserGrant>(userGrantsResponse as ServiceResponse<UserGrant>);
+          if (userGrantsData && userGrantsData.length > 0) {
             setUserGrants(
               userGrants.map((userGrant) => {
                 if (userGrant.access !== selectedTab) return userGrant;
                 return {
                   access: selectedTab,
-                  grants: res[1].content.map((e) => ({
-                    id: e.id,
+                  grants: userGrantsData.map((grant) => ({
+                    id: grant.id,
                     name: ''
                   }))
                 };
@@ -100,16 +140,23 @@ function Grants({
         getRolesWithGrants(),
         fetchUserGrantsByAccess({ userId: userId, accessId: selectedTab })
       ])
-        .then((res) => {
-          if (res[0].statusCode === 200) setRoles(res[0].content);
-          if (res[1].statusCode === 200) {
+        .then((responses) => {
+          const [rolesResponse, userGrantsResponse] = responses;
+          
+          const roles = getResponseData<RichViewType>(rolesResponse as ServiceResponse<RichViewType>);
+          if (roles && roles.length > 0) {
+            setRoles(roles);
+          }
+          
+          const userGrantsData = getResponseData<UserGrant>(userGrantsResponse as ServiceResponse<UserGrant>);
+          if (userGrantsData && userGrantsData.length > 0) {
             setUserGrants(
               userGrants.map((userGrant) => {
                 if (userGrant.access !== selectedTab) return userGrant;
                 return {
                   access: selectedTab,
-                  grants: res[1].content.map((e) => ({
-                    id: e.id,
+                  grants: userGrantsData.map((grant) => ({
+                    id: grant.id,
                     name: ''
                   }))
                 };
@@ -120,27 +167,21 @@ function Grants({
         .finally(() => setLoading(false));
       return;
     }
-    setGrants(undefined);
-    Promise.all([
-      fetchGrantsByAccess({ accessId: selectedTab }),
-      fetchUserGrantsByAccess({ userId: userId, accessId: selectedTab })
-    ])
-      .then((res) => {
-        if (res[0].statusCode === 200) setGrants(res[0].content);
-        if (res[1].statusCode === 200) {
-          setUserGrants(
-            userGrants.map((userGrant) => {
-              if (userGrant.access !== selectedTab) return userGrant;
-              return {
-                access: userGrant.access,
-                grants: res[1].content
-              };
-            })
-          );
+
+    fetchGrantsByAccess({ accessId: selectedTab })
+      .then((response) => {
+        if (isMockResponse(response)) {
+          if (response.statusCode === 200 && response.content && response.content.length > 0) {
+            setGrants(response.content as Grant[]);
+          }
+        } else if (isAxiosResponse(response)) {
+          if (response.status === 200 && Array.isArray(response.data) && response.data.length > 0) {
+            setGrants(response.data as Grant[]);
+          }
         }
       })
       .finally(() => setLoading(false));
-  }, [selectedTab, userGrants]);
+  }, [selectedTab, userId, userGrants]);
 
   useEffect(() => {
     changeAccess();
@@ -161,6 +202,61 @@ function Grants({
     (panel: number) => (event: React.SyntheticEvent, isExpanded: boolean) => {
       setSelectedOpenTab(isExpanded ? panel : false);
     };
+
+  const handleChange = useCallback(
+    (event: React.SyntheticEvent, newValue: string) => {
+      setSelectedTab(newValue as TABS);
+    },
+    []
+  );
+
+  const handleCheckboxChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
+      const grantId = event.target.name;
+      const grant = grants.find((g) => g.id === grantId);
+      
+      if (!grant) return;
+
+      setUserGrants((prevUserGrants) => {
+        return prevUserGrants.map((userGrant) => {
+          if (userGrant.access !== selectedTab) return userGrant;
+          
+          const currentGrants = userGrant.grants;
+          const updatedGrants = checked
+            ? [...currentGrants, { id: grant.id, name: grant.name }]
+            : currentGrants.filter((g) => g.id !== grantId);
+            
+          return {
+            access: selectedTab,
+            grants: updatedGrants
+          };
+        });
+      });
+    },
+    [grants, selectedTab]
+  );
+
+  const handleSave = useCallback(() => {
+    const currentUserGrant = userGrants.find((userGrant) => userGrant.access === selectedTab);
+    if (!currentUserGrant) return;
+
+    const grantIds = currentUserGrant.grants.map((grant) => grant.id);
+    setUserGrants((prevUserGrants) => {
+      return prevUserGrants.map((userGrant) => {
+        if (userGrant.access !== selectedTab) return userGrant;
+        return {
+          access: selectedTab,
+          grants: grantIds.map((id) => {
+            const grant = grants.find((g) => g.id === id);
+            return {
+              id,
+              name: grant ? grant.name : ''
+            };
+          })
+        };
+      });
+    });
+  }, [selectedTab, userGrants, grants]);
 
   return (
     <>
@@ -273,28 +369,8 @@ function Grants({
                 key={index}
                 control={
                   <Checkbox
-                    onChange={(e) => {
-                      setUserGrants(
-                        userGrants.map((userGrant) => {
-                          if (userGrant.access === selectedTab) {
-                            return {
-                              access: selectedTab,
-                              grants: e.target.checked
-                                ? [
-                                    ...userGrant.grants,
-                                    { id: groupAccess.id.toString(), name: '' }
-                                  ]
-                                : userGrant.grants.filter(
-                                    (grant) =>
-                                      grant.id.toString() !==
-                                      groupAccess.id.toString()
-                                  )
-                            };
-                          }
-                          return userGrant;
-                        })
-                      );
-                    }}
+                    onChange={handleCheckboxChange}
+                    name={groupAccess.id}
                     checked={
                       userGrants
                         .find((e) => e.access === selectedTab)
@@ -343,20 +419,8 @@ function Grants({
                         key={itr}
                         control={
                           <Checkbox
-                            onChange={(e) => {
-                              setRoles(
-                                roles.map((_r) => {
-                                  if (_r.id === role.id) {
-                                    _r.grants = _r.grants.map((_g) => {
-                                      if (_g.id === grant.id)
-                                        _g.hasAccess = e.target.checked;
-                                      return _g;
-                                    });
-                                  }
-                                  return _r;
-                                })
-                              );
-                            }}
+                            onChange={handleCheckboxChange}
+                            name={grant.id}
                             checked={grant.hasAccess}
                           />
                         }
@@ -373,7 +437,7 @@ function Grants({
       <Grid display={'flex'} flexDirection={'column'} gap={'10px'} mt={'10px'}>
         <Grid display={'flex'} flexDirection={'row'} gap={'10px'}>
           <Button
-            onClick={() => console.log(userGrants)}
+            onClick={handleSave}
             buttonType={ButtonType.CREATE_OR_EDIT}
             color="warning"
             variant="contained"

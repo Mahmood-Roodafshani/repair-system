@@ -6,10 +6,23 @@ import { useState } from 'react';
 import { AnnouncementRequestType } from 'src/types';
 import { Loader, OpGrid } from 'src/components';
 import { Form, Formik, FormikHelpers } from 'formik';
-import { sendPublicAnnouncement } from 'src/services';
+import { sendPublicAnnouncement } from 'src/services/userManagement/announcementService';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 import { validationSchema } from '../validationSchema';
+import { AxiosResponse } from 'axios';
+
+type MockResponse = {
+  statusCode: number;
+};
+
+function isMockResponse(response: any): response is MockResponse {
+  return 'statusCode' in response;
+}
+
+function isAxiosResponse(response: any): response is AxiosResponse {
+  return 'status' in response;
+}
 
 function PublicAnnouncements() {
   const [showForm, setShowForm] = useState(true);
@@ -18,9 +31,10 @@ function PublicAnnouncements() {
     values: AnnouncementRequestType,
     actions: FormikHelpers<AnnouncementRequestType>
   ) => {
-    const res = await sendPublicAnnouncement({ request: values });
+    const response = await sendPublicAnnouncement({ request: values });
     actions.setSubmitting(false);
-    if (res.statusCode === 200) {
+    if ((isMockResponse(response) && response.statusCode === 200) || 
+        (isAxiosResponse(response) && response.status === 200)) {
       toast(i18n.t('op_done_successfully').toString(), { type: 'success' });
     }
   };
