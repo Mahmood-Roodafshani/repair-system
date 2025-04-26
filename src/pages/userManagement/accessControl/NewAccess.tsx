@@ -9,7 +9,7 @@ import {
   OpGrid
 } from 'src/components';
 import { i18n } from 'src/localization';
-import { createNewAccessControl, findStaffByCode } from 'src/services';
+import { createNewAccessControl, findStaffByCode } from 'src/services/userManagement/accessControlService';
 import { RichViewType } from 'src/types';
 import { findItemById, mapAllIdsInNestedArray } from 'src/utils/helper';
 

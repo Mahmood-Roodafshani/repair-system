@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
 import { DropzoneArea, Loader, OpGrid } from 'src/components';
 import { i18n } from 'src/localization';
-import { addSampleSigniture } from 'src/services';
+import { addSampleSigniture } from 'src/services/userManagement/signitureService';
 import { SampleSignitureRequestType } from 'src/types';
 
 function Signiture() {

@@ -7,12 +7,7 @@ import { toast } from 'react-toastify';
 import { Loader, MyCustomTable, OpGrid, TableRowAction } from 'src/components';
 import { i18n } from 'src/localization';
 import { ConfirmationDialog } from '@/components/form';
-import {
-  addGroupAccess,
-  getGroupAccessRoles,
-  getGroupAccesses,
-  removeGroupAccess
-} from 'src/services';
+import { addGroupAccess, getGroupAccesses, getGroupAccessRoles, removeGroupAccess } from 'src/services/userManagement/groupAccessService';
 
 function CreateGroupAccess() {
   const [name, setName] = useState<string>();
