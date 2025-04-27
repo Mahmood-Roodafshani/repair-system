@@ -1,7 +1,7 @@
 import { StaffInfoMock } from 'src/mock';
 import { StaffInfoRequestType } from 'src/types';
 import { timeout } from 'src/utils/helper';
-import ROUTES from '../routes';
+import { ROUTES } from 'src/constants/routes';
 import axiosInstance from '../baseService';
 
 const fetchFamilyInfoList = async ({
@@ -17,7 +17,7 @@ const fetchFamilyInfoList = async ({
     };
   }
   //todo: build query params from filter
-  const response = await axiosInstance.get(ROUTES.ACCESS_CONTROL_FETCH_LIST);
+  const response = await axiosInstance.get(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST);
   return response;
 };
 
@@ -32,7 +32,7 @@ const removeFamilyInfo = async ({
       statusCode: 200
     };
   }
-  const response = await axiosInstance.delete(ROUTES.ACCESS_CONTROL_FETCH_LIST + memberId);
+  const response = await axiosInstance.delete(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST + memberId);
   return response;
 };
 
@@ -49,7 +49,7 @@ const updateFamilyInfo = async ({
       statusCode: 200
     };
   }
-  const response = await axiosInstance.put(ROUTES.ACCESS_CONTROL_FETCH_LIST + memberId, memberInfo);
+  const response = await axiosInstance.put(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST + memberId, memberInfo);
   return response;
 };
 
@@ -64,7 +64,7 @@ const createFamilyInfo = async ({
       statusCode: 200
     };
   }
-  const response = await axiosInstance.post(ROUTES.ACCESS_CONTROL_FETCH_LIST, memberInfo);
+  const response = await axiosInstance.post(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST, memberInfo);
   return response;
 };
 

@@ -12,12 +12,10 @@ import {
 } from '@/components/form';
 import { i18n } from '@/localization';
 import { createNewCommission, updateCommission } from '@/services';
-import {
-  CommisionListResponse,
-  CommissionMember,
-  CreateNewCommissionRequest,
-  createNewCommissionRequestInitialValues
-} from '@/types';
+import { CommissionFormDto } from '@/types/responses/commission/commissionDto';
+import { CommissionMember } from '@/types/requests/repairPanel/commission/commissionMember';
+import { CreateNewCommissionRequest } from '@/types/requests/repairPanel/commission/createNewCommissionRequest';
+import createNewCommissionRequestInitialValues from '@/types/requests/repairPanel/commission/createNewCommissionRequest';
 import { Grid, TextField } from '@mui/material';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { toast } from 'react-toastify';
@@ -31,7 +29,7 @@ function CreateOrEditForm({
   onSuccess,
   onClose
 }: {
-  selectedItemForEdit?: CommisionListResponse;
+  selectedItemForEdit?: CommissionFormDto;
   onSuccess: () => void;
   onClose: () => void;
 }) {

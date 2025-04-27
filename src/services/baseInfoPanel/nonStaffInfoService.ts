@@ -1,7 +1,7 @@
 import { StaffInfoMock } from 'src/mock';
 import { StaffInfoRequestType } from 'src/types';
 import { timeout } from 'src/utils/helper';
-import ROUTES from '../routes';
+import { ROUTES } from 'src/constants/routes';
 import axiosInstance from '../baseService';
 
 const fetchNonStaffInfoList = async ({
@@ -17,7 +17,7 @@ const fetchNonStaffInfoList = async ({
     };
   }
   //todo: build query params from filter
-  const response = await axiosInstance.get(ROUTES.ACCESS_CONTROL_FETCH_LIST);
+  const response = await axiosInstance.get(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST);
   return response;
 };
 
@@ -28,7 +28,7 @@ const removeNonStaff = async ({ staffId }: { staffId: string | number }) => {
       statusCode: 200
     };
   }
-  const response = await axiosInstance.delete(ROUTES.ACCESS_CONTROL_FETCH_LIST + staffId);
+  const response = await axiosInstance.delete(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST + staffId);
   return response;
 };
 
@@ -45,7 +45,7 @@ const updateNonStaff = async ({
       statusCode: 200
     };
   }
-  const response = await axiosInstance.put(ROUTES.ACCESS_CONTROL_FETCH_LIST + staffId, staffInfo);
+  const response = await axiosInstance.put(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST + staffId, staffInfo);
   return response;
 };
 
@@ -60,7 +60,7 @@ const createNonStaff = async ({
       statusCode: 200
     };
   }
-  const response = await axiosInstance.post(ROUTES.ACCESS_CONTROL_FETCH_LIST, staffInfo);
+  const response = await axiosInstance.post(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST, staffInfo);
   return response;
 };
 

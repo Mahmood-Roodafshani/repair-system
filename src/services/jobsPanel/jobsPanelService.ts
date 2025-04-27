@@ -1,7 +1,7 @@
 import { timeout } from 'src/utils/helper';
 import { JobsFullInfoMock, JobsTreeMock } from 'src/mock/jobsPanel/jobsPanelMock';
 import axiosInstance from '../baseService';
-import ROUTES from '../routes';
+import { ROUTES } from 'src/constants/routes';
 
 interface FetchJobsListParams {
   organizationUnit?: string | number;
@@ -44,7 +44,7 @@ const createJob = async (data: any) => {
       statusCode: 200
     };
   }
-  const response = await axiosInstance.post(ROUTES.ACCESS_CONTROL_FETCH_LIST, data);
+  const response = await axiosInstance.post(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST, data);
   return response;
 };
 
@@ -55,7 +55,7 @@ const updateJob = async (id: string | number, data: any) => {
       statusCode: 200
     };
   }
-  const response = await axiosInstance.put(ROUTES.ACCESS_CONTROL_FETCH_LIST + id, data);
+  const response = await axiosInstance.put(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST + id, data);
   return response;
 };
 
@@ -66,7 +66,7 @@ const removeJob = async (id: string | number) => {
       statusCode: 200
     };
   }
-  const response = await axiosInstance.delete(ROUTES.ACCESS_CONTROL_FETCH_LIST + id);
+  const response = await axiosInstance.delete(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST + id);
   return response;
 };
 

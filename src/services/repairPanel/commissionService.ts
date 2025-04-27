@@ -1,5 +1,5 @@
 import { timeout } from 'src/utils/helper';
-import ROUTES from '../routes';
+import { ROUTES } from 'src/constants/routes';
 import axiosInstance from '../baseService';
 import {
   CreateNewCommissionRequest,
@@ -40,7 +40,7 @@ const createNewCommission = async (data: CreateNewCommissionRequest) => {
       statusCode: 200
     };
   }
-  const response = await axiosInstance.post(ROUTES.ACCESS_CONTROL_FETCH_LIST, data);
+  const response = await axiosInstance.post(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST, data);
   return response.data;
 };
 
@@ -57,7 +57,7 @@ const updateCommission = async ({
       statusCode: 200
     };
   }
-  const response = await axiosInstance.put(ROUTES.ACCESS_CONTROL_FETCH_LIST + id, form);
+  const response = await axiosInstance.put(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST + id, form);
   return response.data;
 };
 

@@ -1,7 +1,7 @@
 import { AccessControlFilterType } from 'src/types';
 import { timeout } from 'src/utils/helper';
 import axiosInstance from '../baseService';
-import ROUTES from '../routes';
+import { ROUTES } from 'src/constants/routes';
 import {
   AccessControlListMock,
   FarajaGrantsMock,
@@ -13,6 +13,7 @@ import {
   JobsUserGrantsMock,
   RolesWithGrantsMock
 } from 'src/mock';
+import axios from 'axios';
 
 const accessControlFetchList = async ({
   filter
@@ -27,7 +28,7 @@ const accessControlFetchList = async ({
     };
   }
   //todo: build query params from filter
-  const response = await axiosInstance.get(ROUTES.ACCESS_CONTROL_FETCH_LIST);
+  const response = await axiosInstance.get(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST);
   return response;
 };
 
@@ -44,7 +45,7 @@ const findStaffByCode = async ({ staffCode }: { staffCode: string }) => {
     };
   }
   //todo: build query params from filter
-  const response = await axiosInstance.get(ROUTES.ACCESS_CONTROL_FETCH_LIST);
+  const response = await axiosInstance.get(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST);
   return response;
 };
 
@@ -62,7 +63,7 @@ const createNewAccessControl = async ({
     };
   }
   //todo: build query params from filter
-  const response = await axiosInstance.post(ROUTES.ACCESS_CONTROL_FETCH_LIST, {
+  const response = await axiosInstance.post(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST, {
     staffCode: staffCode,
     grants: grants
   });
@@ -89,7 +90,7 @@ const fetchGrantsByAccess = async ({
     };
   }
   //todo: build query params from filter
-  const response = await axiosInstance.get(ROUTES.ACCESS_CONTROL_FETCH_LIST);
+  const response = await axiosInstance.get(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST);
   return response;
 };
 
@@ -117,7 +118,7 @@ const fetchUserGrantsByAccess = async ({
     };
   }
   //todo: build query params from filter
-  const response = await axiosInstance.get(ROUTES.ACCESS_CONTROL_FETCH_LIST);
+  const response = await axiosInstance.get(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST);
   return response;
 };
 
@@ -129,7 +130,7 @@ const getRolesWithGrants = async () => {
       content: RolesWithGrantsMock
     };
   }
-  const response = await axiosInstance.get(ROUTES.ACCESS_CONTROL_FETCH_LIST);
+  const response = await axiosInstance.get(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST);
   return response;
 };
 
