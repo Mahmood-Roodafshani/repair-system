@@ -13,6 +13,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import AnnouncementIcon from '@mui/icons-material/Announcement';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import DrawIcon from '@mui/icons-material/Draw';
+import LockIcon from '@mui/icons-material/Lock';
 
 export class StaticMenu {
     static appMenuItems = [
@@ -36,6 +37,11 @@ export class StaticMenu {
                     title: "مدیریت نقش",
                     link: "/usermanagement/roleManagement",
                     icon: GroupIcon
+                },
+                {
+                    title: "مدیریت دسترسی‌ها",
+                    link: "/usermanagement/permission",
+                    icon: LockIcon
                 },
                 {
                     title: "ایجاد گروه دسترسی",

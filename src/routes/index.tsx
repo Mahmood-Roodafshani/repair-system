@@ -45,6 +45,7 @@ import {
   OtherInfo,
   StaffInfo
 } from 'src/pages/baseInfoPanel';
+import Permission from '../pages/userManagement/permission/Permission';
 
 const Loader =
   <P extends object>(Component: ComponentType<P>) =>
@@ -290,6 +291,14 @@ const routes: RouteObject[] = [
           {
             path: 'signiture',
             element: <Signiture />
+          },
+          {
+            path: 'permission',
+            element: (
+              <ProtectedRoute>
+                <Permission />
+              </ProtectedRoute>
+            )
           }
         ]
       },
