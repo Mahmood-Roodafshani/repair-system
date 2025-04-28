@@ -1,12 +1,7 @@
-import { Grid } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useEffect, useState } from 'react';
-import {
-  CustomDatePicker,
-  CustomRichTreeView,
-  InlineLoader,
-  OpGrid
-} from 'src/components';
+import { CustomDatePicker, CustomRichTreeView, InlineLoader, Loader, OpGrid } from 'src/components';
 import {
   DegreeOptions,
   FamilyRelationOptions,
@@ -33,10 +28,7 @@ import {
   createStaffValidationSchema
 } from './validationSchema';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router';
 import { Helmet } from 'react-helmet-async';
-import { Box, Button, Typography } from '@mui/material';
-import { Loader } from 'src/components';
 
 interface CreateOrEditFormProps {
   initialValues: StaffInfoRequestType;
@@ -50,15 +42,15 @@ interface CreateOrEditFormProps {
 }
 
 function CreateOrEditForm({
-  initialValues,
-  cities,
-  educationalFields,
-  workLocations,
-  positionDegrees,
-  onSuccess,
-  onClose,
-  mode
-}: CreateOrEditFormProps) {
+                            initialValues,
+                            cities,
+                            educationalFields,
+                            workLocations,
+                            positionDegrees,
+                            onSuccess,
+                            onClose,
+                            mode
+                          }: CreateOrEditFormProps) {
   const [isInEditMode, setIsInEditMode] = useState(false);
   const [workLocationDefaultValue, setWorkLocationDefaultValue] =
     useState<string[]>();
@@ -67,7 +59,6 @@ function CreateOrEditForm({
   const [birthLocationDefaultValue, setBirthLocationDefaultValue] =
     useState<string[]>();
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     setIsInEditMode(initialValues.id !== undefined);
@@ -98,13 +89,13 @@ function CreateOrEditForm({
         ? mode === 'staff'
           ? updateStaff({ staffId: values.id, staffInfo: values })
           : mode === 'nonStaff'
-          ? updateNonStaff({ staffId: values.id, staffInfo: values })
-          : updateFamilyInfo({ memberId: values.id, memberInfo: values })
+            ? updateNonStaff({ staffId: values.id, staffInfo: values })
+            : updateFamilyInfo({ memberId: values.id, memberInfo: values })
         : mode === 'staff'
-        ? createStaff({ staffInfo: values })
-        : mode === 'nonStaff'
-        ? createNonStaff({ staffInfo: values })
-        : createFamilyInfo({ memberInfo: values }));
+          ? createStaff({ staffInfo: values })
+          : mode === 'nonStaff'
+            ? createNonStaff({ staffInfo: values })
+            : createFamilyInfo({ memberInfo: values }));
       actions.setSubmitting(false);
       if (res.statusCode === 200) {
         toast(
@@ -112,13 +103,13 @@ function CreateOrEditForm({
             ? mode === 'staff'
               ? i18n.t('staff_updated').toString()
               : mode === 'nonStaff'
-              ? i18n.t('non_staff_updated').toString()
-              : i18n.t('family_member_updated').toString()
+                ? i18n.t('non_staff_updated').toString()
+                : i18n.t('family_member_updated').toString()
             : mode === 'staff'
-            ? i18n.t('staff_created').toString()
-            : mode === 'nonStaff'
-            ? i18n.t('non_staff_created').toString()
-            : i18n.t('family_member_created').toString(),
+              ? i18n.t('staff_created').toString()
+              : mode === 'nonStaff'
+                ? i18n.t('non_staff_created').toString()
+                : i18n.t('family_member_created').toString(),
           { type: 'success' }
         );
         onSuccess();
@@ -155,8 +146,8 @@ function CreateOrEditForm({
               mode === 'staff'
                 ? createStaffValidationSchema
                 : mode === 'nonStaff'
-                ? createNonStaffValidationSchema
-                : createFamilyMemberValidationSchema
+                  ? createNonStaffValidationSchema
+                  : createFamilyMemberValidationSchema
             }
             validateOnBlur={false}
             validateOnChange={false}

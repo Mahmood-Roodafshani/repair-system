@@ -1,36 +1,27 @@
 import {
+  Box,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   Grid,
-  Typography,
-  Box,
-  IconButton
+  IconButton,
+  Typography
 } from '@mui/material';
-import { Form, Formik } from 'formik';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router';
-import {
-  MyCustomTable,
-  Loader
-} from '../../../components';
-import {
-  FamilyRelation
-} from '../../../constant/enums';
+import { Loader, MyCustomTable } from '../../../components';
+import { FamilyRelation } from '../../../constant/enums';
 import { RichViewType } from '../../../types/richViewType';
 import { StaffInfoResponseType } from '../../../types/responses/baseInfoPanel/staffInfo/staffInfoResponseType';
 import { i18n } from '../../../localization';
 import CommonService from '../../../services/CommonService';
-import {
-  fetchFamilyInfoList,
-  removeFamilyInfo
-} from '../../../services/baseInfoPanel';
+import { fetchFamilyInfoList, removeFamilyInfo } from '../../../services/baseInfoPanel';
 import CreateOrEditForm from '../common/CreateOrEditForm';
 import { useTranslation } from 'react-i18next';
-import { Add, Edit, Delete } from '@mui/icons-material';
+import { Add, Delete, Edit } from '@mui/icons-material';
 import { ApiResponse } from 'src/types/responses/apiResponse';
 import { AxiosResponse } from 'axios';
 
