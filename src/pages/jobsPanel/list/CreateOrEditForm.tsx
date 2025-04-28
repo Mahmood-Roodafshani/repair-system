@@ -62,8 +62,8 @@ function CreateOrEditForm({
   ) => {
     try {
       const res = await (isInEditMode
-        ? updateJob({ id: values.id!, data: { name: values.title || '' } })
-        : createJob({ data: { name: values.title || '' } }));
+        ? updateJob({ id: values.id!, data: values })
+        : createJob({ data: values }));
       
       actions.setSubmitting(false);
       

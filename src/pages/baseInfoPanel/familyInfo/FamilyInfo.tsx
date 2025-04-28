@@ -24,6 +24,19 @@ import { useTranslation } from 'react-i18next';
 import { Add, Delete, Edit } from '@mui/icons-material';
 import { ApiResponse } from 'src/types/responses/apiResponse';
 import { AxiosResponse } from 'axios';
+import { Form, Formik, FormikHelpers } from 'formik';
+import { toast } from 'react-toastify';
+import DateObject from 'react-date-object';
+import {
+  CustomDatePicker,
+  CustomRichTreeView,
+  InlineLoader,
+  OpGrid,
+  TableRowAction
+} from 'src/components';
+import { Degree, Gender, MaritalStatus, Religion, ServiceStatus } from 'src/constant/enums';
+import { StaffInfoRequestType } from 'src/types/requests/baseInfoPanel/staffInfo/staffInfoRequestType';
+import { filterValidationSchema } from '../common/validationSchema';
 
 interface TableRow extends ExtendedStaffInfoResponseType {
   index: number;
@@ -59,6 +72,12 @@ function FamilyInfo() {
   const [tableData, setTableData] = useState<TableRow[]>([]);
   const [cities, setCities] = useState<RichViewType[]>([]);
   const [positionDegrees, setPositionDegrees] = useState<RichViewType[]>([]);
+  const [educationalFields, setEducationalFields] = useState<RichViewType[]>([]);
+  const [workLocations, setWorkLocations] = useState<RichViewType[]>([]);
+  const [filter, setFilter] = useState<StaffInfoRequestType>({});
+  const [staffInfo, setStaffInfo] = useState<StaffInfoResponseType[]>([]);
+  const [selectedStaffForEdit, setSelectedStaffForEdit] = useState<StaffInfoResponseType | null>(null);
+  const [selectedStaffIdForDelete, setSelectedStaffIdForDelete] = useState<string | number | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -291,7 +310,7 @@ function FamilyInfo() {
           }}
           positionDegrees={positionDegrees}
           cities={cities}
-          educationalFields={[]}
+          educationalFields={educationalFields}
           onSuccess={() => {
             setSelectedFamilyMember(null);
             fetchData();

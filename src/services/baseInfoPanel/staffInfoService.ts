@@ -1,14 +1,22 @@
 import { StaffInfoMock } from 'src/mock';
-import { StaffInfoRequestType } from 'src/types';
+import { StaffInfoRequestType, StaffInfoResponseType } from 'src/types';
 import { timeout } from 'src/utils/helper';
 import { ROUTES } from 'src/constants/routes';
 import axiosInstance from '../baseService';
+import { AxiosResponse } from 'axios';
+
+export type MockResponse = {
+  statusCode: number;
+  content: StaffInfoResponseType[];
+};
+
+export type StaffInfoResponse = MockResponse | AxiosResponse<StaffInfoResponseType[]>;
 
 const fetchStaffInfoList = async ({
   filter
 }: {
   filter: StaffInfoRequestType;
-}) => {
+}): Promise<StaffInfoResponse> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
@@ -17,7 +25,7 @@ const fetchStaffInfoList = async ({
     };
   }
   //todo: build query params from filter
-  const response = await axiosInstance.get(ROUTES.BASE_INFO.STAFF.FETCH_LIST);
+  const response = await axiosInstance.get<StaffInfoResponseType[]>(ROUTES.BASE_INFO.STAFF.FETCH_LIST);
   return response;
 };
 

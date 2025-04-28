@@ -1,81 +1,87 @@
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
 import { Grid, Typography } from '@mui/material';
 import { FormikErrors } from 'formik';
 import { Dispatch, SetStateAction } from 'react';
 import DatePicker from 'react-multi-date-picker';
 import { i18n } from 'src/localization';
-import { AnnouncementRequestType } from 'src/types';
-import persian from 'react-date-object/calendars/persian';
-import persian_fa from 'react-date-object/locales/persian_fa';
+import { AnnouncementRequestType } from 'src/types/requests/userManagement/announcements/announcementRequestType';
 import { TextFieldFormik } from '@/components/form';
 import { CKEditorToolbar } from 'src/utils/helper';
+import { Editor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 function AnnouncementForm({
-  announcementRequest,
-  setAnnouncementRequest,
-  errors
+    announcementRequest,
+    setAnnouncementRequest,
+    errors
 }: {
-  announcementRequest: AnnouncementRequestType;
-  setAnnouncementRequest: Dispatch<SetStateAction<AnnouncementRequestType>>;
-  errors: FormikErrors<AnnouncementRequestType>;
+    announcementRequest: AnnouncementRequestType;
+    setAnnouncementRequest: Dispatch<SetStateAction<AnnouncementRequestType>>;
+    errors: FormikErrors<AnnouncementRequestType>;
 }) {
-  return (
-    <>
-      <TextFieldFormik
-        sx={{ width: '300px' }}
-        name="title"
-        label={i18n.t('title').toString()}
-      />
-      <Grid sx={{ width: '400px' }}>
-        <DatePicker
-          calendar={persian}
-          locale={persian_fa}
-          maxDate={new Date()}
-          value={announcementRequest.from}
-          placeholder={i18n.t('from')}
-          onChange={(e) => {
-            setAnnouncementRequest((prevValues) => ({
-              ...prevValues,
-              from: e
-            }));
-          }}
-        />
-      </Grid>
-      <Grid sx={{ width: '400px' }}>
-        <DatePicker
-          calendar={persian}
-          locale={persian_fa}
-          maxDate={new Date()}
-          value={announcementRequest.to}
-          placeholder={i18n.t('to')}
-          onChange={(e) => {
-            setAnnouncementRequest((prevValues) => ({
-              ...prevValues,
-              to: e
-            }));
-          }}
-        />
-      </Grid>
-      <CKEditor
-        editor={ClassicEditor}
-        config={{
-          //   extraPlugins: [MyCustomUploadAdapterPlugin],
-          placeholder: i18n.t('ckeditor_placeholder').toString(),
-          ...CKEditorToolbar
-        }}
-        data={announcementRequest?.message ? announcementRequest.message : ''}
-        onChange={(event, editor) => {
-          setAnnouncementRequest((prevValues) => ({
+    const handleEditorChange = (_: unknown, editor: typeof ClassicEditor) => {
+        setAnnouncementRequest((prevValues) => ({
             ...prevValues,
             message: editor.getData()
-          }));
-        }}
-      />
+        }));
+    };
 
-      {errors.message?.length > 0 && <Typography>{errors.message}</Typography>}
-    </>
-  );
+    return (
+        <>
+            <Grid container spacing={2}>
+                <Grid item xs={12}>
+                    <TextFieldFormik
+                        name="title"
+                        label={i18n.t('title')}
+                        value={announcementRequest.title}
+                        onChange={(e) => {
+                            setAnnouncementRequest((prevValues) => ({
+                                ...prevValues,
+                                title: e.target.value
+                            }));
+                        }}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <DatePicker
+                        value={announcementRequest.from}
+                        placeholder={i18n.t('from')}
+                        onChange={(e) => {
+                            setAnnouncementRequest((prevValues) => ({
+                                ...prevValues,
+                                from: e ? e.toString() : undefined
+                            }));
+                        }}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <DatePicker
+                        value={announcementRequest.to}
+                        placeholder={i18n.t('to')}
+                        onChange={(e) => {
+                            setAnnouncementRequest((prevValues) => ({
+                                ...prevValues,
+                                to: e ? e.toString() : undefined
+                            }));
+                        }}
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <Editor
+                        editor={ClassicEditor}
+                        config={{
+                            toolbar: CKEditorToolbar
+                        }}
+                        data={announcementRequest.message}
+                        onChange={handleEditorChange}
+                    />
+                </Grid>
+            </Grid>
+
+            {errors.message && (
+                <Typography color="error">{errors.message}</Typography>
+            )}
+        </>
+    );
 }
 
 export default AnnouncementForm;

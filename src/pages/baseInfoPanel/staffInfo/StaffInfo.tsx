@@ -25,7 +25,6 @@ import CommonService from 'src/services/CommonService';
 import {RichViewType, StaffInfoRequestType, StaffInfoResponseType} from 'src/types';
 import CreateOrEditForm from '../common/CreateOrEditForm';
 import {filterValidationSchema} from '../common/validationSchema';
-import {ApiResponse} from 'src/types/responses/apiResponse';
 import {AxiosResponse} from 'axios';
 
 interface TableRow extends StaffInfoResponseType {
@@ -132,15 +131,14 @@ function StaffInfo() {
         setFilter(values);
         setStaffInfo([]);
         try {
-            const res = await fetchStaffInfoList({ filter: values }) as StaffInfoResponse;
-            const isMockMode = import.meta.env.VITE_APP_WORK_WITH_MOCK === 'true';
+            const res = await fetchStaffInfoList({ filter: values });
             
-            if (isMockMode && 'statusCode' in res) {
+            if ('statusCode' in res) {
                 if (res.statusCode === 200) {
                     setStaffInfo(res.content);
                 }
-            } else if (!isMockMode && 'status' in res) {
-                if (res.status === 200 && Array.isArray(res.data)) {
+            } else if ('status' in res) {
+                if (res.status === 200) {
                     setStaffInfo(res.data);
                 }
             }

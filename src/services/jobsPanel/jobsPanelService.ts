@@ -2,6 +2,7 @@ import { timeout } from 'src/utils/helper';
 import axiosInstance from '../baseService';
 import { ROUTES } from 'src/constants/routes';
 import { JobsFullInfoMock, JobsTreeMock } from 'src/mock/jobsPanel/jobsPanelMock';
+import { JobRequestType } from 'src/types/requests/jobsPanel/jobRequestType';
 
 interface FetchJobsListParams {
   organizationUnit?: string | number;
@@ -31,7 +32,7 @@ export const fetchJobsTree = async () => {
   return response.data;
 };
 
-export const createJob = async ({ data }: { data: { name: string } }) => {
+export const createJob = async ({ data }: { data: JobRequestType }) => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     return {
       statusCode: 200
@@ -41,7 +42,7 @@ export const createJob = async ({ data }: { data: { name: string } }) => {
   return response.data;
 };
 
-export const updateJob = async ({ id, data }: { id: string | number; data: { name: string } }) => {
+export const updateJob = async ({ id, data }: { id: string | number; data: JobRequestType }) => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     return {
       statusCode: 200

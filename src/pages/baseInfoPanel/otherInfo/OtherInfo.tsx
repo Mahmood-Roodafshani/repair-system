@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from 'react';
-import { Box, Button, Grid, Typography } from '@mui/material';
+import { useEffect, useMemo, useState } from 'react';
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { fetchOtherInfoList, OtherInfoItem } from 'src/services/baseInfoPanel/otherInfoService';
 import { MyCustomTable } from 'src/components';
@@ -98,6 +98,23 @@ export default function OtherInfo() {
           />
         </Grid>
       </Grid>
+
+      {showCreateForm && (
+        <Dialog open={showCreateForm} onClose={() => setShowCreateForm(false)}>
+          <DialogTitle>
+            {selectedInfo ? 'ویرایش اطلاعات' : 'افزودن اطلاعات جدید'}
+          </DialogTitle>
+          <DialogContent>
+            {/* Add your form content here */}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setShowCreateForm(false)}>انصراف</Button>
+            <Button variant="contained" color="primary">
+              ذخیره
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
     </Box>
   );
 }
