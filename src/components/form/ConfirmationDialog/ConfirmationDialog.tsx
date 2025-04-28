@@ -8,6 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { TransitionProps } from '@mui/material/transitions';
 import { Slide } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
+import { Typography } from '@mui/material';
 
 const options = [
   'None',
@@ -27,13 +28,16 @@ const options = [
 ];
 
 export interface ConfirmationDialogRawProps extends DialogProps {
-  id: string;
-  closeOnEsc: boolean;
+  id?: string;
+  closeOnEsc?: boolean;
   open: boolean;
   onClose: () => void;
+  onConfirm?: () => void | Promise<void>;
+  title?: string;
+  description?: string;
   dialogTitle?: string;
   dialogOkBtnAction?: () => void;
-  children?: any;
+  children?: React.ReactNode;
 }
 
 const Transition = React.forwardRef(function Transition(
@@ -45,79 +49,73 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function ConfirmationDialogRaw(
-  props: ConfirmationDialogRawProps
-) {
+export default function ConfirmationDialogRaw(props: ConfirmationDialogRawProps) {
   const {
     onClose,
-    closeOnEsc,
+    onConfirm,
     open,
-    dialogOkBtnAction,
+    title,
+    description,
     dialogTitle,
+    dialogOkBtnAction,
+    closeOnEsc = true,
+    children,
     ...other
   } = props;
-  const radioGroupRef = React.useRef<HTMLElement>(null);
-  const handleEntering = () => {
-    if (radioGroupRef.current != null) {
-      radioGroupRef.current.focus();
-    }
-  };
 
   const handleCancel = () => {
     onClose();
   };
 
   const handleOk = () => {
-    if (dialogOkBtnAction) {
+    if (onConfirm) {
+      onConfirm();
+    } else if (dialogOkBtnAction) {
       dialogOkBtnAction();
+      onClose();
     }
-    onClose();
   };
 
   return (
     <Dialog
       sx={{
-        '& .MuiDialog-paper': { width: '90%', maxHeight: 1500 },
+        '& .MuiDialog-paper': { width: '80%', maxHeight: 435 },
         marginTop: '1%',
         marginBottom: '1%',
         textAlign: 'center'
       }}
       maxWidth="xs"
-      // fullWidth={true}
-      // TransitionComponent={Transition}
-      TransitionProps={{ onEntering: handleEntering }}
+      TransitionComponent={Transition}
       open={open}
-      {...(closeOnEsc ? { onClose: onClose } : {})}
+      {...(closeOnEsc ? { onClose } : {})}
       {...other}
     >
-      {dialogTitle ? (
-        <DialogTitle
-          sx={(theme) => ({ backgroundColor: theme.palette.primary.light })}
+      <DialogTitle
+        sx={(theme) => ({ backgroundColor: theme.palette.primary.light })}
+      >
+        {title || dialogTitle}
+        <IconButton
+          aria-label="close"
+          onClick={handleCancel}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500]
+          }}
         >
-          {dialogTitle}
-          <IconButton
-            aria-label="close"
-            onClick={handleCancel}
-            sx={{
-              position: 'absolute',
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500]
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-      ) : null}
-      <DialogContent dividers>{props.children}</DialogContent>
-      {dialogOkBtnAction ? (
-        <DialogActions>
-          <Button autoFocus onClick={handleCancel}>
-            انصراف
-          </Button>
-          <Button onClick={handleOk}>تایید</Button>
-        </DialogActions>
-      ) : null}
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent dividers>
+        {description ? <Typography>{description}</Typography> : children}
+      </DialogContent>
+      <DialogActions>
+        <Button autoFocus onClick={handleCancel}>
+          انصراف
+        </Button>
+        <Button onClick={handleOk}>تایید</Button>
+      </DialogActions>
     </Dialog>
   );
 }

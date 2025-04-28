@@ -1,4 +1,5 @@
 import axiosInstance from './baseService';
+import { ROUTES } from 'src/constants/routes';
 import {
   RolesMock,
   OrganizationUnitsMock,
@@ -93,77 +94,77 @@ class CommonService {
   static async getCities() {
     return this.fetchWithMock(
       CitiesMock,
-      () => axiosInstance.get('/api/common/cities')
+      () => axiosInstance.get(ROUTES.COMMON.CITIES)
     );
   }
 
   static async getEducationalFields() {
     return this.fetchWithMock(
       [], // No mock data available
-      () => axiosInstance.get('/api/common/educational-fields')
+      () => axiosInstance.get(ROUTES.COMMON.EDUCATIONAL_FIELDS)
     );
   }
 
   static async getOrganizationUnits() {
     return this.fetchWithMock(
       OrganizationUnitsMock,
-      () => axiosInstance.get('/api/common/organization-units')
+      () => axiosInstance.get(ROUTES.JOBS.ORGANIZATION_UNITS.FETCH_ALL)
     );
   }
 
   static async getRoles() {
     return this.fetchWithMock(
       RolesMock,
-      () => axiosInstance.get('/api/common/roles')
+      () => axiosInstance.get(ROUTES.ROLE.FETCH_ALL)
     );
   }
 
   static async getFields() {
     return this.fetchWithMock(
       FieldsMock,
-      () => axiosInstance.get('/api/common/fields')
+      () => axiosInstance.get(ROUTES.COMMON.FIELDS)
     );
   }
 
   static async getCourses() {
     return this.fetchWithMock(
       CoursesMock,
-      () => axiosInstance.get('/api/common/courses')
+      () => axiosInstance.get(ROUTES.COMMON.COURSES)
     );
   }
 
   static async getPositionDegrees() {
     return this.fetchWithMock(
       [], // No mock data available
-      () => axiosInstance.get('/api/common/position-degrees')
+      () => axiosInstance.get(ROUTES.COMMON.POSITION_DEGREES)
     );
   }
 
   static async getWorkLocations() {
     return this.fetchWithMock(
       [], // No mock data available
-      () => axiosInstance.get('/api/common/work-locations')
+      () => axiosInstance.get(ROUTES.COMMON.WORK_LOCATIONS)
     );
   }
 
   static async getActivities() {
     return this.fetchWithMock(
       ActivityMock,
-      () => axiosInstance.get('/api/common/activities')
+      () => axiosInstance.get(ROUTES.COMMON.ACTIVITIES)
     );
   }
 
   static async getActivityFields() {
     return this.fetchWithMock(
       ActivityFieldsMock,
-      () => axiosInstance.get('/api/common/activity-fields')
+      () => axiosInstance.get(ROUTES.COMMON.ACTIVITY_FIELDS)
     );
   }
 
   static async getItemCategoryFields() {
     return this.fetchWithMock(
       ItemCategoryFieldsMock,
-      () => axiosInstance.get('/api/common/item-category-fields')
+      () => axiosInstance.get(ROUTES.COMMON.ITEM_CATEGORY_FIELDS)
     );
   }
 }

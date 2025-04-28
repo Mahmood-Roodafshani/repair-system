@@ -1,38 +1,31 @@
-import { AnnouncementRequestType } from 'src/types/requests/userManagement/announcement/announcementRequestType';
-import { timeout } from 'src/utils/helper';
 import axiosInstance from '../baseService';
 import { ROUTES } from 'src/constants/routes';
+import { AnnouncementRequestType } from 'src/types';
 
-const sendPublicAnnouncement = async ({
-  request
+export const sendPublicAnnouncement = async ({
+  announcement
 }: {
-  request: AnnouncementRequestType;
+  announcement: AnnouncementRequestType;
 }) => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
-    await timeout(1000);
     return {
       statusCode: 200
     };
   }
-  //todo: build query params from filter
-  const response = await axiosInstance.post(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST, request);
-  return response;
+  const response = await axiosInstance.post(ROUTES.USER.ANNOUNCEMENT.PUBLIC, announcement);
+  return response.data;
 };
 
-const sendSecurityAnnouncement = async ({
-  request
+export const sendSecurityAnnouncement = async ({
+  announcement
 }: {
-  request: AnnouncementRequestType;
+  announcement: AnnouncementRequestType;
 }) => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
-    await timeout(1000);
     return {
       statusCode: 200
     };
   }
-  //todo: build query params from filter
-  const response = await axiosInstance.post(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST, request);
-  return response;
+  const response = await axiosInstance.post(ROUTES.USER.ANNOUNCEMENT.SECURITY, announcement);
+  return response.data;
 };
-
-export { sendPublicAnnouncement, sendSecurityAnnouncement };

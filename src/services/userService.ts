@@ -1,5 +1,6 @@
 import axiosInstance from './baseService';
 import { KeycloakInstance } from 'keycloak-js';
+import { ROUTES } from 'src/constants/routes';
 
 interface User {
   id: string;
@@ -9,27 +10,27 @@ interface User {
 
 class UserService {
   async getUsers(): Promise<User[]> {
-    const response = await axiosInstance.get('/users');
+    const response = await axiosInstance.get(ROUTES.USER.PROFILE.FETCH_ALL);
     return response.data;
   }
 
   async getUserById(id: string): Promise<User> {
-    const response = await axiosInstance.get(`/users/${id}`);
+    const response = await axiosInstance.get(ROUTES.USER.PROFILE.FETCH_BY_ID(id));
     return response.data;
   }
 
   async createUser(userData: Omit<User, 'id'>): Promise<User> {
-    const response = await axiosInstance.post('/users', userData);
+    const response = await axiosInstance.post(ROUTES.USER.PROFILE.CREATE, userData);
     return response.data;
   }
 
   async updateUser(id: string, userData: Partial<User>): Promise<User> {
-    const response = await axiosInstance.put(`/users/${id}`, userData);
+    const response = await axiosInstance.put(ROUTES.USER.PROFILE.UPDATE(id), userData);
     return response.data;
   }
 
   async deleteUser(id: string): Promise<void> {
-    await axiosInstance.delete(`/users/${id}`);
+    await axiosInstance.delete(ROUTES.USER.PROFILE.DELETE(id));
   }
 }
 
@@ -42,7 +43,7 @@ export const logout = async (keycloak: KeycloakInstance) => {
 };
 
 export const getCurrentUser = async (keycloak: KeycloakInstance) => {
-  const response = await axiosInstance.get('/api/users/me', {
+  const response = await axiosInstance.get(ROUTES.USER.PROFILE.CURRENT, {
     headers: {
       Authorization: `Bearer ${keycloak.token}`
     }
@@ -51,7 +52,7 @@ export const getCurrentUser = async (keycloak: KeycloakInstance) => {
 };
 
 export const updateUserProfile = async (data: any, keycloak: KeycloakInstance) => {
-  const response = await axiosInstance.put('/api/users/me', data, {
+  const response = await axiosInstance.put(ROUTES.USER.PROFILE.UPDATE_CURRENT, data, {
     headers: {
       Authorization: `Bearer ${keycloak.token}`
     }

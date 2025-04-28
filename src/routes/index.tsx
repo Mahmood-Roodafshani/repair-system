@@ -1,5 +1,5 @@
 import { Suspense, lazy, ComponentType } from 'react';
-import { RouteObject, Navigate, useRoutes, useLocation } from 'react-router-dom';
+import { RouteObject, Navigate, useRoutes, useLocation, useParams, useNavigate } from 'react-router-dom';
 import { useKeycloak } from '@react-keycloak/web';
 
 import SidebarLayout from 'src/layouts/SidebarLayout';
@@ -101,6 +101,12 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   }
 
   return children;
+};
+
+const RoleManagementWrapper = () => {
+  const { systemId } = useParams();
+  const navigate = useNavigate();
+  return <RoleManagement systemId={Number(systemId)} onBack={() => navigate(-1)} />;
 };
 
 const routes: RouteObject[] = [
@@ -269,8 +275,8 @@ const routes: RouteObject[] = [
             element: <AccessControl />
           },
           {
-            path: 'roleManagement',
-            element: <RoleManagement />
+            path: 'roles/:systemId',
+            element: <RoleManagementWrapper />
           },
           {
             path: 'create-group-access',

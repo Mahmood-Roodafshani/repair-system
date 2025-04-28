@@ -1,7 +1,7 @@
-import { AccessControlFilterType } from 'src/types';
-import { timeout } from 'src/utils/helper';
 import axiosInstance from '../baseService';
 import { ROUTES } from 'src/constants/routes';
+import { AccessControlFilterType, AccessControlListResponseType } from 'src/types';
+import { timeout } from 'src/utils/helper';
 import {
   AccessControlListMock,
   FarajaGrantsMock,
@@ -15,41 +15,36 @@ import {
 } from 'src/mock';
 import axios from 'axios';
 
-const accessControlFetchList = async ({
+export const accessControlFetchList = async ({
   filter
 }: {
   filter: AccessControlFilterType;
-}) => {
+}): Promise<AccessControlListResponseType[]> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
-    return {
-      statusCode: 200,
-      content: AccessControlListMock
-    };
+    return [];
   }
-  //todo: build query params from filter
-  const response = await axiosInstance.get(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST);
-  return response;
+  const response = await axiosInstance.post(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST, { filter });
+  return response.data;
 };
 
-const findStaffByCode = async ({ staffCode }: { staffCode: string }) => {
+export const findStaffByCode = async ({ staffCode }: { staffCode: string }) => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
       statusCode: 200,
       content: {
         id: '1',
-        name: 'سرگرد محمد فکری',
-        granted_jobs: ['11313']
+        name: 'Test Staff',
+        granted_jobs: ['1', '2']
       }
     };
   }
-  //todo: build query params from filter
-  const response = await axiosInstance.get(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST);
-  return response;
+  const response = await axiosInstance.post(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST, { staffCode });
+  return response.data;
 };
 
-const createNewAccessControl = async ({
+export const createNewAccessControl = async ({
   staffCode,
   grants
 }: {
@@ -57,88 +52,66 @@ const createNewAccessControl = async ({
   grants: string[];
 }) => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
-    await timeout(1000);
     return {
       statusCode: 200
     };
   }
-  //todo: build query params from filter
   const response = await axiosInstance.post(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST, {
-    staffCode: staffCode,
-    grants: grants
+    staffCode,
+    grants
   });
-  return response;
+  return response.data;
 };
 
-const fetchGrantsByAccess = async ({
-  accessId
+export const fetchGrantsByAccess = async ({
+  access
 }: {
-  accessId: string | number;
-}) => {
+  access: string;
+}): Promise<{ id: string; name: string }[]> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
-    return {
-      statusCode: 200,
-      content:
-        accessId === 'FARAJA'
-          ? FarajaGrantsMock
-          : accessId === 'HEFAZAT'
-          ? HefazatGrantsMock
-          : accessId === 'JOBS'
-          ? JobsGrantsMock
-          : JobsGrantsMock
-    };
+    return [
+      { id: 'FARAJA', name: 'FARAJA' },
+      { id: 'HEFAZAT', name: 'HEFAZAT' },
+      { id: 'JOBS', name: 'JOBS' }
+    ];
   }
-  //todo: build query params from filter
-  const response = await axiosInstance.get(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST);
-  return response;
+  const response = await axiosInstance.get(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST, {
+    params: { access }
+  });
+  return response.data;
 };
 
-const fetchUserGrantsByAccess = async ({
+export const fetchUserGrantsByAccess = async ({
   userId,
-  accessId
+  access
 }: {
-  userId: string | number;
-  accessId: string | number;
-}) => {
+  userId: string;
+  access: string;
+}): Promise<{ id: string; name: string }[]> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
-    return {
-      statusCode: 200,
-      content:
-        accessId === 'FARAJA'
-          ? FarajaUserGrantsMock
-          : accessId === 'HEFAZAT'
-          ? HefazatUserGrantsMock
-          : accessId === 'JOBS'
-          ? JobsUserGrantsMock
-          : accessId === 'GROUP_ACCESS'
-          ? GroupAccessUserGrantsMock
-          : JobsUserGrantsMock
-    };
+    return [
+      { id: 'FARAJA', name: 'FARAJA' },
+      { id: 'HEFAZAT', name: 'HEFAZAT' },
+      { id: 'JOBS', name: 'JOBS' },
+      { id: 'GROUP_ACCESS', name: 'GROUP_ACCESS' }
+    ];
   }
-  //todo: build query params from filter
-  const response = await axiosInstance.get(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST);
-  return response;
+  const response = await axiosInstance.get(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST, {
+    params: { userId, access }
+  });
+  return response.data;
 };
 
-const getRolesWithGrants = async () => {
+export const getRolesWithGrants = async (): Promise<{ id: string; name: string }[]> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
-    return {
-      statusCode: 200,
-      content: RolesWithGrantsMock
-    };
+    return [
+      { id: '1', name: 'Role 1' },
+      { id: '2', name: 'Role 2' }
+    ];
   }
   const response = await axiosInstance.get(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST);
-  return response;
-};
-
-export {
-  accessControlFetchList,
-  findStaffByCode,
-  createNewAccessControl,
-  fetchGrantsByAccess,
-  fetchUserGrantsByAccess,
-  getRolesWithGrants
+  return response.data;
 };

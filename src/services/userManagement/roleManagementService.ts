@@ -1,126 +1,75 @@
 import axiosInstance from '../baseService';
-import { ROUTES } from 'src/constants/routes';
-import { SystemRolesMock } from 'src/mock/userManagement/systemRolesMock';
+import { SystemRolesResponse, PermissionDto } from '../../types/responses/userManagement/roleManagement';
+import { ROUTES } from '../../constants/routes';
+import { SystemFullRolesMock, SystemRolesMock } from 'src/mock';
 import { timeout } from 'src/utils/helper';
 import { ApiResponse } from 'src/types';
 
-interface SystemRole {
-  id: string | number;
-  name: string;
-  description: string;
-  permissions: any[];
-  status: boolean;
-  children: any[];
-}
-
-interface SystemRolesApiResponse {
-  statusCode: number;
-  data: SystemRole[];
-}
-
-export const getSystemRoles = async (systemId: string | number): Promise<ApiResponse<SystemRole[]>> => {
-  if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
-    await timeout(1000);
-    return {
-      statusCode: 200,
-      content: SystemRolesMock.map(role => ({
-        id: role.id,
-        name: role.name,
-        description: role.description || '',
-        permissions: role.permissions || [],
-        status: role.status || false,
-        children: role.children || []
-      }))
-    };
+// Function to get system roles
+export const getSystemRoles = async (systemId: number): Promise<SystemRolesResponse[]> => {
+  if (import.meta.env.VITE_APP_WORK_WITH_MOCK === 'true') {
+    return systemId === 0 ? SystemFullRolesMock : SystemRolesMock;
   }
 
-  const response = await axiosInstance.get<SystemRolesApiResponse>(ROUTES.ROLE.GET_SYSTEM_ROLES(systemId.toString()));
-
-  // Transform the API response to match our SystemRole type
-  const transformedRoles: SystemRole[] = response.data.data.map((role: any) => ({
-    id: role.id,
-    name: role.name,
-    description: role.description || '',
-    permissions: role.permissions || [],
-    status: role.status || false,
-    children: role.children || []
-  }));
-
-  return {
-    statusCode: response.data.statusCode,
-    content: transformedRoles
-  };
-};
-
-export const storeNewSystem = async (title: string): Promise<ApiResponse<void>> => {
-  if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
-    await timeout(1000);
-    return {
-      statusCode: 200,
-      content: undefined
-    };
-  }
-  const response = await axiosInstance.post(ROUTES.ROLE.SYSTEM.CREATE, { title });
+  const response = await axiosInstance.get(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST);
   return response.data;
 };
 
-export const storeNewRole = async ({
-  systemId,
-  roleId,
-  title
-}: {
-  systemId: string | number;
-  roleId: string | number;
-  title: string;
-}): Promise<ApiResponse<void>> => {
-  if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
-    await timeout(1000);
+// Function to store a new system
+export const storeNewSystem = async (data: { name: string }): Promise<SystemRolesResponse> => {
+  if (import.meta.env.VITE_APP_WORK_WITH_MOCK === 'true') {
     return {
-      statusCode: 200,
-      content: undefined
+      id: Math.floor(Math.random() * 1000),
+      name: data.name,
+      description: '',
+      status: true,
+      children: []
     };
   }
-  const response = await axiosInstance.post(ROUTES.ROLE.SYSTEM.ADD_ROLE(systemId.toString()), {
-    systemId,
-    roleId,
-    title
-  });
+
+  const response = await axiosInstance.post(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST, data);
   return response.data;
 };
 
-export const removeSystem = async (systemId: string | number): Promise<ApiResponse<void>> => {
-  if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
-    await timeout(1000);
+// Function to store a new role
+export const storeNewRole = async (data: { name: string; systemId: number }): Promise<SystemRolesResponse> => {
+  if (import.meta.env.VITE_APP_WORK_WITH_MOCK === 'true') {
     return {
-      statusCode: 200,
-      content: undefined
+      id: Math.floor(Math.random() * 1000),
+      name: data.name,
+      description: '',
+      status: true,
+      permissions: []
     };
   }
-  const response = await axiosInstance.delete(ROUTES.ROLE.SYSTEM.REMOVE(systemId.toString()));
+
+  const response = await axiosInstance.post(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST, data);
   return response.data;
 };
 
-export const removeRole = async (roleId: string | number): Promise<ApiResponse<void>> => {
-  if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
-    await timeout(1000);
-    return {
-      statusCode: 200,
-      content: undefined
-    };
+// Function to remove a system
+export const removeSystem = async (systemId: number): Promise<void> => {
+  if (import.meta.env.VITE_APP_WORK_WITH_MOCK === 'true') {
+    return;
   }
-  const response = await axiosInstance.delete(ROUTES.ROLE.REMOVE(roleId.toString()));
-  return response.data;
+
+  await axiosInstance.delete(`${ROUTES.USER.ACCESS_CONTROL.FETCH_LIST}/${systemId}`);
 };
 
+// Function to remove a role
+export const removeRole = async (roleId: number): Promise<void> => {
+  if (import.meta.env.VITE_APP_WORK_WITH_MOCK === 'true') {
+    return;
+  }
+
+  await axiosInstance.delete(`${ROUTES.USER.ACCESS_CONTROL.FETCH_LIST}/${roleId}`);
+};
+
+// Export all functions as part of the service object
 export const roleManagementService = {
-  fetchRoles: async () => {
-    const response = await axiosInstance.get(ROUTES.ROLE.FETCH_ALL);
-    return response.data;
-  },
-
   getSystemRoles,
-  createSystem: storeNewSystem,
-  addRoleToSystem: storeNewRole,
-  removeRole,
-  removeSystem
+  storeNewSystem,
+  storeNewRole,
+  removeSystem,
+  removeRole
 };

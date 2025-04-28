@@ -1,11 +1,12 @@
+// Export services
 export * from './userService';
 export * from './baseInfoPanel';
 export * from './jobsPanel';
 export * from './codingPanel';
 export * from './repairPanel';
 export * from './common';
-export { fetchJobsList, removeJob } from './jobsPanel/jobsPanelService';
+export * from './tracking';
+export * from './auth';
 
-// Import and export role management functions directly
-import { roleManagementService } from './userManagement/roleManagementService';
-export const { getSystemRoles, storeNewRole, storeNewSystem, removeRole, removeSystem } = roleManagementService;
+// Export role management service
+export { roleManagementService } from './userManagement/roleManagementService';

@@ -10,7 +10,7 @@ import { CommissionListMock, ItemsInCommissionQueueListMock } from '@/mock';
 
 const fetchCommissionList = async (request: GetCommissionListRequest) => {
   try {
-    const response = await axiosInstance.get(ROUTES.COMMISSION_LIST, { params: request });
+    const response = await axiosInstance.get(ROUTES.REPAIR.COMMISSION.LIST, { params: request });
     return response.data;
   } catch (error) {
     console.error('Error fetching commission list:', error);
@@ -29,7 +29,7 @@ const fetchItemsInCommissionQueue = async (
     };
   }
   //todo: build query params from filter
-  const response = await axiosInstance.get(ROUTES.ITEMS_IN_COMMISSION_QUEUE_LIST, { params: request });
+  const response = await axiosInstance.get(ROUTES.REPAIR.COMMISSION.ITEMS_IN_QUEUE, { params: request });
   return response.data;
 };
 
@@ -40,7 +40,7 @@ const createNewCommission = async (data: CreateNewCommissionRequest) => {
       statusCode: 200
     };
   }
-  const response = await axiosInstance.post(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST, data);
+  const response = await axiosInstance.post(ROUTES.REPAIR.COMMISSION.CREATE, data);
   return response.data;
 };
 
@@ -57,7 +57,7 @@ const updateCommission = async ({
       statusCode: 200
     };
   }
-  const response = await axiosInstance.put(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST + id, form);
+  const response = await axiosInstance.put(ROUTES.REPAIR.COMMISSION.UPDATE(id), form);
   return response.data;
 };
 

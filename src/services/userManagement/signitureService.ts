@@ -3,7 +3,7 @@ import axiosInstance from '../baseService';
 import { ROUTES } from 'src/constants/routes';
 import { SampleSignitureRequestType } from 'src/types';
 
-const addSampleSigniture = async ({
+export const addSampleSigniture = async ({
   sampleSigniture
 }: {
   sampleSigniture: SampleSignitureRequestType;
@@ -15,8 +15,6 @@ const addSampleSigniture = async ({
     };
   }
 
-  const response = await axiosInstance.post(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST, sampleSigniture);
-  return response;
+  const response = await axiosInstance.post(ROUTES.USER.SIGNITURE.ADD, sampleSigniture);
+  return response.data;
 };
-
-export { addSampleSigniture };
