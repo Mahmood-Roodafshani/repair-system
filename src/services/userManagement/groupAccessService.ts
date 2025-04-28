@@ -1,9 +1,17 @@
-import { timeout } from 'src/utils/helper';
 import { ROUTES } from 'src/constants/routes';
 import axiosInstance from '../baseService';
-import { GroupAccessesMock, GroupAccessRolesMock } from 'src/mock';
 
-export const getGroupAccesses = async ({ name }: { name?: string }) => {
+interface ApiResponse<T> {
+  statusCode: number;
+  content?: T;
+}
+
+interface GroupAccess {
+  id: string | number;
+  name: string;
+}
+
+export const getGroupAccesses = async ({ name }: { name?: string }): Promise<ApiResponse<GroupAccess[]>> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     return {
       statusCode: 200,
@@ -16,7 +24,7 @@ export const getGroupAccesses = async ({ name }: { name?: string }) => {
   return response.data;
 };
 
-export const getGroupAccessRoles = async ({ groupId }: { groupId: string | number }) => {
+export const getGroupAccessRoles = async ({ groupId }: { groupId: string | number }): Promise<ApiResponse<{ id: string; name: string }[]>> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     return {
       statusCode: 200,
@@ -29,7 +37,7 @@ export const getGroupAccessRoles = async ({ groupId }: { groupId: string | numbe
   return response.data;
 };
 
-export const removeGroupAccess = async ({ groupId }: { groupId: string | number }) => {
+export const removeGroupAccess = async ({ groupId }: { groupId: string | number }): Promise<ApiResponse<void>> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     return {
       statusCode: 200
@@ -41,7 +49,7 @@ export const removeGroupAccess = async ({ groupId }: { groupId: string | number 
   return response.data;
 };
 
-export const addGroupAccess = async ({ data }: { data: { name: string } }) => {
+export const addGroupAccess = async ({ data }: { data: { name: string } }): Promise<ApiResponse<void>> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     return {
       statusCode: 200

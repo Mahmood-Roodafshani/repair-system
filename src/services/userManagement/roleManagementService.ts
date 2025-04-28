@@ -1,9 +1,7 @@
 import axiosInstance from '../baseService';
-import { SystemRolesResponse, PermissionDto } from '../../types/responses/userManagement/roleManagement';
+import { SystemRolesResponse } from '../../types/responses/userManagement/roleManagement';
 import { ROUTES } from '../../constants/routes';
 import { SystemFullRolesMock, SystemRolesMock } from 'src/mock';
-import { timeout } from 'src/utils/helper';
-import { ApiResponse } from 'src/types';
 
 // Function to get system roles
 export const getSystemRoles = async (systemId: number): Promise<SystemRolesResponse[]> => {

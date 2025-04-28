@@ -2,18 +2,11 @@ import axiosInstance from '../baseService';
 import { ROUTES } from 'src/constants/routes';
 import { AccessControlFilterType, AccessControlListResponseType } from 'src/types';
 import { timeout } from 'src/utils/helper';
-import {
-  AccessControlListMock,
-  FarajaGrantsMock,
-  FarajaUserGrantsMock,
-  GroupAccessUserGrantsMock,
-  HefazatGrantsMock,
-  HefazatUserGrantsMock,
-  JobsGrantsMock,
-  JobsUserGrantsMock,
-  RolesWithGrantsMock
-} from 'src/mock';
-import axios from 'axios';
+
+interface ApiResponse<T> {
+  statusCode: number;
+  content?: T;
+}
 
 export const accessControlFetchList = async ({
   filter
@@ -28,7 +21,7 @@ export const accessControlFetchList = async ({
   return response.data;
 };
 
-export const findStaffByCode = async ({ staffCode }: { staffCode: string }) => {
+export const findStaffByCode = async ({ staffCode }: { staffCode: string }): Promise<ApiResponse<{ id: string; name: string; granted_jobs: string[] }>> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
@@ -50,7 +43,7 @@ export const createNewAccessControl = async ({
 }: {
   staffCode: string;
   grants: string[];
-}) => {
+}): Promise<ApiResponse<void>> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     return {
       statusCode: 200

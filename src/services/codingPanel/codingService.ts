@@ -3,12 +3,16 @@ import {
   CodingAccessPage1Mock,
   CodingAccessPage2Mock
 } from "src/mock";
-import { CodingAccessRequest, CodingRequest, PageableRequest } from 'src/types';
 import { timeout } from 'src/utils/helper';
 import { ROUTES } from "src/constants/routes";
 import axiosInstance from '../baseService';
 
-const fetchCodingList = async () => {
+interface CodingResponse {
+  statusCode: number;
+  content?: any[];
+}
+
+const fetchCodingList = async (): Promise<CodingResponse> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
@@ -20,18 +24,18 @@ const fetchCodingList = async () => {
   return response.data;
 };
 
-const fetchCodingAccessList = async () => {
+const fetchCodingAccessList = async (): Promise<CodingResponse> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     return {
       statusCode: 200,
-      content: [...CodingAccessPage1Mock, ...CodingAccessPage2Mock]
+      content: [...CodingAccessPage1Mock.content, ...CodingAccessPage2Mock.content]
     };
   }
   const response = await axiosInstance.get(ROUTES.CODING.FETCH_ACCESS_LIST);
   return response.data;
 };
 
-const removeCoding = async ({ id }: { id: string | number }) => {
+const removeCoding = async ({ id }: { id: string | number }): Promise<CodingResponse> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
@@ -44,7 +48,7 @@ const removeCoding = async ({ id }: { id: string | number }) => {
   return response.data;
 };
 
-const createCoding = async ({ data }: { data: { name: string } }) => {
+const createCoding = async ({ data }: { data: { name: string } }): Promise<CodingResponse> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
@@ -55,7 +59,7 @@ const createCoding = async ({ data }: { data: { name: string } }) => {
   return response.data;
 };
 
-const createCodingAccess = async ({ data }: { data: { name: string } }) => {
+const createCodingAccess = async ({ data }: { data: { name: string } }): Promise<CodingResponse> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
@@ -66,7 +70,7 @@ const createCodingAccess = async ({ data }: { data: { name: string } }) => {
   return response.data;
 };
 
-const updateCoding = async ({ id, data }: { id: string | number; data: { name: string } }) => {
+const updateCoding = async ({ id, data }: { id: string | number; data: { name: string } }): Promise<CodingResponse> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
@@ -79,7 +83,7 @@ const updateCoding = async ({ id, data }: { id: string | number; data: { name: s
   return response.data;
 };
 
-const removeCodingAccess = async ({ id }: { id: string | number }) => {
+const removeCodingAccess = async ({ id }: { id: string | number }): Promise<CodingResponse> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
