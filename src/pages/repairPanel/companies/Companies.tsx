@@ -1,4 +1,4 @@
-import { Grid, Typography } from '@mui/material';
+import { Grid } from '@mui/material';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
@@ -20,7 +20,6 @@ import {
 import CommonService from 'src/services/CommonService';
 import {
   CompaniesResponse,
-  GetCompaniesRequest,
   RichViewType
 } from 'src/types';
 import { mapAllIdsInNestedArray } from 'src/utils/helper';
@@ -29,49 +28,71 @@ import { toast } from 'react-toastify';
 import CreateOrEditForm from './CreateOrEditForm';
 import { filterValidationSchema } from './validationSchema';
 
+interface FilterFormValues {
+  name: string;
+  activityFields: string[];
+}
+
+interface GetCompaniesRequest {
+  page?: number;
+  size?: number;
+  sort?: string;
+  search?: string;
+}
+
+interface ActivityFieldsResponse {
+  statusCode: number;
+  content: RichViewType[];
+}
+
 export default function Companies() {
   const [activityFields, setActivityFields] = useState<RichViewType[]>([]);
   const [data, setData] = useState<CompaniesResponse[]>([]);
   const [loading, setLoading] = useState(false);
   const [refetching, setRefetching] = useState(false);
-  const [selectedCompanyForDelete, setSelectedCompanyForDelete] = useState<
-    string | number
-  >();
-  const [selectedCompanyForUpdate, setSelectedCompanyForUpdate] = useState<
-    string | number
-  >();
+  const [selectedCompanyForDelete, setSelectedCompanyForDelete] = useState<string | number>();
+  const [selectedCompanyForUpdate, setSelectedCompanyForUpdate] = useState<string | number>();
   const [companyFullInfo, setCompanyFullInfo] = useState<CompaniesResponse>();
   const [showCreateOrEditForm, setShowCreateOrEditForm] = useState(false);
-  const [filter, setFilter] = useState<GetCompaniesRequest>({});
+  const [filter, setFilter] = useState<FilterFormValues>({ name: '', activityFields: [] });
   const [clearFlag, setClearFlag] = useState(false);
   const navigate = useNavigate();
 
   const refetchData = useCallback(() => {
     setData([]);
     setRefetching(true);
-    Promise.all([fetchCompaniesList(filter || {})])
+    const request: GetCompaniesRequest = {
+      search: filter.name,
+      sort: filter.activityFields.join(',')
+    };
+    fetchCompaniesList(request)
       .then((res) => {
-        if (res[0].statusCode === 200) setData(res[0].content);
+        if (res?.statusCode === 200) setData(res.content || []);
       })
       .finally(() => setRefetching(false));
   }, [filter]);
 
   const onSubmit = async (
-    values: GetCompaniesRequest,
-    actions: FormikHelpers<GetCompaniesRequest>
+    values: FilterFormValues,
+    actions: FormikHelpers<FilterFormValues>
   ) => {
     setFilter(values);
     setData([]);
-    const res = await fetchCompaniesList(values);
+    const request: GetCompaniesRequest = {
+      search: values.name,
+      sort: values.activityFields.join(',')
+    };
+    const res = await fetchCompaniesList(request);
     actions.setSubmitting(false);
-    if (res.statusCode === 200) setData(res.content);
+    if (res?.statusCode === 200) setData(res.content || []);
   };
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([CommonService.getActivityFields()])
-      .then((res) => {
-        if (res[0].statusCode === 200) setActivityFields(res[0].content);
+    CommonService.getActivityFields()
+      .then((res: unknown) => {
+        const response = res as ActivityFieldsResponse;
+        if (response?.statusCode === 200) setActivityFields(response.content || []);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -79,10 +100,10 @@ export default function Companies() {
   useEffect(() => {
     if (selectedCompanyForUpdate === undefined) return;
     setLoading(true);
-    Promise.all([fetchCompanyInfo(selectedCompanyForUpdate.toString())])
+    fetchCompanyInfo(selectedCompanyForUpdate.toString())
       .then((res) => {
-        if (res[0].statusCode === 200) {
-          setCompanyFullInfo(res[0].content);
+        if (res?.statusCode === 200) {
+          setCompanyFullInfo(res.content);
           setShowCreateOrEditForm(true);
         }
       })
@@ -92,50 +113,43 @@ export default function Companies() {
   const columns = useMemo(
     () => [
       {
-        header: i18n.t('row_number'),
-        enableHiding: false,
-        Cell: ({ row }: { row: { index: number } }) => {
-          return (
-            <Typography sx={{ textAlign: 'right' }} key={'row_' + row.index}>
-              {row.index + 1}
-            </Typography>
-          );
-        },
-        size: 40
+        Header: i18n.t('row_number'),
+        accessor: 'index',
+        width: 60
       },
       {
-        header: i18n.t('name'),
-        accessorKey: 'name',
-        size: 150
+        Header: i18n.t('company_name'),
+        accessor: 'name'
       },
       {
-        header: i18n.t('activity_field'),
-        accessorKey: 'activityField',
-        size: 100
+        Header: i18n.t('activity_field'),
+        accessor: 'activityField'
       },
       {
-        header: i18n.t('tel'),
-        accessorKey: 'tel',
-        size: 120
+        Header: i18n.t('tel'),
+        accessor: 'tel'
       },
       {
-        header: i18n.t('address'),
-        accessorKey: 'address',
-        size: 120
+        Header: i18n.t('address'),
+        accessor: 'address'
+      },
+      {
+        Header: i18n.t('ceo'),
+        accessor: 'ceo'
+      },
+      {
+        Header: i18n.t('email'),
+        accessor: 'email'
+      },
+      {
+        Header: i18n.t('status'),
+        accessor: 'canBePartner',
+        Cell: ({ value }: { value: boolean }) =>
+          value ? i18n.t('can_be_partner') : i18n.t('can_not_be_partner')
       }
     ],
     []
   );
-
-  const handleDelete = async (companyId: string) => {
-    try {
-      await deleteCompany(companyId);
-      toast.success('Company deleted successfully');
-      await fetchCompaniesList({});
-    } catch (error) {
-      toast.error('Failed to delete company');
-    }
-  };
 
   const handleConfirmDelete = async () => {
     if (!selectedCompanyForDelete) return;
@@ -156,11 +170,11 @@ export default function Companies() {
       </Helmet>
       {loading && <Loader />}
       {!loading && activityFields && !showCreateOrEditForm && (
-        <Formik
+        <Formik<FilterFormValues>
           onSubmit={onSubmit}
           initialValues={{
-            activityFields: [],
-            name: ''
+            name: '',
+            activityFields: []
           }}
           validationSchema={filterValidationSchema}
           validateOnBlur={false}
@@ -169,25 +183,17 @@ export default function Companies() {
         >
           {({ setValues, isSubmitting, submitForm, resetForm, errors }) => (
             <Form>
-              <Grid
-                display={'flex'}
-                flexDirection={'column'}
-                gap={'30px'}
-                mb={'20px'}
-              >
+              <Grid display={'flex'} flexDirection={'column'} gap={'30px'} mb={'20px'}>
                 <Grid display={'flex'} flexDirection={'row'} gap={'30px'}>
                   <CustomRichTreeView
                     checkboxSelection={true}
                     multiSelect={true}
                     label={i18n.t('activity_field')}
-                    items={mapAllIdsInNestedArray(
-                      'activity_field_',
-                      activityFields
-                    )}
+                    items={mapAllIdsInNestedArray('activity_field_', activityFields)}
                     onSelectedItemsChange={(_, itemIds) =>
                       setValues((prevValues) => ({
                         ...prevValues,
-                        activityFields: itemIds
+                        activityFields: itemIds as string[]
                       }))
                     }
                     clearFlag={clearFlag}
@@ -200,21 +206,19 @@ export default function Companies() {
                   />
                 </Grid>
                 {isSubmitting && <InlineLoader />}
-                {!isSubmitting && (
-                  <OpGrid
-                    onSearch={submitForm}
-                    onClear={() => {
-                      setClearFlag(true);
-                      setTimeout(() => {
-                        setClearFlag(false);
-                      }, 300);
-                      resetForm();
-                    }}
-                    onCreateOrEdit={() => setShowCreateOrEditForm(true)}
-                    createOrEditLabel={i18n.t('new_company')}
-                    onClose={() => navigate('/repair-panel')}
-                  />
-                )}
+                <OpGrid
+                  onSearch={submitForm}
+                  onClear={() => {
+                    setClearFlag(true);
+                    setTimeout(() => {
+                      setClearFlag(false);
+                    }, 300);
+                    resetForm();
+                  }}
+                  onCreateOrEdit={() => setShowCreateOrEditForm(true)}
+                  createOrEditLabel={i18n.t('new_company')}
+                  onClose={() => navigate('/repair-panel')}
+                />
               </Grid>
             </Form>
           )}

@@ -3,6 +3,7 @@ import {
   SystemResponseType,
   SystemRolesResponse
 } from 'src/types';
+import { SystemRolesResponse as NewSystemRolesResponse } from 'src/types/responses/userManagement/roleManagement/systemRolesResponse';
 
 export const SystemsMock: SystemResponseType[] = [
   {
@@ -78,25 +79,45 @@ export const SystemFullRolesMock: SystemRolesResponse[] = [
   }
 ];
 
-export const SystemRolesMock: SystemRolesResponse[] = [
+export const SystemRolesMock: NewSystemRolesResponse[] = [
   {
-    id: '0',
-    label: 'سامانه تعمیرات',
-    children: [
+    id: 1,
+    name: 'Admin',
+    description: 'System Administrator',
+    permissions: [
       {
-        id: '1',
-        label: 'صفحه اصلی',
-        status: true
+        id: 1,
+        name: 'user_management',
+        description: 'User Management'
       },
       {
-        id: '2',
-        label: 'گزارش عملکرد یگانی',
-        status: true
-      },
+        id: 2,
+        name: 'role_management',
+        description: 'Role Management'
+      }
+    ]
+  },
+  {
+    id: 2,
+    name: 'User',
+    description: 'Regular User',
+    permissions: [
       {
-        id: '3',
-        label: 'درخواست تعمیر',
-        status: false
+        id: 3,
+        name: 'view_profile',
+        description: 'View Profile'
+      }
+    ]
+  },
+  {
+    id: 3,
+    name: 'Manager',
+    description: 'Department Manager',
+    permissions: [
+      {
+        id: 4,
+        name: 'manage_department',
+        description: 'Manage Department'
       }
     ]
   }

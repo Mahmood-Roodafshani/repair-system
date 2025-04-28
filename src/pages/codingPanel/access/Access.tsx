@@ -10,6 +10,9 @@ import {Button, ButtonType, ConfirmationDialog, SelectFormik, TextFieldFormik} f
 import {createCodingAccess, fetchCodingAccessList, fetchCodingList, removeCodingAccess} from 'src/services';
 import {CodingAccessRequest, CodingAccessResponse, CodingResponse, Pagination} from 'src/types';
 import validationSchema from './validationSchema';
+import {Box} from '@mui/material';
+import {Add} from '@mui/icons-material';
+import CreateOrEditForm from './CreateOrEditForm';
 
 function Access() {
     const [loading, setLoading] = useState(false);
@@ -17,7 +20,8 @@ function Access() {
     const [codingAccessList, setCodingAccessList] = useState<
         CodingAccessResponse[]
     >([]);
-    const [selectedAccess, setSelectedAccess] = useState<string | number>();
+    const [selectedAccess, setSelectedAccess] = useState<string | number | undefined>();
+    const [selectedAccessForEdit, setSelectedAccessForEdit] = useState<CodingAccessResponse | undefined>();
     const navigate = useNavigate();
     const [pagination, setPagination] = useState<Pagination>({
         pageIndex: 0,
@@ -107,109 +111,81 @@ function Access() {
         }
     };
 
+    const handleDelete = async () => {
+        if (!selectedAccess) return;
+        try {
+            await removeCodingAccess({accessId: selectedAccess});
+            setCodingAccessList(codingAccessList.filter((e) => e.id !== selectedAccess));
+            setSelectedAccess(undefined);
+        } catch (error) {
+            console.error('Error deleting coding access:', error);
+        }
+    };
+
+    const handleEdit = (access: CodingAccessResponse) => {
+        setSelectedAccessForEdit(access);
+    };
+
     return (
         <>
             <Helmet>
                 <title>{i18n.t('coding_access').toString()}</title>
             </Helmet>
-            {loading && <Loader/>}
-            {!loading && codingList && (
-                <Formik
-                    onSubmit={onSubmit}
-                    initialValues={{
-                        nationalCode: '',
-                        codingId: ''
-                    }}
-                    validationSchema={validationSchema}
-                    validateOnBlur={false}
-                    validateOnChange={false}
-                    validateOnMount={false}
-                >
-                    {({isSubmitting, submitForm}) => (
-                        <Form>
-                            <Grid display={'flex'} flexDirection={'column'} gap={'10px'}>
-                                <Grid display={'flex'} flexDirection={'row'} gap={'20px'}>
-                                    <TextFieldFormik
-                                        type="number"
-                                        placeholder={i18n.t('national_code').toString()}
-                                        name="nationalCode"
-                                        label={i18n.t('choose_user').toString()}
-                                    />
-                                    <SelectFormik
-                                        label={i18n.t('coding_name').toString()}
-                                        name="codingId"
-                                        options={codingAccessList.map((item) => ({
-                                            id: item.id,
-                                            label: item.codingName
-                                        }))}
-                                    />
-                                </Grid>
-                                {isSubmitting && <InlineLoader/>}
-                                {!isSubmitting && (
-                                    <Grid display={'flex'} flexDirection={'row'} gap={'20px'}>
-                                        <Button
-                                            buttonType={ButtonType.ADD}
-                                            text={i18n.t('submit').toString()}
-                                            onClick={submitForm}
-                                            showIcon={false}
-                                        />
-                                        <Button
-                                            buttonType={ButtonType.DELETE}
-                                            color="error"
-                                            text={i18n.t('close').toString()}
-                                            onClick={() => navigate('/coding-panel')}
-                                            showIcon={false}
-                                        />
-                                    </Grid>
-                                )}
-                            </Grid>
-                        </Form>
-                    )}
-                </Formik>
-            )}
-            <Grid mt={'20px'}>
-                <MyCustomTable
-                    rowCount={totalCount}
-                    pagination={pagination}
-                    onPaginationChange={setPagination}
-                    enablePagination={true}
-                    enableRowActions={true}
-                    isRefetching={refetchingData}
-                    rowActions={({
-                                     row
-                                 }: {
-                        row: { original: { id: string | number } };
-                    }) => (
-                        <TableRowAction
-                            onDelete={() => setSelectedAccess(row.original.id)}
+            <Box>
+                <Grid container spacing={2} alignItems="center" mb={2}>
+                    <Grid item xs>
+                        <Typography variant="h3">Coding Access</Typography>
+                    </Grid>
+                    <Grid item>
+                        <Button
+                            variant="contained"
+                            startIcon={<Add />}
+                            onClick={() => setSelectedAccessForEdit({} as CodingAccessResponse)}
+                        >
+                            {i18n.t('add_new_access')}
+                        </Button>
+                    </Grid>
+                </Grid>
+
+                {loading ? (
+                    <Loader />
+                ) : (
+                    <>
+                        <MyCustomTable
+                            rowCount={totalCount}
+                            pagination={pagination}
+                            onPaginationChange={setPagination}
+                            enablePagination={true}
+                            enableRowActions={true}
+                            isRefetching={refetchingData}
+                            rowActions={({
+                                             row
+                                         }: {
+                                row: { original: { id: string | number } };
+                            }) => (
+                                <TableRowAction
+                                    onDelete={() => setSelectedAccess(row.original.id)}
+                                />
+                            )}
+                            columns={columns}
+                            data={codingAccessList}
                         />
-                    )}
-                    columns={columns}
-                    data={codingAccessList}
-                />
-            </Grid>
-            {selectedAccess && codingAccessList && (
-                <ConfirmationDialog
-                    id="remove_modal"
-                    open={selectedAccess !== undefined}
-                    onClose={() => setSelectedAccess(undefined)}
-                    closeOnEsc={true}
-                    dialogTitle={i18n.t('confirm_remove')}
-                    dialogOkBtnAction={() => {
-                        setLoading(true);
-                        removeCodingAccess({accessId: selectedAccess})
-                            .then((res) => {
-                                if (res.statusCode === 200) {
-                                    setCodingAccessList(
-                                        codingAccessList.filter((e) => e.id !== selectedAccess)
-                                    );
-                                    toast.success(i18n.t('user_removed').toString());
-                                }
-                            })
-                            .finally(() => setLoading(false));
-                    }}
-                />
-            )}
+                    </>
+                )}
+
+                {selectedAccessForEdit && (
+                    <CreateOrEditForm
+                        initialValues={{
+                            name: selectedAccessForEdit.name || '',
+                            id: selectedAccessForEdit.id,
+                            code: selectedAccessForEdit.code || '',
+                            status: selectedAccessForEdit.status
+                        }}
+                        onSubmit={onSubmit}
+                        onClose={() => setSelectedAccessForEdit(undefined)}
+                    />
+                )}
+            </Box>
         </>
     );
 }

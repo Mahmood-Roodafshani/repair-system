@@ -1,172 +1,170 @@
-import { Grid } from '@mui/material';
+import { Box, Button, Grid, Typography } from '@mui/material';
 import { Form, Formik, FormikHelpers } from 'formik';
-import { CustomRichTreeView, InlineLoader, OpGrid } from 'src/components';
 import { i18n } from 'src/localization';
-import {
-  RadioButtonGroupFormik,
-  TextFieldFormik
-} from '@/components/form';
-import { createCompany, updateCompany } from 'src/services';
-import {
-  CompaniesResponse,
-  CreateCompanyRequest,
-  RichViewType
-} from 'src/types';
-import { mapAllIdsInNestedArray } from 'src/utils/helper';
+import { updateCompany, createCompany } from 'src/services';
+import { CompaniesResponse, RichViewType } from 'src/types';
+import { TextFieldFormik } from '@/components/form';
+import { toast } from 'react-toastify';
 import { createValidationSchema } from './validationSchema';
-import { useState } from 'react';
 
-function CreateOrEditForm({
-  activityFields,
-  existForm,
-  onSuccess,
-  onClose
-}: {
+interface CompanyFormValues {
+  name: string;
+  activityField: string;
+  tel: string;
+  address: string;
+  canBePartner: boolean;
+  ceo: string;
+  email: string;
+  phone?: string;
+}
+
+interface CreateOrEditFormProps {
   activityFields: RichViewType[];
   existForm?: CompaniesResponse;
   onSuccess: () => void;
   onClose: () => void;
-}) {
+}
+
+export default function CreateOrEditForm({
+  existForm,
+  onSuccess,
+  onClose
+}: CreateOrEditFormProps) {
   const onSubmit = async (
-    values: CreateCompanyRequest,
-    actions: FormikHelpers<CreateCompanyRequest>
+    values: CompanyFormValues,
+    actions: FormikHelpers<CompanyFormValues>
   ) => {
-    const res = existForm
-      ? await updateCompany({ form: values, companyId: existForm.id })
-      : await createCompany(values);
-    actions.setSubmitting(false);
-    if (res.statusCode === 200) onSuccess();
+    try {
+      const companyData = {
+        name: values.name,
+        activityField: values.activityField,
+        tel: values.tel,
+        address: values.address,
+        canBePartner: values.canBePartner,
+        ceo: values.ceo,
+        email: values.email,
+        phone: values.phone || ''
+      };
+
+      if (existForm) {
+        await updateCompany(existForm.id.toString(), companyData);
+      } else {
+        await createCompany(companyData);
+      }
+
+      toast.success(
+        existForm
+          ? i18n.t('company_updated').toString()
+          : i18n.t('company_created').toString()
+      );
+      onSuccess();
+    } catch (error) {
+      toast.error(
+        existForm
+          ? i18n.t('company_update_failed').toString()
+          : i18n.t('company_creation_failed').toString()
+      );
+    } finally {
+      actions.setSubmitting(false);
+    }
   };
-  const [clearFlag, setClearFlag] = useState(false);
-  const [isFormReset, setIsFormReset] = useState(false);
 
   return (
-    <>
-      <Formik
+    <Box>
+      <Typography variant="h4" sx={{ mb: 3 }}>
+        {existForm ? i18n.t('edit_company') : i18n.t('new_company')}
+      </Typography>
+      <Formik<CompanyFormValues>
         onSubmit={onSubmit}
-        initialValues={
-          existForm
-            ? {
-                name: existForm.name,
-                address: existForm.address,
-                email: existForm.email,
-                tel: existForm.tel,
-                ceo: existForm.ceo,
-                canBePartner: existForm.canBePartner ? 'true' : 'false',
-                activityField: existForm.activityField
-              }
-            : {
-                activityField: '',
-                name: '',
-                address: '',
-                email: '',
-                tel: '',
-                ceo: '',
-                canBePartner: ''
-              }
-        }
+        initialValues={{
+          name: existForm?.name || '',
+          activityField: existForm?.activityField || '',
+          tel: existForm?.tel || '',
+          address: existForm?.address || '',
+          canBePartner: existForm?.canBePartner || false,
+          ceo: existForm?.ceo || '',
+          email: existForm?.email || '',
+          phone: existForm?.phone || ''
+        }}
         validationSchema={createValidationSchema}
         validateOnBlur={false}
         validateOnChange={false}
         validateOnMount={false}
       >
-        {({ setValues, isSubmitting, submitForm, resetForm, errors }) => (
+        {({ isSubmitting, errors, touched }) => (
           <Form>
-            <Grid display={'flex'} flexDirection={'column'} gap={'30px'}>
-              <Grid display={'flex'} flexDirection={'row'} gap={'40px'}>
-                <CustomRichTreeView
-                  defaultValue={
-                    existForm && !isFormReset
-                      ? ['activity_field_' + existForm.activityFieldId]
-                      : undefined
-                  }
-                  items={mapAllIdsInNestedArray(
-                    'activity_field_',
-                    activityFields
-                  )}
-                  onSelectedItemsChange={(_, itemIds) =>
-                    setValues((prevValues) => ({
-                      ...prevValues,
-                      activityField: itemIds
-                    }))
-                  }
-                  label={i18n.t('activity_field')}
-                  error={errors.activityField}
-                  clearFlag={clearFlag}
-                />
-                <Grid
-                  display={'flex'}
-                  flexDirection={'column'}
-                  justifyContent={'space-between'}
-                  gap={'10px'}
-                >
-                  <TextFieldFormik
-                    name="name"
-                    label={i18n.t('company_name').toString()}
-                  />
-                  <TextFieldFormik
-                    name="tel"
-                    type="tel"
-                    label={i18n.t('tel').toString()}
-                  />
-                  <TextFieldFormik
-                    name="ceo"
-                    label={i18n.t('ceo').toString()}
-                  />
-                </Grid>
-              </Grid>
-              <TextFieldFormik
-                name="email"
-                label={i18n.t('email_or_social_media_account').toString()}
-                sx={{ width: '790px' }}
-              />
-              <TextFieldFormik
-                name="address"
-                label={i18n.t('address').toString()}
-                sx={{ width: '790px' }}
-              />
-              <Grid display={'flex'} flexDirection={'row'}>
-                <RadioButtonGroupFormik
-                  sx={{ width: '790px' }}
-                  name="canBePartner"
-                  legend={i18n.t('status')}
-                  options={[
-                    { id: 'true', label: i18n.t('can_be_partner') },
-                    { id: 'false', label: i18n.t('can_not_be_partner') }
-                  ]}
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <TextFieldFormik
+                  name="name"
+                  label={i18n.t('company_name').toString()}
+                  error={!!(touched.name && errors.name)}
                 />
               </Grid>
-              {isSubmitting && <InlineLoader />}
-              {!isSubmitting && (
-                <OpGrid
-                  onCreateOrEdit={submitForm}
-                  onClose={onClose}
-                  onClear={() => {
-                    setClearFlag(true);
-                    setTimeout(() => {
-                      setClearFlag(false);
-                    }, 300);
-                    if (existForm) {
-                      setValues({
-                        activityField: '',
-                        name: '',
-                        address: '',
-                        email: '',
-                        tel: '',
-                        ceo: '',
-                        canBePartner: ''
-                      });
-                      setIsFormReset(true);
-                    } else resetForm();
-                  }}
+              <Grid item xs={12} sm={6}>
+                <TextFieldFormik
+                  name="activityField"
+                  label={i18n.t('activity_field').toString()}
+                  error={!!(touched.activityField && errors.activityField)}
                 />
-              )}
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextFieldFormik
+                  name="tel"
+                  label={i18n.t('tel').toString()}
+                  error={!!(touched.tel && errors.tel)}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextFieldFormik
+                  name="phone"
+                  label={i18n.t('phone').toString()}
+                  error={!!(touched.phone && errors.phone)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextFieldFormik
+                  name="address"
+                  label={i18n.t('address').toString()}
+                  error={!!(touched.address && errors.address)}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextFieldFormik
+                  name="ceo"
+                  label={i18n.t('ceo').toString()}
+                  error={!!(touched.ceo && errors.ceo)}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextFieldFormik
+                  name="email"
+                  label={i18n.t('email').toString()}
+                  error={!!(touched.email && errors.email)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Box display="flex" justifyContent="flex-end" gap={2}>
+                  <Button
+                    variant="outlined"
+                    onClick={onClose}
+                    disabled={isSubmitting}
+                  >
+                    {i18n.t('cancel')}
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    disabled={isSubmitting}
+                  >
+                    {existForm ? i18n.t('update') : i18n.t('create')}
+                  </Button>
+                </Box>
+              </Grid>
             </Grid>
           </Form>
         )}
       </Formik>
-    </>
+    </Box>
   );
 }
-
-export default CreateOrEditForm;
