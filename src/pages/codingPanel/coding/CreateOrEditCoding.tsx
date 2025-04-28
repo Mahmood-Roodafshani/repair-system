@@ -58,15 +58,16 @@ function CreateOrEditCoding({
             initialValues={
                 existForm
                     ? {
-                        parentName: findItemById(treeView, existForm.parentId.toString())
-                            .label,
+                        parentName: findItemById(treeView, existForm.parentId.toString())?.label || '',
                         childName: existForm.name,
                         priority: existForm.priority,
                         parentId: existForm.parentId
                     }
                     : {
                         parentName: '',
-                        childName: ''
+                        childName: '',
+                        priority: 0,
+                        parentId: ''
                     }
             }
             validationSchema={validationSchema}
@@ -79,14 +80,15 @@ function CreateOrEditCoding({
                     <Grid display={'flex'} flexDirection={'row'} gap={'40px'}>
                         <CustomRichTreeView
                             onSelectedItemsChange={(_, itemIds) => {
-                                setValues({
-                                    ...values,
-                                    parentId: itemIds,
-                                    parentName: findItemById(
-                                        treeView,
-                                        itemIds.replace('tree_view_', '')
-                                    ).label
-                                });
+                                if (typeof itemIds === 'string') {
+                                    const cleanId = itemIds.replace('tree_view_', '');
+                                    const item = findItemById(treeView, cleanId);
+                                    setValues({
+                                        ...values,
+                                        parentId: cleanId,
+                                        parentName: item?.label || ''
+                                    });
+                                }
                             }}
                             defaultValue={
                                 existForm && values.parentId === existForm.parentId

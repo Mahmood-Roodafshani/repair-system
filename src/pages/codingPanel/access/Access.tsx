@@ -12,14 +12,57 @@ import {CodingAccessRequest, CodingAccessResponse, CodingResponse, Pagination} f
 import validationSchema from './validationSchema';
 import {Box} from '@mui/material';
 import {Add} from '@mui/icons-material';
-import CreateOrEditForm from './CreateOrEditForm';
+
+interface CreateOrEditFormProps {
+    initialValues: CodingAccessRequest;
+    onSubmit: (values: CodingAccessRequest, actions: FormikHelpers<CodingAccessRequest>) => Promise<void>;
+    onClose: () => void;
+}
+
+function CreateOrEditForm({ initialValues, onSubmit, onClose }: CreateOrEditFormProps) {
+    return (
+        <Formik
+            initialValues={initialValues}
+            onSubmit={onSubmit}
+            validationSchema={validationSchema}
+        >
+            {({ isSubmitting, submitForm }) => (
+                <Form>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <TextFieldFormik
+                                name="username"
+                                label={i18n.t('username')}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextFieldFormik
+                                name="codingName"
+                                label={i18n.t('coding_name')}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Button
+                                buttonType={ButtonType.SAVE}
+                                onClick={submitForm}
+                                disabled={isSubmitting}
+                            />
+                            <Button
+                                buttonType={ButtonType.CANCEL}
+                                onClick={onClose}
+                            />
+                        </Grid>
+                    </Grid>
+                </Form>
+            )}
+        </Formik>
+    );
+}
 
 function Access() {
     const [loading, setLoading] = useState(false);
-    const [codingList, setCodingList] = useState<CodingResponse[]>();
-    const [codingAccessList, setCodingAccessList] = useState<
-        CodingAccessResponse[]
-    >([]);
+    const [codingList, setCodingList] = useState<CodingResponse[]>([]);
+    const [codingAccessList, setCodingAccessList] = useState<CodingAccessResponse[]>([]);
     const [selectedAccess, setSelectedAccess] = useState<string | number | undefined>();
     const [selectedAccessForEdit, setSelectedAccessForEdit] = useState<CodingAccessResponse | undefined>();
     const navigate = useNavigate();
@@ -35,7 +78,7 @@ function Access() {
             {
                 header: i18n.t('row_number'),
                 enableHiding: false,
-                Cell: ({row}) => {
+                Cell: ({row}: {row: any}) => {
                     return (
                         <Typography sx={{textAlign: 'right'}} key={'row_' + row.index}>
                             {row.index + 1}
@@ -66,15 +109,12 @@ function Access() {
         if (totalCount === 0) return;
         setCodingAccessList([]);
         setRefetchingData(true);
-        Promise.all([
-            fetchCodingAccessList({
-                pageIndex: pagination.pageIndex,
-                pageSize: pagination.pageSize
-            })
-        ])
+        fetchCodingAccessList()
             .then((res) => {
-                if (res[0].statusCode === 200)
-                    setCodingAccessList(res[0].content.content);
+                if (res.statusCode === 200) {
+                    setCodingAccessList(res.content.content);
+                    setTotalCount(res.content.totalCount);
+                }
             })
             .finally(() => setRefetchingData(false));
     }, [pagination, totalCount]);
@@ -83,10 +123,7 @@ function Access() {
         setLoading(true);
         Promise.all([
             fetchCodingList(),
-            fetchCodingAccessList({
-                pageIndex: pagination.pageIndex,
-                pageSize: pagination.pageSize
-            })
+            fetchCodingAccessList()
         ])
             .then((res) => {
                 if (res[0].statusCode === 200) setCodingList(res[0].content);
@@ -102,7 +139,9 @@ function Access() {
         values: CodingAccessRequest,
         actions: FormikHelpers<CodingAccessRequest>
     ) => {
-        const res = await createCodingAccess(values);
+        const res = await createCodingAccess({
+            data: values
+        });
         actions.setSubmitting(false);
         if (res.statusCode === 200) {
             toast(i18n.t('new_access_created').toString(), {type: 'success'});
@@ -114,16 +153,12 @@ function Access() {
     const handleDelete = async () => {
         if (!selectedAccess) return;
         try {
-            await removeCodingAccess({accessId: selectedAccess});
+            await removeCodingAccess({id: selectedAccess});
             setCodingAccessList(codingAccessList.filter((e) => e.id !== selectedAccess));
             setSelectedAccess(undefined);
         } catch (error) {
             console.error('Error deleting coding access:', error);
         }
-    };
-
-    const handleEdit = (access: CodingAccessResponse) => {
-        setSelectedAccessForEdit(access);
     };
 
     return (
@@ -141,6 +176,7 @@ function Access() {
                             variant="contained"
                             startIcon={<Add />}
                             onClick={() => setSelectedAccessForEdit({} as CodingAccessResponse)}
+                            buttonType={ButtonType.ADD}
                         >
                             {i18n.t('add_new_access')}
                         </Button>
@@ -159,8 +195,8 @@ function Access() {
                             enableRowActions={true}
                             isRefetching={refetchingData}
                             rowActions={({
-                                             row
-                                         }: {
+                                row
+                            }: {
                                 row: { original: { id: string | number } };
                             }) => (
                                 <TableRowAction
@@ -176,15 +212,21 @@ function Access() {
                 {selectedAccessForEdit && (
                     <CreateOrEditForm
                         initialValues={{
-                            name: selectedAccessForEdit.name || '',
-                            id: selectedAccessForEdit.id,
-                            code: selectedAccessForEdit.code || '',
-                            status: selectedAccessForEdit.status
+                            username: selectedAccessForEdit.username || '',
+                            codingName: selectedAccessForEdit.codingName || ''
                         }}
                         onSubmit={onSubmit}
                         onClose={() => setSelectedAccessForEdit(undefined)}
                     />
                 )}
+
+                <ConfirmationDialog
+                    open={!!selectedAccess}
+                    onClose={() => setSelectedAccess(undefined)}
+                    onConfirm={handleDelete}
+                    title={i18n.t('delete_access')}
+                    description={i18n.t('delete_access_confirm')}
+                />
             </Box>
         </>
     );

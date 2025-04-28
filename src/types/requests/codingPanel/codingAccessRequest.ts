@@ -1,4 +1,4 @@
 export type CodingAccessRequest = {
-  nationalCode: string;
-  codingId?: string | number;
+  username: string;
+  codingName: string;
 };
