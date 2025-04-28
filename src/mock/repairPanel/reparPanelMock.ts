@@ -1,4 +1,5 @@
 import { CommisionListResponse, CompaniesResponse } from 'src/types';
+import { GetItemListInCommissionQueueResponse } from 'src/types/responses/repairPanel/commission/getItemListInCommissionQueueResponse';
 
 const CompaniesMock: CompaniesResponse[] = [
   {
@@ -42,14 +43,17 @@ const CommissionListMock: CommisionListResponse[] = [
   }
 ];
 
-const ItemsInCommissionQueueListMock: CommisionListResponse[] = [
+const ItemsInCommissionQueueListMock: GetItemListInCommissionQueueResponse[] = [
   {
     id: '1',
     description: 'آسیب به علت نوسان برق',
     assetNumber: '14786592',
     category: 'فناوری/رایانه/کیس',
     submitAt: '1401/12/18',
-    submitter: 'حسین مهدوی فر'
+    submitter: 'حسین مهدوی فر',
+    submitNumber: '12345',
+    referAt: '1401/12/19',
+    organizationUnit: 'واحد فناوری اطلاعات'
   }
 ];
 
