@@ -11,7 +11,7 @@ import { Button, ButtonType, TextFieldFormik } from '@/components/form';
 import { GetItemListInCommissionQueueResponse } from '@/types/responses/repairPanel/commission/getItemListInCommissionQueueResponse';
 import { Box } from '@mui/material';
 import { MyCustomTable } from '@/components/customTable';
-import { DateObject } from 'react-multi-date-picker';
+import type { DateObject } from 'react-multi-date-picker';
 
 interface RowType {
   index: number;
@@ -23,8 +23,8 @@ interface CellProps {
   field: keyof CommisionListResponse;
 }
 
-const Cell = (props: CellProps) => {
-  return <>{props.row[props.field]}</>;
+const Cell = ({ row, field }: CellProps): JSX.Element => {
+  return <>{row[field]}</>;
 };
 
 const ItemsInCommissionQueue = () => {
@@ -101,7 +101,7 @@ const ItemsInCommissionQueue = () => {
               <Grid item xs={12} sm={6}>
                 <CustomDatePicker
                   label="Submit Date"
-                  onChange={(date: DateObject) => {
+                  onChange={(date: DateObject | null) => {
                     setValues((prevValues) => ({
                       ...prevValues,
                       submitAt: date?.format('YYYY-MM-DD') || ''
@@ -112,7 +112,7 @@ const ItemsInCommissionQueue = () => {
               <Grid item xs={12} sm={6}>
                 <CustomDatePicker
                   label="Date"
-                  onChange={(date: DateObject) => {
+                  onChange={(date: DateObject | null) => {
                     setValues((prevValues) => ({
                       ...prevValues,
                       date: date?.format('YYYY-MM-DD') || ''
