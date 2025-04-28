@@ -5,26 +5,25 @@ import { toast } from 'react-toastify';
 import { MyCustomTable, TableRowAction } from 'src/components';
 import { i18n } from 'src/localization';
 import { ConfirmationDialog } from '@/components/form';
-import { getSystemRoles, removeRole } from 'src/services';
-import { SystemRolesResponse } from 'src/types';
+import { roleManagementService } from 'src/services/userManagement/roleManagementService';
+import { SystemRolesResponse } from 'src/types/responses/userManagement/roleManagement';
 
-function SystemRoles({
-  systemId,
-  onBack
-}: {
-  systemId: number | string;
+interface SystemRolesProps {
+  systemId: number;
   onBack: () => void;
-}) {
+}
+
+function SystemRoles({ systemId, onBack }: SystemRolesProps) {
   const [loading, setLoading] = useState(false);
   const [roles, setRoles] = useState<SystemRolesResponse[]>([]);
-  const [selectedRole, setSelectedRole] = useState<string | number>();
+  const [selectedRole, setSelectedRole] = useState<number>();
 
   const columns = useMemo(
     () => [
       {
         header: i18n.t('row_number'),
         enableHiding: false,
-        Cell: ({ row }) => {
+        Cell: ({ row }: { row: { index: number } }) => {
           return (
             <Typography sx={{ textAlign: 'right' }} key={'row_' + row.index}>
               {row.index + 1}
@@ -35,7 +34,7 @@ function SystemRoles({
       },
       {
         header: i18n.t('role_title'),
-        accessorKey: 'label',
+        accessorKey: 'name',
         size: 120,
         muiTableHeadCellProps: {
           align: 'left'
@@ -54,7 +53,7 @@ function SystemRoles({
         muiTableBodyCellProps: {
           align: 'right'
         },
-        Cell: ({ row, cell }) => {
+        Cell: ({ row, cell }: { row: { index: number }; cell: { getValue: () => boolean } }) => {
           return (
             <Typography sx={{ textAlign: 'right' }} key={'row_' + row.index}>
               {cell.getValue()
@@ -70,9 +69,9 @@ function SystemRoles({
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([getSystemRoles({ systemId: systemId })])
-      .then((res) => {
-        if (res[0].statusCode === 200) setRoles(res[0].content);
+    roleManagementService.getSystemRoles(systemId)
+      .then((roles) => {
+        setRoles(roles);
       })
       .finally(() => setLoading(false));
   }, [systemId]);
@@ -91,7 +90,7 @@ function SystemRoles({
         rowActions={({
           row
         }: {
-          row: { original: { id: string | number } };
+          row: { original: { id: number } };
         }) => (
           //todo: impl onEdit
           <TableRowAction
@@ -110,14 +109,13 @@ function SystemRoles({
         closeOnEsc={true}
         dialogTitle={i18n.t('confirm_remove')}
         dialogOkBtnAction={() => {
+          if (!selectedRole) return;
           setLoading(true);
-          removeRole({ roleId: selectedRole })
-            .then((res) => {
-              if (res.statusCode === 200) {
-                setRoles(roles.filter((e) => e.id !== selectedRole));
-                toast.success('سامانه مورد نظر با موفقیت حذف گردید');
-                setSelectedRole(undefined);
-              }
+          roleManagementService.removeRole(selectedRole)
+            .then(() => {
+              setRoles(roles.filter((e) => e.id !== selectedRole));
+              toast.success('سامانه مورد نظر با موفقیت حذف گردید');
+              setSelectedRole(undefined);
             })
             .finally(() => setLoading(false));
         }}
