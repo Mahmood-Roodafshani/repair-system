@@ -139,6 +139,13 @@ export const ROUTES = {
       CREATE: `${BASE_URL}/family/create`,
       UPDATE: (id: string | number) => `${BASE_URL}/family/${id}`,
       REMOVE: (id: string | number) => `${BASE_URL}/family/${id}`
+    },
+    // Other Info
+    OTHER_INFO: {
+      FETCH_LIST: `${BASE_URL}/other-info/list`,
+      CREATE: `${BASE_URL}/other-info/create`,
+      UPDATE: (id: string | number) => `${BASE_URL}/other-info/${id}`,
+      REMOVE: (id: string | number) => `${BASE_URL}/other-info/${id}`
     }
   },
 

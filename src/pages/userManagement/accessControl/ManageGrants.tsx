@@ -1,30 +1,53 @@
-import { TabContext } from '@mui/lab';
-import { Tab, Tabs, useTheme } from '@mui/material';
-import { useState } from 'react';
-import { useNavigate } from 'react-router';
-import { i18n } from 'src/localization';
+import { Box, Button, Grid, Typography } from '@mui/material';
+import { Formik } from 'formik';
+import { useTranslation } from 'react-i18next';
+import { CustomRichTreeView } from 'src/components';
+import { ManageGrantsRequest } from '../../../types/requests/userManagement/accessControl/manageGrantsRequest';
+import { manageGrantsValidationSchema } from '../../../validation/userManagement/accessControl/manageGrantsValidationSchema';
 
 function ManageGrants() {
-  const [selectedTab, setSelectedTab] = useState();
-  const theme = useTheme();
-  const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  const initialValues: ManageGrantsRequest = {
+    grants: []
+  };
+
+  const onSubmit = (values: ManageGrantsRequest) => {
+    console.log(values);
+  };
 
   return (
-    <>
-      <TabContext value={selectedTab}>
-        <Tabs
-          onChange={(e, selectedTab) => setSelectedTab(selectedTab)}
-          sx={{ marginTop: '10px' }}
-          value={selectedTab}
-        >
-          <Tab
-            sx={{ backgroundColor: theme.colors.secondary.dark }}
-            value={'JOB_REPLACEMENT'}
-            label={i18n.t('job_replacement').toString()}
-          />
-        </Tabs>
-      </TabContext>
-    </>
+    <Box>
+      <Typography variant="h5" gutterBottom>
+        {t('manage_grants')}
+      </Typography>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={manageGrantsValidationSchema}
+        onSubmit={onSubmit}
+      >
+        {({ handleSubmit }) => (
+          <form onSubmit={handleSubmit}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <CustomRichTreeView
+                  label={t('grants')}
+                  items={[]}
+                  onSelectedItemsChange={() => {}}
+                  multiSelect
+                  checkboxSelection
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Button type="submit" variant="contained" color="primary">
+                  {t('save')}
+                </Button>
+              </Grid>
+            </Grid>
+          </form>
+        )}
+      </Formik>
+    </Box>
   );
 }
 

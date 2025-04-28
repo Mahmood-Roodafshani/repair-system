@@ -1,231 +1,103 @@
-import { i18n } from '@/localization';
-import {
-  CommisionListResponse,
-  GetItemListInCommissionQueueRequest,
-  RichViewType
-} from '@/types';
-import { Grid, Typography } from '@mui/material';
-import { useMemo, useState } from 'react';
-import commonColumns from './columns';
-import { Form, Formik, FormikHelpers } from 'formik';
-import { fetchItemsInCommissionQueue } from '@/services';
-import {
-  CustomDatePicker,
-  CustomRichTreeView,
-  InlineLoader,
-  MyCustomTable,
-  OpGrid,
-  TableRowAction
-} from '@/components';
-import { Button, ButtonType, TextFieldFormik } from '@/components/form';
-import { fetchItemsInCommissionQueueValidationSchema } from './validationSchema';
-import { mapAllIdsInNestedArray } from '@/utils/helper';
+import { Box, Button, Grid, Typography } from '@mui/material';
+import { Formik } from 'formik';
+import { useTranslation } from 'react-i18next';
+import { GetItemListInCommissionQueueRequest } from '../../../types/requests/repairPanel/commission/getItemListInCommissionQueueRequest';
+import { filterValidationSchema } from '../../../validation/commission/filterValidationSchema';
+import { TextFieldFormik } from '../../../components/form/TextFieldFormik';
 
-function ItemsInCommissionQueue({
-  onClose,
-  organizationUnits
-}: {
-  onClose: () => void;
-  organizationUnits?: RichViewType[];
-}) {
-  const [data, setData] = useState<CommisionListResponse[]>([]);
-  const [clearFlag, setClearFlag] = useState(false);
-  const columns = useMemo(
-    () => [
-      {
-        header: i18n.t('row_number'),
-        enableHiding: false,
-        Cell: ({ row }) => {
-          return (
-            <Typography sx={{ textAlign: 'right' }} key={'row_' + row.index}>
-              {row.index + 1}
-            </Typography>
-          );
-        },
-        size: 40
-      },
-      ...commonColumns
-    ],
-    []
-  );
+function ItemsInCommissionQueue() {
+  const { t } = useTranslation();
 
-  const onSubmit = async (
-    values: GetItemListInCommissionQueueRequest,
-    actions: FormikHelpers<GetItemListInCommissionQueueRequest>
-  ) => {
-    setData([]);
-    const res = await fetchItemsInCommissionQueue({
-      assetNumber:
-        values.assetNumber && values.assetNumber.toString().length > 0
-          ? values.assetNumber
-          : undefined,
-      submitNumber:
-        values.submitNumber && values.submitNumber.toString().length > 0
-          ? values.submitNumber
-          : undefined,
-      submitFrom: values.submitFrom,
-      submitTo: values.submitTo,
-      referTo: values.referTo,
-      referFrom: values.referFrom,
-      organizationUnits: values.organizationUnits
-    });
-    actions.setSubmitting(false);
-    if (res.statusCode === 200) setData(res.content);
+  const initialValues: GetItemListInCommissionQueueRequest = {
+    assetNumber: '',
+    submitNumber: '',
+    submitAt: undefined,
+    submitter: '',
+    submitterUnit: '',
+    description: '',
+    category: '',
+    status: '',
+    page: 0,
+    size: 10,
+    sort: 'id,desc'
+  };
+
+  const onSubmit = (values: GetItemListInCommissionQueueRequest) => {
+    console.log(values);
   };
 
   return (
-    <>
+    <Box>
+      <Typography variant="h5" gutterBottom>
+        {t('items_in_commission_queue')}
+      </Typography>
       <Formik
+        initialValues={initialValues}
+        validationSchema={filterValidationSchema}
         onSubmit={onSubmit}
-        initialValues={{
-          assetNumber: '',
-          submitNumber: ''
-        }}
-        validationSchema={fetchItemsInCommissionQueueValidationSchema}
-        validateOnBlur={false}
-        validateOnChange={false}
-        validateOnMount={false}
       >
-        {({
-          isSubmitting,
-          values,
-          setValues,
-          submitForm,
-          resetForm,
-          errors
-        }) => (
-          <Form>
-            <Grid
-              display={'flex'}
-              flexDirection={'column'}
-              gap={'30px'}
-              mb={'20px'}
-            >
-              <Grid
-                display={'flex'}
-                flexDirection={'row'}
-                gap={'10px'}
-                flexWrap={'wrap'}
-              >
-                <CustomDatePicker
-                  label={i18n.t('submit_from')}
-                  value={values.submitForm}
-                  onChange={(e) => {
-                    setValues((prevValues) => ({
-                      ...prevValues,
-                      submitForm: e
-                    }));
-                  }}
-                  error={errors.submitForm}
-                />
-                <CustomDatePicker
-                  label={i18n.t('submit_to')}
-                  value={values.submitTo}
-                  onChange={(e) => {
-                    setValues((prevValues) => ({
-                      ...prevValues,
-                      submitTo: e
-                    }));
-                  }}
-                  error={errors.submitTo}
-                />
+        {({ handleSubmit }) => (
+          <form onSubmit={handleSubmit}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6} md={4}>
                 <TextFieldFormik
                   name="assetNumber"
-                  label={i18n.t('asset_number').toString()}
-                />
-                <TextFieldFormik
-                  name="submitNumber"
-                  label={i18n.t('submit_number').toString()}
-                />
-                <CustomDatePicker
-                  label={i18n.t('refer_from')}
-                  value={values.referForm}
-                  onChange={(e) => {
-                    setValues((prevValues) => ({
-                      ...prevValues,
-                      referForm: e
-                    }));
-                  }}
-                  error={errors.referForm}
-                />
-                <CustomDatePicker
-                  label={i18n.t('refer_to')}
-                  value={values.referTo}
-                  onChange={(e) => {
-                    setValues((prevValues) => ({
-                      ...prevValues,
-                      referTo: e
-                    }));
-                  }}
-                  error={errors.referTo}
+                  label={t('asset_number')}
                 />
               </Grid>
-              {organizationUnits && (
-                <CustomRichTreeView
-                  clearFlag={clearFlag}
-                  checkboxSelection={true}
-                  multiSelect={true}
-                  label={i18n.t('choose_work_unit')}
-                  items={mapAllIdsInNestedArray(
-                    'organization_unit_',
-                    organizationUnits
-                  )}
-                  onSelectedItemsChange={(_, itemIds) =>
-                    setValues((prevValues) => ({
-                      ...prevValues,
-                      organizationUnits: itemIds
-                    }))
-                  }
-                  error={errors.organizationUnits}
+              <Grid item xs={12} sm={6} md={4}>
+                <TextFieldFormik
+                  name="submitNumber"
+                  label={t('submit_number')}
                 />
-              )}
-              {isSubmitting && <InlineLoader />}
-              {!isSubmitting && (
-                <OpGrid
-                  onClear={() => {
-                    setClearFlag(true);
-                    setTimeout(() => {
-                      setClearFlag(false);
-                    }, 300);
-                    resetForm();
-                  }}
-                  onClose={onClose}
-                  onSearch={submitForm}
+              </Grid>
+              <Grid item xs={12} sm={6} md={4}>
+                <TextFieldFormik
+                  name="submitAt"
+                  label={t('submit_at')}
+                  type="date"
                 />
-              )}
+              </Grid>
+              <Grid item xs={12} sm={6} md={4}>
+                <TextFieldFormik
+                  name="submitter"
+                  label={t('submitter')}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6} md={4}>
+                <TextFieldFormik
+                  name="submitterUnit"
+                  label={t('submitter_unit')}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6} md={4}>
+                <TextFieldFormik
+                  name="description"
+                  label={t('description')}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6} md={4}>
+                <TextFieldFormik
+                  name="category"
+                  label={t('category')}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6} md={4}>
+                <TextFieldFormik
+                  name="status"
+                  label={t('status')}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Button type="submit" variant="contained" color="primary">
+                  {t('search')}
+                </Button>
+              </Grid>
             </Grid>
-          </Form>
+          </form>
         )}
       </Formik>
-
-      <MyCustomTable
-        enableRowActions={true}
-        rowActions={({
-          row
-        }: {
-          row: {
-            index: number;
-            original: {
-              id: string | number;
-            };
-          };
-        }) => (
-          <TableRowAction
-            additionalIconButton={
-              <Button
-                variant="contained"
-                color="secondary"
-                buttonType={ButtonType.SEARCH}
-                showIcon={false}
-                text={i18n.t('refer_to_commission')}
-              />
-            }
-          />
-        )}
-        data={data}
-        columns={columns}
-      />
-    </>
+    </Box>
   );
 }
 

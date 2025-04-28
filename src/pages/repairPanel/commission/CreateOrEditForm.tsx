@@ -12,7 +12,7 @@ import {
 } from '@/components/form';
 import { i18n } from '@/localization';
 import { createNewCommission, updateCommission } from '@/services';
-import { CommissionFormDto } from '@/types/responses/commission/commissionDto';
+import { CommissionFormDto } from '@/types/responses/repairPanel/commission/commissionDto';
 import { CommissionMember } from '@/types/requests/repairPanel/commission/commissionMember';
 import { CreateNewCommissionRequest } from '@/types/requests/repairPanel/commission/createNewCommissionRequest';
 import createNewCommissionRequestInitialValues from '@/types/requests/repairPanel/commission/createNewCommissionRequest';
@@ -34,7 +34,6 @@ function CreateOrEditForm({
   onClose: () => void;
 }) {
   const [staffCode, setStaffCode] = useState<string | number>();
-  const [members, setMembers] = useState<CommissionMember[]>([]);
 
   const onSubmit = async (
     values: CreateNewCommissionRequest,
@@ -138,7 +137,7 @@ function CreateOrEditForm({
                   text={i18n.t('inquiry')}
                 />
               </Grid>
-              <MyCustomTable columns={columns} data={members} />
+              <MyCustomTable columns={columns} data={[]} />
               <Grid width={'400px'}>
                 <DropzoneArea
                   dropzoneText={i18n.t('add_attach')}

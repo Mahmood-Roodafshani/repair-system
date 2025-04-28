@@ -4,6 +4,7 @@ export type CompaniesResponse = {
   activityField?: string;
   activityFieldId?: string;
   tel?: string;
+  phone?: string;
   address?: string;
   canBePartner?: boolean;
   ceo?: string;

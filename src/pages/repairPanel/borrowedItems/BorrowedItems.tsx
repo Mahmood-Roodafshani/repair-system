@@ -219,7 +219,7 @@ function BorrowedItems() {
                     multiSelect={true}
                     checkboxSelection={true}
                     onSelectedItemsChange={(
-                      event: SyntheticEvent<Element, Event>,
+                      _: SyntheticEvent<Element, Event>,
                       itemIds: string | string[]
                     ) => {
                       const selectedIds = Array.isArray(itemIds)

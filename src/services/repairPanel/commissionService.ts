@@ -7,6 +7,7 @@ import {
   GetItemListInCommissionQueueRequest
 } from '@/types';
 import { CommissionListMock, ItemsInCommissionQueueListMock } from '@/mock';
+import { GetItemListInCommissionQueueResponse } from '../../types/responses/repairPanel/commission/getItemListInCommissionQueueResponse';
 
 const fetchCommissionList = async (request: GetCommissionListRequest) => {
   try {
@@ -60,6 +61,15 @@ const updateCommission = async ({
   const response = await axiosInstance.put(ROUTES.REPAIR.COMMISSION.UPDATE(id), form);
   return response.data;
 };
+
+export class CommissionService {
+  static async fetchItemsInCommissionQueue(
+    request: GetItemListInCommissionQueueRequest
+  ): Promise<GetItemListInCommissionQueueResponse[]> {
+    // TODO: Replace with actual API call
+    return [];
+  }
+}
 
 export {
   fetchCommissionList,

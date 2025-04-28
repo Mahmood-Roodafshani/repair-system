@@ -1,11 +1,16 @@
 import { DateObject } from 'react-multi-date-picker';
 
-export type GetItemListInCommissionQueueRequest = {
-  assetNumber?: string | number;
-  submitNumber?: string | number;
-  referFrom?: string | DateObject | Date;
-  referTo?: string | DateObject | Date;
-  submitFrom?: string | DateObject | Date;
-  submitTo?: string | DateObject | Date;
-  organizationUnits?: string[];
-};
+export interface GetItemListInCommissionQueueRequest {
+  assetNumber?: string;
+  submitNumber?: string;
+  submitAt?: string;
+  date?: string;
+  submitter?: string;
+  submitterUnit?: string;
+  description?: string;
+  category?: string;
+  status?: string;
+  page?: number;
+  size?: number;
+  sort?: string;
+}

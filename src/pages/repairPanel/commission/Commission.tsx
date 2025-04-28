@@ -25,7 +25,7 @@ import commonColumns from './columns';
 import ItemsInCommissionQueue from './ItemsInCommissionQueue';
 import { fetchCommissionListValidationSchema } from './validationSchema';
 
-export default function () {
+export default function Commission() {
   const [data, setData] = useState<CommisionListResponse[]>([]);
   const [selectedCommissionForEdit, setSelectedCommissionForEdit] =
     useState<CommisionListResponse>();
@@ -40,7 +40,7 @@ export default function () {
       {
         header: i18n.t('row_number'),
         enableHiding: false,
-        Cell: ({ row }) => {
+        Cell: ({ row }: { row: { index: number } }) => {
           return (
             <Typography sx={{ textAlign: 'right' }} key={'row_' + row.index}>
               {row.index + 1}
@@ -60,9 +60,9 @@ export default function () {
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([CommonService.getOrganizationUnits()])
+    CommonService.getOrganizationUnits()
       .then((res) => {
-        if (res[0].statusCode === 200) setOrganizationUnits(res[0].content);
+        setOrganizationUnits(res);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -84,6 +84,16 @@ export default function () {
     if (res.statusCode === 200) setData(res.content);
   };
 
+  const handleShowQueue = async () => {
+    if (organizationUnits === undefined) {
+      setLoading(true);
+      const res = await CommonService.getOrganizationUnits();
+      setLoading(false);
+      setOrganizationUnits(res);
+    }
+    setShowQueue(true);
+  };
+
   return (
     <>
       <Helmet>
@@ -92,10 +102,12 @@ export default function () {
       {loading && <Loader />}
       {!showCreateOrEditForm && !showQueue && (
         <>
-          <Formik
+          <Formik<GetCommissionListRequest>
             onSubmit={onSubmit}
             initialValues={{
-              assetNumber: ''
+              assetNumber: '',
+              submitAt: undefined,
+              date: undefined
             }}
             validationSchema={fetchCommissionListValidationSchema}
             validateOnBlur={false}
@@ -179,15 +191,7 @@ export default function () {
             alignItems={'end'}
           >
             <Button
-              onClick={async () => {
-                if (organizationUnits === undefined) {
-                  setLoading(true);
-                  const res = await fetchOrganizationUnits();
-                  setLoading(false);
-                  if (res.statusCode === 200) setOrganizationUnits(res.content);
-                }
-                setShowQueue(true);
-              }}
+              onClick={handleShowQueue}
               sx={{ width: '250px' }}
               variant="contained"
               color="info"
@@ -221,13 +225,20 @@ export default function () {
           </Grid>
         </>
       )}
-      {showQueue && (
-        <ItemsInCommissionQueue
-          organizationUnits={organizationUnits}
-          onClose={() => setShowQueue(false)}
+      {showQueue && <ItemsInCommissionQueue />}
+      {showCreateOrEditForm && (
+        <CreateOrEditForm
+          selectedItemForEdit={selectedCommissionForEdit}
+          onSuccess={() => {
+            setShowCreateOrEditForm(false);
+            setSelectedCommissionForEdit(undefined);
+          }}
+          onClose={() => {
+            setShowCreateOrEditForm(false);
+            setSelectedCommissionForEdit(undefined);
+          }}
         />
       )}
-      {showCreateOrEditForm && <CreateOrEditForm />}
     </>
   );
 }

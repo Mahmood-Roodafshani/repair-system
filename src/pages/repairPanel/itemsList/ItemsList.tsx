@@ -10,8 +10,14 @@ import {
   getItemsList,
   getItemsListFromCentralAssetPanel
 } from '../../../services/repairPanel/itemsService';
-import { GetItemsRequest, ItemsResponse } from 'src/types';
+import { ItemsResponse } from 'src/types';
+import { GetItemsRequest } from 'src/types/requests/repairPanel/items/getItemsRequest';
 import validationSchema from './validationSchema';
+
+interface RowType {
+  index: number;
+  original: ItemsResponse;
+}
 
 function ItemsList() {
   const [data, setData] = useState<ItemsResponse[]>([]);
@@ -36,7 +42,7 @@ function ItemsList() {
       {
         header: i18n.t('row_number'),
         enableHiding: false,
-        Cell: ({ row }) => {
+        Cell: ({ row }: { row: RowType }) => {
           return (
             <Typography sx={{ textAlign: 'right' }} key={'row_' + row.index}>
               {row.index + 1}
