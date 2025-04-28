@@ -1,15 +1,12 @@
 import { Box, Button, Grid, Typography } from '@mui/material';
 import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
-import { CustomRichTreeView, Loader, MyCustomTable } from 'src/components';
 import { TextFieldFormik } from '../../../components/form/TextFieldFormik';
 import { AccessControlRequest } from '../../../types/requests/userManagement/accessControl/accessControlRequest';
 import { accessControlValidationSchema } from '../../../validation/userManagement/accessControl/accessControlValidationSchema';
 
 function AccessControl() {
   const { t } = useTranslation();
-  const [isLoading, setIsLoading] = useState(false);
 
   const initialValues: AccessControlRequest = {
     staffCode: '',

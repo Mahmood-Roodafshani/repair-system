@@ -29,6 +29,7 @@ const Cell = (props: CellProps) => {
 
 const ItemsInCommissionQueue = () => {
   const [data, setData] = useState<GetItemListInCommissionQueueResponse[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const initialValues: GetItemListInCommissionQueueRequest = {
     assetNumber: '',
@@ -46,8 +47,13 @@ const ItemsInCommissionQueue = () => {
   };
 
   const onSubmit = async (values: GetItemListInCommissionQueueRequest) => {
-    const response = await fetchItemsInCommissionQueue(values);
-    setData(response);
+    setIsLoading(true);
+    try {
+      const response = await fetchItemsInCommissionQueue(values);
+      setData(response);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const columns = useMemo(
@@ -67,7 +73,7 @@ const ItemsInCommissionQueue = () => {
     []
   );
 
-  const rowActions = () => {
+  const rowActions = (): null => {
     return null;
   };
 
@@ -77,27 +83,24 @@ const ItemsInCommissionQueue = () => {
         {i18n.t('items_in_commission_queue')}
       </Typography>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
-        {({ values, setValues, handleSubmit }) => (
+        {({ setValues, handleSubmit }) => (
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextFieldFormik
                   name="assetNumber"
                   label="Asset Number"
-                  value={values.assetNumber}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextFieldFormik
                   name="submitNumber"
                   label="Submit Number"
-                  value={values.submitNumber}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <CustomDatePicker
                   label="Submit Date"
-                  value={values.submitAt}
                   onChange={(date: DateObject) => {
                     setValues((prevValues) => ({
                       ...prevValues,
@@ -109,7 +112,6 @@ const ItemsInCommissionQueue = () => {
               <Grid item xs={12} sm={6}>
                 <CustomDatePicker
                   label="Date"
-                  value={values.date}
                   onChange={(date: DateObject) => {
                     setValues((prevValues) => ({
                       ...prevValues,
@@ -122,35 +124,30 @@ const ItemsInCommissionQueue = () => {
                 <TextFieldFormik
                   name="submitter"
                   label="Submitter"
-                  value={values.submitter}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextFieldFormik
                   name="submitterUnit"
                   label="Submitter Unit"
-                  value={values.submitterUnit}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextFieldFormik
                   name="description"
                   label="Description"
-                  value={values.description}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextFieldFormik
                   name="category"
                   label="Category"
-                  value={values.category}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextFieldFormik
                   name="status"
                   label="Status"
-                  value={values.status}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -165,7 +162,7 @@ const ItemsInCommissionQueue = () => {
           data={data}
           columns={columns}
           rowActions={rowActions}
-          isLoading={false}
+          isLoading={isLoading}
         />
       </Box>
     </Box>

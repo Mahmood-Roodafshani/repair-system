@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { roleManagementService } from 'src/services/userManagement/roleManagementService';
-import { SystemRolesResponse } from 'src/types/responses/userManagement/roleManagement';
 
 function CreateNewSystemDialog({
   open,

@@ -24,9 +24,15 @@ import { i18n } from 'src/localization';
 import { grantsMock, jobsMock } from 'src/mock';
 import { mapAllIdsInNestedArray } from 'src/utils/helper';
 import { TakenGrants } from './takenGrants';
+import { DateObject } from 'react-multi-date-picker';
+
+interface FormData {
+  from: DateObject | undefined;
+  to: DateObject | undefined;
+}
 
 function ChooseReplacement() {
-  const [formData, setFormData] = useState<any>({
+  const [formData, setFormData] = useState<FormData>({
     from: undefined,
     to: undefined
   });
@@ -36,12 +42,12 @@ function ChooseReplacement() {
   const theme = useTheme();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [takenJobsGrants, setTakenJobsGrants] = useState<any[]>([
+  const [takenJobsGrants] = useState<any[]>([
     { name: 'سازمانی' }
   ]);
-  const [takenGrants, setTakenGrants] = useState<TakenGrants[]>([]);
-  const [replacementJobs, setReplacementJobs] = useState<any[]>(jobsMock);
-  const [replacementGrants, setReplacementGrants] = useState<any[]>(grantsMock);
+  const [takenGrants] = useState<TakenGrants[]>([]);
+  const [replacementJobs] = useState<any[]>(jobsMock);
+  const [replacementGrants] = useState<any[]>(grantsMock);
 
   // don't use mock and use service instead
 
@@ -84,6 +90,20 @@ function ChooseReplacement() {
     ];
   }, []);
 
+  const handleFromDateChange = (e: DateObject) => {
+    setFormData((prevValues: FormData) => ({
+      ...prevValues,
+      from: e
+    }));
+  };
+
+  const handleToDateChange = (e: DateObject) => {
+    setFormData((prevValues: FormData) => ({
+      ...prevValues,
+      to: e
+    }));
+  };
+
   return (
     <>
       <Helmet>
@@ -97,12 +117,7 @@ function ChooseReplacement() {
             maxDate={new Date()}
             value={formData.from}
             placeholder={i18n.t('from')}
-            onChange={(e) => {
-              setFormData((prevValues) => ({
-                ...prevValues,
-                from: e
-              }));
-            }}
+            onChange={handleFromDateChange}
           />
           <DatePicker
             calendar={persian}
@@ -110,12 +125,7 @@ function ChooseReplacement() {
             maxDate={new Date()}
             value={formData.to}
             placeholder={i18n.t('to')}
-            onChange={(e) => {
-              setFormData((prevValues) => ({
-                ...prevValues,
-                to: e
-              }));
-            }}
+            onChange={handleToDateChange}
           />
         </Grid>
         <TabContext value={selectedTab}>

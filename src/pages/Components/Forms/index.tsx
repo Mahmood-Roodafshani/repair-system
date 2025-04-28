@@ -56,14 +56,14 @@ const currencies = [
 function Forms() {
   const [currency, setCurrency] = useState('EUR');
 
-  const handleChange = (event) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCurrency(event.target.value);
   };
 
   const [value, setValue] = useState(30);
 
-  const handleChange2 = (event, newValue) => {
-    setValue(newValue);
+  const handleChange2 = (event: Event, value: number | number[]) => {
+    setValue(value as number);
   };
 
   return (
