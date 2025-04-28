@@ -2,7 +2,8 @@ import { LoadingButton } from '@mui/lab';
 import { Button, Dialog, DialogTitle, Grid, TextField } from '@mui/material';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import { storeNewSystem } from 'src/services';
+import { roleManagementService } from 'src/services/userManagement/roleManagementService';
+import { SystemRolesResponse } from 'src/types/responses/userManagement/roleManagement';
 
 function CreateNewSystemDialog({
   open,
@@ -45,12 +46,10 @@ function CreateNewSystemDialog({
               return;
             }
             setLoading(true);
-            storeNewSystem({ title: systemName })
-              .then((res) => {
-                if (res.statusCode === 200) {
-                  toast.success('سامانه مورد نظر با موفقیت افزوده شد');
-                  onAdd();
-                }
+            roleManagementService.storeNewSystem({ name: systemName })
+              .then((res: SystemRolesResponse) => {
+                toast.success('سامانه مورد نظر با موفقیت افزوده شد');
+                onAdd();
               })
               .finally(() => setLoading(false));
           }}

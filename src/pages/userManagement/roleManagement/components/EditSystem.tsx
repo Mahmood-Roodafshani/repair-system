@@ -17,7 +17,6 @@ function EditSystem({ systemId, systemName, onBack }: EditSystemProps) {
   const [title, setTitle] = useState<string>(systemName);
   const [roles, setRoles] = useState<SystemRolesResponse[]>([]);
   const [loading, setLoading] = useState(false);
-  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
 
   useEffect(() => {
     if (systemId) {
@@ -43,9 +42,9 @@ function EditSystem({ systemId, systemName, onBack }: EditSystemProps) {
     }))
   }));
 
-  const handleSelectedItemsChange = (event: React.SyntheticEvent, itemIds: string | string[]) => {
-    const safeItemIds = Array.isArray(itemIds) ? itemIds : [itemIds].filter(Boolean) as string[];
-    setSelectedRoles(safeItemIds);
+  const handleSelectedItemsChange = (_: React.SyntheticEvent, itemIds: string | string[]) => {
+    // Handle selected items if needed
+    console.log('Selected items:', itemIds);
   };
 
   return (
