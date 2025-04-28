@@ -25,14 +25,9 @@ import CommonService from 'src/services/CommonService';
 import {RichViewType, StaffInfoRequestType, StaffInfoResponseType} from 'src/types';
 import CreateOrEditForm from '../common/CreateOrEditForm';
 import {filterValidationSchema} from '../common/validationSchema';
-import {AxiosResponse} from 'axios';
+import {ApiResponse} from 'src/types/responses/apiResponse';
 
 interface MockResponse<T> {
-    statusCode: number;
-    content: T;
-}
-
-interface ApiResponse<T> {
     statusCode: number;
     content: T;
 }
@@ -41,7 +36,7 @@ function isMockResponse<T>(response: any): response is MockResponse<T> {
     return 'statusCode' in response && 'content' in response;
 }
 
-function isAxiosResponse<T>(response: any): response is AxiosResponse<ApiResponse<T>> {
+function isAxiosResponse<T>(response: any): response is ApiResponse<T> {
     return 'data' in response && 'status' in response;
 }
 

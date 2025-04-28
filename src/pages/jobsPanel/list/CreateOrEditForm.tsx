@@ -1,9 +1,9 @@
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import { Form, Formik, FormikHelpers } from 'formik';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createJob, updateJob } from 'src/services';
-import { JobRequestType, JobResponseType, RichViewType } from 'src/types';
+import { JobRequestType, RichViewType } from 'src/types';
 import validationSchema from './validationSchema';
 import { i18n } from 'src/localization';
 import { SelectFormik, TextFieldFormik } from '@/components/form';
@@ -13,6 +13,16 @@ import { JobLevelOptions, JobStatusOptions } from 'src/constant/options';
 import { CKEditorToolbar, mapAllIdsInNestedArray } from 'src/utils/helper';
 import { toast } from 'react-toastify';
 
+interface CreateOrEditFormProps {
+  initialValues: JobRequestType;
+  positionDegrees: RichViewType[];
+  fields: RichViewType[];
+  courses: RichViewType[];
+  organizationUnits: RichViewType[];
+  onSuccess: () => void;
+  onClose: () => void;
+}
+
 function CreateOrEditForm({
   initialValues,
   positionDegrees,
@@ -21,35 +31,24 @@ function CreateOrEditForm({
   organizationUnits,
   onSuccess,
   onClose
-}: {
-  initialValues: JobRequestType;
-  positionDegrees: RichViewType[];
-  fields: RichViewType[];
-  courses: RichViewType[];
-  organizationUnits: RichViewType[];
-  onSuccess: () => void;
-  onClose: () => void;
-}) {
+}: CreateOrEditFormProps) {
   const [isInEditMode, setIsInEditMode] = useState(false);
-  const [neededCoursesDefaultValues, setNeededCoursesDefaultValues] =
-    useState<string[]>();
-  const [neededFieldsDefaultValues, setNeededFieldsDefaultValues] =
-    useState<string[]>();
-  const [organizationUnitsDefaultValues, setOrganizationUnitsDefaultValues] =
-    useState<string[]>();
+  const [neededCoursesDefaultValues, setNeededCoursesDefaultValues] = useState<string[]>([]);
+  const [neededFieldsDefaultValues, setNeededFieldsDefaultValues] = useState<string[]>([]);
+  const [organizationUnitsDefaultValues, setOrganizationUnitsDefaultValues] = useState<string[]>([]);
 
   useEffect(() => {
     setIsInEditMode('id' in initialValues && initialValues.id !== undefined);
     if ('id' in initialValues && initialValues.id !== undefined) {
       setNeededCoursesDefaultValues(
-        initialValues.neededCourses.map((e) => 'job_course_' + e)
+        initialValues.neededCourses?.map((e) => 'job_course_' + e) || []
       );
       setNeededFieldsDefaultValues(
-        initialValues.neededFields.map((e) => 'job_field_' + e)
+        initialValues.neededFields?.map((e) => 'job_field_' + e) || []
       );
-      setOrganizationUnitsDefaultValues([
-        'organization_unit_' + initialValues.organizationUnit
-      ]);
+      setOrganizationUnitsDefaultValues(
+        initialValues.organizationUnit ? ['organization_unit_' + initialValues.organizationUnit] : []
+      );
     } else {
       setNeededCoursesDefaultValues([]);
       setNeededFieldsDefaultValues([]);
@@ -61,22 +60,32 @@ function CreateOrEditForm({
     values: JobRequestType,
     actions: FormikHelpers<JobRequestType>
   ) => {
-    const res = await (isInEditMode
-      ? updateJob({ jobId: values.id, jobInfo: values })
-      : createJob({ jobInfo: values }));
-    actions.setSubmitting(false);
-    if (res.statusCode === 200) {
-      toast(
-        isInEditMode
-          ? i18n.t('job_updated').toString()
-          : i18n.t('job_created').toString(),
-        {
-          type: 'success'
-        }
-      );
-      onSuccess();
+    try {
+      const res = await (isInEditMode
+        ? updateJob({ id: values.id!, data: { name: values.title || '' } })
+        : createJob({ data: { name: values.title || '' } }));
+      
+      actions.setSubmitting(false);
+      
+      if (res?.statusCode === 200) {
+        toast(
+          isInEditMode
+            ? i18n.t('job_updated').toString()
+            : i18n.t('job_created').toString(),
+          {
+            type: 'success'
+          }
+        );
+        onSuccess();
+      }
+    } catch (error) {
+      actions.setSubmitting(false);
+      toast(i18n.t('error_occurred').toString(), {
+        type: 'error'
+      });
+    } finally {
+      onClose();
     }
-    onClose();
   };
 
   return (
@@ -148,7 +157,7 @@ function CreateOrEditForm({
                     onSelectedItemsChange={(_, itemIds) =>
                       setValues((prevValues) => ({
                         ...prevValues,
-                        organizationUnit: itemIds[0]
+                        organizationUnit: itemIds?.[0]?.replace('organization_unit_', '') || undefined
                       }))
                     }
                     error={errors.organizationUnit}
@@ -167,7 +176,7 @@ function CreateOrEditForm({
                     onSelectedItemsChange={(_, itemIds) =>
                       setValues((prevValues) => ({
                         ...prevValues,
-                        neededFields: itemIds
+                        neededFields: (itemIds as string[])?.map((id: string) => id.replace('job_field_', '')) || []
                       }))
                     }
                     error={errors.neededFields?.toString()}
@@ -186,7 +195,7 @@ function CreateOrEditForm({
                     onSelectedItemsChange={(_, itemIds) =>
                       setValues((prevValues) => ({
                         ...prevValues,
-                        neededCourses: itemIds
+                        neededCourses: (itemIds as string[])?.map((id: string) => id.replace('job_course_', '')) || []
                       }))
                     }
                     error={errors.neededCourses?.toString()}

@@ -1,10 +1,6 @@
 import { ROUTES } from 'src/constants/routes';
 import axiosInstance from '../baseService';
-
-interface ApiResponse<T> {
-  statusCode: number;
-  content?: T;
-}
+import { ApiResponse } from 'src/types/responses/apiResponse';
 
 interface GroupAccess {
   id: string | number;

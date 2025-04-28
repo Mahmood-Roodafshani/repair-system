@@ -40,6 +40,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { AxiosResponse } from 'axios';
 import { Add, Edit, Delete } from '@mui/icons-material';
+import { ApiResponse } from 'src/types/responses/apiResponse';
 
 interface TableRow extends ExtendedStaffInfoResponseType {
   index: number;
@@ -59,11 +60,6 @@ interface ExtendedStaffInfoResponseType extends StaffInfoResponseType {
   birthDate?: string;
   education?: string;
   job?: string;
-}
-
-interface ApiResponse<T> {
-  statusCode: number;
-  content: T;
 }
 
 function FamilyInfo() {

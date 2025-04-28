@@ -1,11 +1,7 @@
 import axiosInstance from '../baseService';
 import { GetBorrowedItemsRequest } from 'src/types';
 import { ROUTES } from 'src/constants/routes';
-
-interface ApiResponse<T> {
-  statusCode: number;
-  content?: T;
-}
+import { ApiResponse } from 'src/types/responses/apiResponse';
 
 const getBorrowedItemsList = async (request: GetBorrowedItemsRequest): Promise<ApiResponse<{
   id: string;
