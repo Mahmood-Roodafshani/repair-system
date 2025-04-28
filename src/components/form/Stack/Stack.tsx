@@ -1,9 +1,10 @@
-import * as React from 'react';
-import {Stack as MStack, StackProps} from "@mui/material";
+import { Stack as MuiStack } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
-const Stack = (props: StackProps) => {
-    const {children, direction = "row", spacing = 2, ...otherProps} = props;
-    return <MStack direction={direction} spacing={spacing} {...otherProps}>{children}</MStack>;
-}
+const Stack = styled(MuiStack)(
+  () => `
+    margin-bottom: 16px;
+`
+);
 
 export default Stack;

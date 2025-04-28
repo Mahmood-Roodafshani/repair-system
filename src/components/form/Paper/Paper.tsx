@@ -1,16 +1,11 @@
-import * as React from 'react';
-import {Paper as MuiPaper, PaperProps} from "@mui/material";
-import {blue} from "@mui/material/colors";
+import { Paper as MuiPaper } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
-export interface CustomPaperProps extends PaperProps {
-    colored?: boolean;
-}
-
-const Paper = (props: CustomPaperProps) => {
-    const {colored, elevation = 5, style, children, ...otherProps} = props;
-    return <MuiPaper style={{backgroundColor: colored ? blue[50] : 'white', margin: 10, padding: 10, ...style}}
-                     elevation={elevation}
-                     {...otherProps}>{children}</MuiPaper>;
-}
+const Paper = styled(MuiPaper)(
+  () => `
+    padding: 32px;
+    border-radius: 16px;
+`
+);
 
 export default Paper;

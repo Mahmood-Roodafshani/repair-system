@@ -1,22 +1,13 @@
-import { SvgIconComponent } from '@mui/icons-material';
 import { useCallback } from 'react';
 import Dropzone from 'react-dropzone';
 
 function DropzoneArea({
-  acceptedFiles,
   dropzoneText,
-  dropzoneClass,
-  clearOnUnmount,
-  Icon,
   filesLimit,
   maxFileSize,
   onChange
 }: {
-  acceptedFiles?: string[];
   dropzoneText: string;
-  dropzoneClass?: string;
-  clearOnUnmount: boolean;
-  Icon: SvgIconComponent;
   filesLimit?: number;
   maxFileSize?: number;
   onChange?: (file: any) => void;

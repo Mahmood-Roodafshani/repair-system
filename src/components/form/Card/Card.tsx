@@ -1,9 +1,11 @@
-import * as React from 'react';
-import {CardContent, CardContentProps} from "@mui/material";
+import { Card as MuiCard } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
-const Card = (props: CardContentProps) => {
-    const {children, ...otherProps} = props;
-    return <CardContent sx={{marginLeft: "auto", marginRight: "auto"}} {...otherProps}>{children}</CardContent>;
-}
+const Card = styled(MuiCard)(
+  () => `
+    position: relative;
+    border-radius: 10px;
+`
+);
 
 export default Card;
