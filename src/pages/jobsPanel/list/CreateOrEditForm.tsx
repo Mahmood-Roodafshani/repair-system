@@ -61,8 +61,11 @@ function CreateOrEditForm({
     actions: FormikHelpers<JobRequestType>
   ) => {
     try {
+      if (isInEditMode && !values.id) {
+        throw new Error('Job ID is required for update');
+      }
       const res = await (isInEditMode
-        ? updateJob({ id: values.id!, data: values })
+        ? updateJob({ id: values.id, data: values })
         : createJob({ data: values }));
       
       actions.setSubmitting(false);
@@ -154,12 +157,13 @@ function CreateOrEditForm({
                       organizationUnits
                     )}
                     defaultValue={organizationUnitsDefaultValues}
-                    onSelectedItemsChange={(_, itemIds) =>
+                    onSelectedItemsChange={(_, itemIds) => {
+                      const selectedId = itemIds?.[0];
                       setValues((prevValues) => ({
                         ...prevValues,
-                        organizationUnit: itemIds?.[0]?.replace('organization_unit_', '') || undefined
-                      }))
-                    }
+                        organizationUnit: selectedId ? selectedId.replace('organization_unit_', '') : undefined
+                      }));
+                    }}
                     error={errors.organizationUnit}
                   />
                 )}
@@ -173,13 +177,14 @@ function CreateOrEditForm({
                     label={i18n.t('job_fields')}
                     items={mapAllIdsInNestedArray('job_field_', fields)}
                     defaultValue={neededFieldsDefaultValues}
-                    onSelectedItemsChange={(_, itemIds) =>
+                    onSelectedItemsChange={(_, itemIds) => {
+                      const selectedIds = itemIds as string[];
                       setValues((prevValues) => ({
                         ...prevValues,
-                        neededFields: (itemIds as string[])?.map((id: string) => id.replace('job_field_', '')) || []
-                      }))
-                    }
-                    error={errors.neededFields?.toString()}
+                        neededFields: selectedIds?.map(id => id.replace('job_field_', '')) || []
+                      }));
+                    }}
+                    error={errors.neededFields}
                   />
                 )}
                 {courses && neededCoursesDefaultValues && (
@@ -192,13 +197,14 @@ function CreateOrEditForm({
                     label={i18n.t('job_courses')}
                     items={mapAllIdsInNestedArray('job_course_', courses)}
                     defaultValue={neededCoursesDefaultValues}
-                    onSelectedItemsChange={(_, itemIds) =>
+                    onSelectedItemsChange={(_, itemIds) => {
+                      const selectedIds = itemIds as string[];
                       setValues((prevValues) => ({
                         ...prevValues,
-                        neededCourses: (itemIds as string[])?.map((id: string) => id.replace('job_course_', '')) || []
-                      }))
-                    }
-                    error={errors.neededCourses?.toString()}
+                        neededCourses: selectedIds?.map(id => id.replace('job_course_', '')) || []
+                      }));
+                    }}
+                    error={errors.neededCourses}
                   />
                 )}
               </Grid>

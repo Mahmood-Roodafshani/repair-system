@@ -62,7 +62,7 @@ function Forms() {
 
   const [value, setValue] = useState(30);
 
-  const handleChange2 = (event: Event, value: number | number[]) => {
+  const handleChange2 = (_: Event, value: number | number[]) => {
     setValue(value as number);
   };
 

@@ -11,8 +11,15 @@ import {
   getItemsListFromCentralAssetPanel
 } from '../../../services/repairPanel/itemsService';
 import { ItemsResponse } from 'src/types';
-import { GetItemsRequest } from 'src/types/requests/repairPanel/items/getItemsRequest';
 import validationSchema from './validationSchema';
+
+type GetItemsRequest = {
+  page?: number;
+  size?: number;
+  sort?: string;
+  search?: string;
+  categoryId?: string;
+};
 
 interface RowType {
   index: number;
@@ -20,6 +27,7 @@ interface RowType {
 }
 
 function ItemsList() {
+  const navigate = useNavigate();
   const [data, setData] = useState<ItemsResponse[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const onSubmit = async (values: GetItemsRequest) => {
@@ -36,7 +44,6 @@ function ItemsList() {
     setIsSubmitting(false);
     if (res.statusCode === 200) setData(res.content);
   };
-  const navigate = useNavigate();
   const columns = useMemo(
     () => [
       {

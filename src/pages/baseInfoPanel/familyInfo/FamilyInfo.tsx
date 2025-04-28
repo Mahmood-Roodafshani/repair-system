@@ -11,7 +11,6 @@ import {
 } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useNavigate } from 'react-router';
 import { Loader, MyCustomTable } from '../../../components';
 import { FamilyRelation } from '../../../constant/enums';
 import { RichViewType } from '../../../types/richViewType';
@@ -20,23 +19,10 @@ import { i18n } from '../../../localization';
 import CommonService from '../../../services/CommonService';
 import { fetchFamilyInfoList, removeFamilyInfo } from '../../../services/baseInfoPanel';
 import CreateOrEditForm from '../common/CreateOrEditForm';
-import { useTranslation } from 'react-i18next';
 import { Add, Delete, Edit } from '@mui/icons-material';
 import { ApiResponse } from 'src/types/responses/apiResponse';
 import { AxiosResponse } from 'axios';
-import { Form, Formik, FormikHelpers } from 'formik';
-import { toast } from 'react-toastify';
-import DateObject from 'react-date-object';
-import {
-  CustomDatePicker,
-  CustomRichTreeView,
-  InlineLoader,
-  OpGrid,
-  TableRowAction
-} from 'src/components';
-import { Degree, Gender, MaritalStatus, Religion, ServiceStatus } from 'src/constant/enums';
 import { StaffInfoRequestType } from 'src/types/requests/baseInfoPanel/staffInfo/staffInfoRequestType';
-import { filterValidationSchema } from '../common/validationSchema';
 
 interface TableRow extends ExtendedStaffInfoResponseType {
   index: number;
@@ -59,32 +45,18 @@ interface ExtendedStaffInfoResponseType extends StaffInfoResponseType {
 }
 
 function FamilyInfo() {
-  const navigate = useNavigate();
-  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [familyInfo, setFamilyInfo] = useState<ExtendedStaffInfoResponseType[]>([]);
   const [selectedFamilyMember, setSelectedFamilyMember] = useState<ExtendedStaffInfoResponseType | null>(null);
   const [selectedMemberIdForDelete, setSelectedMemberIdForDelete] = useState<string | number>();
-  const [showCreateForm, setShowCreateForm] = useState(false);
-  const [showEditForm, setShowEditForm] = useState(false);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [richViewData, setRichViewData] = useState<RichViewType[]>([]);
-  const [tableData, setTableData] = useState<TableRow[]>([]);
   const [cities, setCities] = useState<RichViewType[]>([]);
-  const [positionDegrees, setPositionDegrees] = useState<RichViewType[]>([]);
-  const [educationalFields, setEducationalFields] = useState<RichViewType[]>([]);
-  const [workLocations, setWorkLocations] = useState<RichViewType[]>([]);
-  const [filter, setFilter] = useState<StaffInfoRequestType>({});
-  const [staffInfo, setStaffInfo] = useState<StaffInfoResponseType[]>([]);
-  const [selectedStaffForEdit, setSelectedStaffForEdit] = useState<StaffInfoResponseType | null>(null);
-  const [selectedStaffIdForDelete, setSelectedStaffIdForDelete] = useState<string | number | null>(null);
 
   useEffect(() => {
     fetchData();
   }, []);
 
   useEffect(() => {
-    if ((selectedFamilyMember || showCreateForm) && !cities) {
+    if (selectedFamilyMember && !cities) {
       setLoading(true);
       Promise.all([CommonService.getCities()])
         .then((res) => {
@@ -92,32 +64,7 @@ function FamilyInfo() {
         })
         .finally(() => setLoading(false));
     }
-  }, [selectedFamilyMember, showCreateForm]);
-
-  useEffect(() => {
-    if (selectedFamilyMember?.familyInfo) {
-      const data = selectedFamilyMember.familyInfo.map(
-        (info: FamilyInfoItem): RichViewType => ({
-          id: info.id.toString(),
-          label: info.label || ''
-        })
-      );
-      setRichViewData(data);
-    } else {
-      setRichViewData([]);
-    }
   }, [selectedFamilyMember]);
-
-  useEffect(() => {
-    if (familyInfo) {
-      const mappedData = familyInfo.map((item, index) => ({
-        ...item,
-        index,
-        original: item
-      }));
-      setTableData(mappedData);
-    }
-  }, [familyInfo]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -161,12 +108,10 @@ function FamilyInfo() {
 
   const handleEdit = (row: ExtendedStaffInfoResponseType) => {
     setSelectedFamilyMember(row);
-    setShowEditForm(true);
   };
 
   const handleDelete = (row: ExtendedStaffInfoResponseType) => {
     setSelectedMemberIdForDelete(row.id);
-    setShowDeleteDialog(true);
   };
 
   const dialogOkBtnAction = async () => {
@@ -175,19 +120,11 @@ function FamilyInfo() {
       try {
         await removeFamilyInfo({ memberId: selectedMemberIdForDelete });
         setSelectedMemberIdForDelete(undefined);
-        setShowDeleteDialog(false);
         await fetchData();
       } finally {
         setLoading(false);
       }
     }
-  };
-
-  const handleFamilyRelationChange = (value: string) => {
-    if (value && Object.values(FamilyRelation).includes(value as FamilyRelation)) {
-      return value as FamilyRelation;
-    }
-    return undefined;
   };
 
   const columns = useMemo(() => {
@@ -308,9 +245,9 @@ function FamilyInfo() {
             workLocation: selectedFamilyMember.workLocation,
             positionDegree: selectedFamilyMember.positionDegree
           }}
-          positionDegrees={positionDegrees}
+          positionDegrees={[]}
           cities={cities}
-          educationalFields={educationalFields}
+          educationalFields={[]}
           onSuccess={() => {
             setSelectedFamilyMember(null);
             fetchData();

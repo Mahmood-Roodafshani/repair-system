@@ -25,18 +25,15 @@ import {
 import { mapAllIdsInNestedArray } from 'src/utils/helper';
 import validationSchema from './validationSchema';
 import { OptionType } from 'src/constant/options';
-
-interface ApiResponse<T> {
-  statusCode: number;
-  content: T;
-}
+import { useTranslation } from 'react-i18next';
 
 function Tracking() {
+  const { t } = useTranslation();
   const [organizationUnits, setOrganizationUnits] = useState<RichViewType[]>();
   const [activities, setActivities] = useState<OptionType[]>();
   const [systems, setSystems] = useState<RichViewType[]>();
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState<TrackingResponseType[]>();
+  const [data, setData] = useState<TrackingResponseType[]>([]);
   const [clearFlag, setClearFlag] = useState(false);
 
   const initialValues: TrackingFilterRequestType = {
@@ -49,7 +46,7 @@ function Tracking() {
   };
 
   const onSubmit = async (
-    values: TrackingFilterRequestType,
+    _: TrackingFilterRequestType,
     actions: FormikHelpers<TrackingFilterRequestType>
   ) => {
     setData([]);

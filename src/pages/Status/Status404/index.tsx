@@ -38,6 +38,12 @@ const ButtonSearch = styled(Button)(
 `
 );
 
+const TypographyH1 = styled(Typography)(
+  ({ theme }) => `
+    font-size: ${theme.typography.pxToRem(50)};
+`
+);
+
 function Status404() {
   return (
     <>

@@ -9,11 +9,21 @@ import { i18n } from 'src/localization';
 import { ConfirmationDialog } from '@/components/form';
 import { addGroupAccess, getGroupAccesses, getGroupAccessRoles, removeGroupAccess } from 'src/services/userManagement/groupAccessService';
 
+interface System {
+  id: number;
+  name: string;
+}
+
+interface Group {
+  id: number;
+  name: string;
+}
+
 function CreateGroupAccess() {
-  const [name, setName] = useState<string>();
-  const [systems, setSystems] = useState<any[]>();
-  const [groups, setGroups] = useState<any[]>();
-  const [selectedGroupId, setSelectedGroupId] = useState<string | number>();
+  const [name, setName] = useState<string>('');
+  const [systems, setSystems] = useState<System[]>([]);
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [selectedGroupId, setSelectedGroupId] = useState<number>();
   const [loading, setLoading] = useState(false);
   const [showConfirmationForRemove, setShowConfirmationForRemove] =
     useState(false);
@@ -118,13 +128,15 @@ function CreateGroupAccess() {
           <OpGrid
             onCreateOrEdit={async () => {
               if (name?.length < 2) {
-                toast('', { type: 'error' });
+                toast(i18n.t('group_name_required'), { type: 'error' });
                 return;
               }
               setLoading(true);
               const res = await addGroupAccess({ data: { name: name } });
               setLoading(false);
-              toast('', { type: 'success' });
+              if (res.statusCode === 200) {
+                toast(i18n.t('group_created_successfully'), { type: 'success' });
+              }
             }}
             onClose={() => navigate('/usermanagement')}
           />

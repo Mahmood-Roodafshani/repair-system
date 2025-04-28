@@ -17,7 +17,7 @@ import SystemRoles from './components/SystemRoles';
 function RoleManagement() {
   const [title, setTitle] = useState<string>('');
   const [systems, setSystems] = useState<SystemResponseType[]>([]);
-  const [selectedSystemId, setSelectedSystemId] = useState<number | undefined>();
+  const [selectedSystemId, setSelectedSystemId] = useState<string | number>();
   const [loading, setLoading] = useState(false);
   const [removing, setRemoving] = useState(false);
   const navigate = useNavigate();
@@ -44,7 +44,7 @@ function RoleManagement() {
                 color="primary"
                 onClick={() => {
                   setShowSystemRoles(true);
-                  setSelectedSystemId(Number(row.original.id));
+                  setSelectedSystemId(row.original.id);
                 }}
               >
                 <Add />

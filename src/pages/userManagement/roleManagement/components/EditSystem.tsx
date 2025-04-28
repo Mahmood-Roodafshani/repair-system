@@ -1,105 +1,56 @@
-import { Grid, TextField } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
-import { CustomRichTreeView, Loader, OpGrid } from 'src/components';
-import { i18n } from 'src/localization';
-import { roleManagementService } from 'src/services/userManagement/roleManagementService';
+import { MyCustomTable } from 'src/components';
 import { SystemRolesResponse } from 'src/types/responses/userManagement/roleManagement';
-import { mapAllIdsInNestedArray } from 'src/utils/helper';
-import { RichViewType } from 'src/types';
+import { roleManagementService } from 'src/services/userManagement/roleManagementService';
 
 interface EditSystemProps {
-  systemId: number;
-  systemName: string;
-  onBack: () => void;
-  onSuccess?: () => void;
+    systemId: number;
+    systemName: string;
 }
 
-function EditSystem({ systemId, systemName, onBack, onSuccess }: EditSystemProps) {
-  const [title, setTitle] = useState<string>(systemName);
-  const [roles, setRoles] = useState<SystemRolesResponse[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+function EditSystem({ systemId, systemName }: EditSystemProps) {
+    const { t } = useTranslation();
+    const [roles, setRoles] = useState<SystemRolesResponse[]>([]);
 
-  useEffect(() => {
-    if (systemId) {
-      setLoading(true);
-      roleManagementService.getSystemRoles(systemId)
-        .then((roles) => {
-          setRoles(roles);
-          // Set initially selected roles based on status
-          const initialSelectedRoles = roles
-            .filter(role => role.status)
-            .map(role => `role_${role.id}`);
-          setSelectedRoles(initialSelectedRoles);
-        })
-        .finally(() => setLoading(false));
-    }
-  }, [systemId]);
+    useEffect(() => {
+        const fetchRoles = async () => {
+            try {
+                const response = await roleManagementService.getSystemRoles(systemId);
+                setRoles(response);
+            } catch (error) {
+                console.error('Error fetching system roles:', error);
+            }
+        };
 
-  const mappedRoles: RichViewType[] = roles.map(role => ({
-    id: role.id.toString(),
-    label: role.name,
-    children: role.children?.map(child => ({
-      id: child.id.toString(),
-      label: child.name,
-      children: child.children?.map(grandChild => ({
-        id: grandChild.id.toString(),
-        label: grandChild.name
-      }))
-    }))
-  }));
+        fetchRoles();
+    }, [systemId]);
 
-  const handleSelectedItemsChange = (_: React.SyntheticEvent, itemIds: string | string[]) => {
-    setSelectedRoles(Array.isArray(itemIds) ? itemIds : [itemIds]);
-  };
+    const columns = [
+        {
+            header: t('role_name'),
+            accessorKey: 'name'
+        },
+        {
+            header: t('description'),
+            accessorKey: 'description'
+        }
+    ];
 
-  const handleSave = async () => {
-    setLoading(true);
-    try {
-      // Remove the 'role_' prefix and convert to numbers
-      const roleIds = selectedRoles
-        .map(id => id.replace('role_', ''))
-        .map(Number)
-        .filter(id => !isNaN(id));
-
-      // Since updateSystemRoles doesn't exist, we'll use a mock implementation
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      onSuccess?.();
-      onBack();
-    } catch (error) {
-      console.error('Error updating system roles:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <Grid display={'flex'} flexDirection={'column'} gap={'10px'}>
-      <Grid display={'flex'} flexDirection={'row'} gap={'10px'}>
-        <TextField
-          value={title}
-          label={i18n.t('system_title').toString()}
-          onChange={(event) => setTitle(event.target.value)}
-        />
-        <OpGrid
-          onClear={() => setTitle('')}
-          onCreateOrEdit={handleSave}
-          onClose={onBack}
-        />
-      </Grid>
-      <CustomRichTreeView
-        sx={{
-          width: '500px'
-        }}
-        label=""
-        items={mapAllIdsInNestedArray('role_', mappedRoles)}
-        onSelectedItemsChange={handleSelectedItemsChange}
-        multiSelect={true}
-        defaultValue={selectedRoles}
-      />
-      {loading && <Loader />}
-    </Grid>
-  );
+    return (
+        <Grid container spacing={2}>
+            <Grid item xs={12}>
+                <Typography variant="h4">{systemName}</Typography>
+            </Grid>
+            <Grid item xs={12}>
+                <MyCustomTable
+                    data={roles}
+                    columns={columns}
+                />
+            </Grid>
+        </Grid>
+    );
 }
 
 export default EditSystem;
