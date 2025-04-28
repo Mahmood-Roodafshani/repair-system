@@ -21,6 +21,11 @@ interface TableRow extends AccessControlListResponseType {
     newPasswrod?: string;
 }
 
+interface CommonServiceResponse<T> {
+    statusCode: number;
+    content: T;
+}
+
 function AccessControl() {
     const [roles, setRoles] = useState<RichViewType[]>([]);
     const [jobs, setJobs] = useState<RichViewType[]>([]);
@@ -44,8 +49,11 @@ function AccessControl() {
         setLoading(true);
         Promise.all([CommonService.getRoles(), CommonService.getOrganizationUnits()])
             .then((res) => {
-                if (res[0].statusCode === 200) setRoles(res[0].content || []);
-                if (res[1].statusCode === 200) setOrganizationUnits(res[1].content || []);
+                const rolesResponse = { statusCode: 200, content: res[0] } as CommonServiceResponse<RichViewType[]>;
+                const orgUnitsResponse = { statusCode: 200, content: res[1] } as CommonServiceResponse<RichViewType[]>;
+                
+                if (rolesResponse.statusCode === 200) setRoles(rolesResponse.content || []);
+                if (orgUnitsResponse.statusCode === 200) setOrganizationUnits(orgUnitsResponse.content || []);
             })
             .finally(() => setLoading(false));
     }, []);
@@ -69,7 +77,7 @@ function AccessControl() {
         setList([]);
         const res = await accessControlFetchList({filter: values});
         actions.setSubmitting(false);
-        if (res.statusCode === 200) setList(res.content || []);
+        setList(res || []);
     };
 
     const columns = useMemo(() => {
@@ -248,7 +256,7 @@ function AccessControl() {
 
                 {selectedUserGrants && (
                     <Grants
-                        userId={selectedUserGrants}
+                        userId={String(selectedUserGrants)}
                         onClose={() => setSelectedUserGrants(undefined)}
                     />
                 )}
