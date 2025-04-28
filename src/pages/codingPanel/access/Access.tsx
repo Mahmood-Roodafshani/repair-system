@@ -2,13 +2,12 @@ import {Grid, Typography} from '@mui/material';
 import {Form, Formik, FormikHelpers} from 'formik';
 import {useCallback, useEffect, useMemo, useState} from 'react';
 import {Helmet} from 'react-helmet-async';
-import {useNavigate} from 'react-router';
 import {toast} from 'react-toastify';
-import {InlineLoader, Loader, MyCustomTable, TableRowAction} from 'src/components';
+import {MyCustomTable, TableRowAction} from 'src/components';
 import {i18n} from 'src/localization';
-import {Button, ButtonType, ConfirmationDialog, SelectFormik, TextFieldFormik} from '@/components/form';
-import {createCodingAccess, fetchCodingAccessList, fetchCodingList, removeCodingAccess} from 'src/services';
-import {CodingAccessRequest, CodingAccessResponse, CodingResponse, Pagination} from 'src/types';
+import {Button, ButtonType, ConfirmationDialog, TextFieldFormik} from '@/components/form';
+import {createCodingAccess, fetchCodingAccessList, removeCodingAccess} from 'src/services';
+import {CodingAccessRequest, CodingAccessResponse, Pagination} from 'src/types';
 import validationSchema from './validationSchema';
 import {Box} from '@mui/material';
 import {Add} from '@mui/icons-material';
@@ -61,11 +60,9 @@ function CreateOrEditForm({ initialValues, onSubmit, onClose }: CreateOrEditForm
 
 function Access() {
     const [loading, setLoading] = useState(false);
-    const [codingList, setCodingList] = useState<CodingResponse[]>([]);
     const [codingAccessList, setCodingAccessList] = useState<CodingAccessResponse[]>([]);
     const [selectedAccess, setSelectedAccess] = useState<string | number | undefined>();
     const [selectedAccessForEdit, setSelectedAccessForEdit] = useState<CodingAccessResponse | undefined>();
-    const navigate = useNavigate();
     const [pagination, setPagination] = useState<Pagination>({
         pageIndex: 0,
         pageSize: 10
@@ -78,7 +75,7 @@ function Access() {
             {
                 header: i18n.t('row_number'),
                 enableHiding: false,
-                Cell: ({row}: {row: any}) => {
+                Cell: ({row}: {row: {index: number}}) => {
                     return (
                         <Typography sx={{textAlign: 'right'}} key={'row_' + row.index}>
                             {row.index + 1}
@@ -121,15 +118,11 @@ function Access() {
 
     useEffect(() => {
         setLoading(true);
-        Promise.all([
-            fetchCodingList(),
-            fetchCodingAccessList()
-        ])
+        fetchCodingAccessList()
             .then((res) => {
-                if (res[0].statusCode === 200) setCodingList(res[0].content);
-                if (res[1].statusCode === 200) {
-                    setCodingAccessList(res[1].content.content);
-                    setTotalCount(res[1].content.totalCount);
+                if (res.statusCode === 200) {
+                    setCodingAccessList(res.content.content);
+                    setTotalCount(res.content.totalCount);
                 }
             })
             .finally(() => setLoading(false));
@@ -184,7 +177,7 @@ function Access() {
                 </Grid>
 
                 {loading ? (
-                    <Loader />
+                    <Typography>Loading...</Typography>
                 ) : (
                     <>
                         <MyCustomTable
@@ -197,7 +190,7 @@ function Access() {
                             rowActions={({
                                 row
                             }: {
-                                row: { original: { id: string | number } };
+                                row: { original: CodingAccessResponse };
                             }) => (
                                 <TableRowAction
                                     onDelete={() => setSelectedAccess(row.original.id)}

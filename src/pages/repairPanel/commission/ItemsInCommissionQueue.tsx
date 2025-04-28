@@ -1,5 +1,4 @@
 import { i18n } from '@/localization';
-import { CommisionListResponse } from '@/types/responses/repairPanel';
 import { GetItemListInCommissionQueueRequest } from '@/types/requests/repairPanel/commission/getItemListInCommissionQueueRequest';
 import { Grid, Typography } from '@mui/material';
 import { useMemo, useState } from 'react';
@@ -16,20 +15,15 @@ import type { DateObject } from 'react-multi-date-picker';
 
 interface ColumnDef {
   header: string;
-  accessorKey: keyof CommisionListResponse;
+  accessorKey: keyof GetItemListInCommissionQueueResponse;
   size?: number;
   enableHiding?: boolean;
-  Cell?: ({ row }: { row: unknown }) => JSX.Element;
-}
-
-interface RowType {
-  index: number;
-  original: CommisionListResponse;
+  Cell?: ({ row }: { row: { index: number; original: GetItemListInCommissionQueueResponse } }) => JSX.Element;
 }
 
 interface CellProps {
-  row: CommisionListResponse;
-  field: keyof CommisionListResponse;
+  row: GetItemListInCommissionQueueResponse;
+  field: keyof GetItemListInCommissionQueueResponse;
 }
 
 const Cell = ({ row, field }: CellProps): JSX.Element => {
@@ -59,7 +53,7 @@ const ItemsInCommissionQueue = () => {
     setIsLoading(true);
     try {
       const response = await fetchItemsInCommissionQueue(values);
-      setData(response);
+      setData(response || []);
     } finally {
       setIsLoading(false);
     }
@@ -71,21 +65,21 @@ const ItemsInCommissionQueue = () => {
         header: i18n.t('row_number'),
         accessorKey: 'id',
         enableHiding: false,
-        Cell: ({ row }: { row: unknown }) => <>{(row as RowType).index + 1}</>
+        Cell: ({ row }) => <>{row.index + 1}</>
       },
       ...commonColumns.map((column) => ({
         header: column.header,
-        accessorKey: column.accessorKey as keyof CommisionListResponse,
+        accessorKey: column.accessorKey as keyof GetItemListInCommissionQueueResponse,
         size: column.size,
-        Cell: ({ row }: { row: unknown }) => (
-          <Cell row={(row as RowType).original} field={column.accessorKey as keyof CommisionListResponse} />
+        Cell: ({ row }: { row: { index: number; original: GetItemListInCommissionQueueResponse } }) => (
+          <Cell row={row.original} field={column.accessorKey as keyof GetItemListInCommissionQueueResponse} />
         )
       }))
     ],
     []
   );
 
-  const rowActions = (): null => {
+  const rowActions = (): JSX.Element | null => {
     return null;
   };
 
@@ -116,7 +110,7 @@ const ItemsInCommissionQueue = () => {
                   onChange={(date: DateObject | null) => {
                     setValues((prevValues) => ({
                       ...prevValues,
-                      submitAt: date?.format('YYYY-MM-DD') || ''
+                      submitAt: date?.format('YYYY-MM-DD') || undefined
                     }));
                   }}
                 />
@@ -127,7 +121,7 @@ const ItemsInCommissionQueue = () => {
                   onChange={(date: DateObject | null) => {
                     setValues((prevValues) => ({
                       ...prevValues,
-                      date: date?.format('YYYY-MM-DD') || ''
+                      date: date?.format('YYYY-MM-DD') || undefined
                     }));
                   }}
                 />
