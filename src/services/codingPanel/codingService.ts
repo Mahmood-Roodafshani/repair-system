@@ -8,11 +8,7 @@ import { ROUTES } from "src/constants/routes";
 import axiosInstance from '../baseService';
 import { CodingResponse } from '@/types/responses/codingPanel/codingResponse';
 import { CodingAccessResponse } from '@/types/responses/codingPanel/codingAccessResponse';
-
-interface ApiResponse<T> {
-  statusCode: number;
-  content: T;
-}
+import { ApiResponse } from 'src/types/responses/apiResponse';
 
 interface PageableResponse<T> {
   content: T[];

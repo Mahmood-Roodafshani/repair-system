@@ -9,11 +9,7 @@ import {
 } from '@/types';
 import { ItemsInCommissionQueueListMock } from '@/mock';
 import { GetItemListInCommissionQueueResponse } from '../../types/responses/repairPanel/commission/getItemListInCommissionQueueResponse';
-
-interface ApiResponse<T> {
-  statusCode: number;
-  content?: T;
-}
+import { ApiResponse } from 'src/types/responses/apiResponse';
 
 const fetchCommissionList = async (request: GetCommissionListRequest): Promise<ApiResponse<CommisionListResponse[]>> => {
   try {
@@ -39,7 +35,8 @@ const createNewCommission = async (data: CreateNewCommissionRequest): Promise<Ap
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
-      statusCode: 200
+      statusCode: 200,
+      content: undefined
     };
   }
   const response = await axiosInstance.post(ROUTES.REPAIR.COMMISSION.CREATE, data);

@@ -7,7 +7,7 @@ interface GroupAccess {
   name: string;
 }
 
-export const getGroupAccesses = async ({ name }: { name?: string }): Promise<ApiResponse<GroupAccess[]>> => {
+export const getGroupAccessList = async ({ name }: { name?: string }): Promise<ApiResponse<GroupAccess[]>> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     return {
       statusCode: 200,
@@ -36,21 +36,43 @@ export const getGroupAccessRoles = async ({ groupId }: { groupId: string | numbe
 export const removeGroupAccess = async ({ groupId }: { groupId: string | number }): Promise<ApiResponse<void>> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     return {
-      statusCode: 200
+      statusCode: 200,
+      content: undefined
     };
   }
-  const response = await axiosInstance.delete(ROUTES.USER.GROUP_ACCESS.REMOVE, {
-    params: { groupId }
-  });
-  return response.data;
+  const response = await axiosInstance.post(ROUTES.USER.GROUP_ACCESS.REMOVE, { groupId });
+  return {
+    statusCode: response.status,
+    content: undefined
+  };
 };
 
-export const addGroupAccess = async ({ data }: { data: { name: string } }): Promise<ApiResponse<void>> => {
+export const createGroupAccess = async (data: GroupAccess): Promise<ApiResponse<void>> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     return {
-      statusCode: 200
+      statusCode: 200,
+      content: undefined
     };
   }
   const response = await axiosInstance.post(ROUTES.USER.GROUP_ACCESS.ADD, data);
-  return response.data;
+  return {
+    statusCode: response.status,
+    content: undefined
+  };
+};
+
+export const updateGroupAccess = async (id: string, data: GroupAccess): Promise<ApiResponse<void>> => {
+  const response = await axiosInstance.post(ROUTES.USER.GROUP_ACCESS.ADD, { ...data, id });
+  return {
+    statusCode: response.status,
+    content: undefined
+  };
+};
+
+export const deleteGroupAccess = async (id: string): Promise<ApiResponse<void>> => {
+  const response = await axiosInstance.delete(`${ROUTES.GROUP_ACCESS}/${id}`);
+  return {
+    statusCode: response.status,
+    content: undefined
+  };
 };

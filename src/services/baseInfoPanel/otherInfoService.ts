@@ -1,5 +1,7 @@
 import axiosInstance from '../baseService';
 import { ROUTES } from 'src/constants/routes';
+import { timeout } from 'src/utils/helper';
+import { ApiResponse } from 'src/types/responses/apiResponse';
 
 export interface OtherInfoItem {
   id: string | number;
@@ -8,12 +10,7 @@ export interface OtherInfoItem {
   status: boolean;
 }
 
-export interface OtherInfoResponse {
-  statusCode: number;
-  content: OtherInfoItem[];
-}
-
-export const fetchOtherInfoList = async (): Promise<OtherInfoResponse> => {
+export const fetchOtherInfoList = async (): Promise<ApiResponse<OtherInfoItem[]>> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     return {
       statusCode: 200,
@@ -34,5 +31,8 @@ export const fetchOtherInfoList = async (): Promise<OtherInfoResponse> => {
     };
   }
   const response = await axiosInstance.get(ROUTES.BASE_INFO.OTHER_INFO.FETCH_LIST);
-  return response.data;
+  return {
+    statusCode: response.status,
+    content: response.data
+  };
 }; 

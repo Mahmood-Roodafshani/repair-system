@@ -2,11 +2,7 @@ import axiosInstance from '../baseService';
 import { ROUTES } from 'src/constants/routes';
 import { AccessControlFilterType, AccessControlListResponseType } from 'src/types';
 import { timeout } from 'src/utils/helper';
-
-interface ApiResponse<T> {
-  statusCode: number;
-  content?: T;
-}
+import { ApiResponse } from 'src/types/responses/apiResponse';
 
 export const accessControlFetchList = async ({
   filter
