@@ -1,25 +1,52 @@
 import { Grid, TextField } from '@mui/material';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CustomRichTreeView, Loader, OpGrid } from 'src/components';
 import { i18n } from 'src/localization';
-import { SystemFullRolesMock } from 'src/mock';
-import { RichViewType, SystemRolesResponse } from 'src/types';
+import { roleManagementService } from 'src/services/userManagement/roleManagementService';
+import { SystemRolesResponse } from 'src/types/responses/userManagement/roleManagement';
 import { mapAllIdsInNestedArray } from 'src/utils/helper';
+import { RichViewType } from 'src/types';
 
-function EditSystem({
-  systemId,
-  systemName,
-  onBack
-}: {
-  systemId: string | number;
+interface EditSystemProps {
+  systemId: number;
   systemName: string;
   onBack: () => void;
-}) {
+}
+
+function EditSystem({ systemId, systemName, onBack }: EditSystemProps) {
   const [title, setTitle] = useState<string>(systemName);
-  const [roles, setRoles] =
-    useState<Omit<SystemRolesResponse, 'status'>[]>(SystemFullRolesMock);
+  const [roles, setRoles] = useState<SystemRolesResponse[]>([]);
   const [loading, setLoading] = useState(false);
-  const [selectedRoles, setSelectedRoles] = useState<string[]>();
+  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (systemId) {
+      setLoading(true);
+      roleManagementService.getSystemRoles(systemId)
+        .then((roles) => {
+          setRoles(roles);
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [systemId]);
+
+  const mappedRoles: RichViewType[] = roles.map(role => ({
+    id: role.id.toString(),
+    label: role.name,
+    children: role.children?.map(child => ({
+      id: child.id.toString(),
+      label: child.name,
+      children: child.children?.map(grandChild => ({
+        id: grandChild.id.toString(),
+        label: grandChild.name
+      }))
+    }))
+  }));
+
+  const handleSelectedItemsChange = (event: React.SyntheticEvent, itemIds: string | string[]) => {
+    const safeItemIds = Array.isArray(itemIds) ? itemIds : [itemIds].filter(Boolean) as string[];
+    setSelectedRoles(safeItemIds);
+  };
 
   return (
     <Grid display={'flex'} flexDirection={'column'} gap={'10px'}>
@@ -42,8 +69,9 @@ function EditSystem({
           width: '500px'
         }}
         label=""
-        items={mapAllIdsInNestedArray('role_', roles)}
-        // onSelectedItemsChange={(_, itemIds) => setSelectedRole(itemIds[0])}
+        items={mapAllIdsInNestedArray('role_', mappedRoles)}
+        onSelectedItemsChange={handleSelectedItemsChange}
+        multiSelect={true}
       />
       {loading && <Loader />}
     </Grid>
