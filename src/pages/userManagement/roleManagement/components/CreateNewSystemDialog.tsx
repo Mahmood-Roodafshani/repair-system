@@ -1,6 +1,7 @@
 import { LoadingButton } from '@mui/lab';
 import { Button, Dialog, DialogTitle, Grid, TextField } from '@mui/material';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { roleManagementService } from 'src/services/userManagement/roleManagementService';
 import { SystemRolesResponse } from 'src/types/responses/userManagement/roleManagement';
@@ -16,6 +17,7 @@ function CreateNewSystemDialog({
 }) {
   const [loading, setLoading] = useState(false);
   const [systemName, setSystemName] = useState<string>();
+  const { t } = useTranslation();
 
   return (
     <Dialog sx={{ margin: '0 auto' }} onClose={onClose} open={open}>
@@ -47,9 +49,10 @@ function CreateNewSystemDialog({
             }
             setLoading(true);
             roleManagementService.storeNewSystem({ name: systemName })
-              .then((res: SystemRolesResponse) => {
-                toast.success('سامانه مورد نظر با موفقیت افزوده شد');
+              .then(() => {
+                toast.success(t('system_created_successfully'));
                 onAdd();
+                onClose();
               })
               .finally(() => setLoading(false));
           }}
