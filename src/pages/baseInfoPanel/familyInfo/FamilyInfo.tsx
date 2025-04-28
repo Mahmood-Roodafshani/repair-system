@@ -14,13 +14,8 @@ import { useEffect, useState, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router';
 import {
-  MRT_ColumnDef
-} from 'material-react-table';
-import {
-  InlineLoader,
-  Loader,
   MyCustomTable,
-  OpGrid
+  Loader
 } from '../../../components';
 import {
   FamilyRelation
@@ -28,8 +23,6 @@ import {
 import { RichViewType } from '../../../types/richViewType';
 import { StaffInfoResponseType } from '../../../types/responses/baseInfoPanel/staffInfo/staffInfoResponseType';
 import { i18n } from '../../../localization';
-import { ConfirmationDialog } from '../../../components/form/ConfirmationDialog';
-import { TextFieldFormik } from '../../../components/form/TextFieldFormik';
 import CommonService from '../../../services/CommonService';
 import {
   fetchFamilyInfoList,
@@ -37,10 +30,9 @@ import {
 } from '../../../services/baseInfoPanel';
 import CreateOrEditForm from '../common/CreateOrEditForm';
 import { useTranslation } from 'react-i18next';
-import { toast } from 'react-toastify';
-import { AxiosResponse } from 'axios';
 import { Add, Edit, Delete } from '@mui/icons-material';
 import { ApiResponse } from 'src/types/responses/apiResponse';
+import { AxiosResponse } from 'axios';
 
 interface TableRow extends ExtendedStaffInfoResponseType {
   index: number;
@@ -68,7 +60,6 @@ function FamilyInfo() {
   const [loading, setLoading] = useState(false);
   const [familyInfo, setFamilyInfo] = useState<ExtendedStaffInfoResponseType[]>([]);
   const [selectedFamilyMember, setSelectedFamilyMember] = useState<ExtendedStaffInfoResponseType | null>(null);
-  const [positionDegrees, setPositionDegrees] = useState<RichViewType[]>([]);
   const [selectedMemberIdForDelete, setSelectedMemberIdForDelete] = useState<string | number>();
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
@@ -76,7 +67,7 @@ function FamilyInfo() {
   const [richViewData, setRichViewData] = useState<RichViewType[]>([]);
   const [tableData, setTableData] = useState<TableRow[]>([]);
   const [cities, setCities] = useState<RichViewType[]>([]);
-  const [educationalFields, setEducationalFields] = useState<RichViewType[]>([]);
+  const [positionDegrees, setPositionDegrees] = useState<RichViewType[]>([]);
 
   useEffect(() => {
     fetchData();
@@ -158,13 +149,13 @@ function FamilyInfo() {
     }
   };
 
-  const handleEdit = (row: TableRow) => {
-    setSelectedFamilyMember(row.original);
+  const handleEdit = (row: ExtendedStaffInfoResponseType) => {
+    setSelectedFamilyMember(row);
     setShowEditForm(true);
   };
 
-  const handleDelete = (row: TableRow) => {
-    setSelectedMemberIdForDelete(row.original.id);
+  const handleDelete = (row: ExtendedStaffInfoResponseType) => {
+    setSelectedMemberIdForDelete(row.id);
     setShowDeleteDialog(true);
   };
 
@@ -276,7 +267,7 @@ function FamilyInfo() {
               {
                 icon: <Edit />,
                 tooltip: i18n.t('edit'),
-                onClick: () => handleEdit(row)
+                onClick: () => handleEdit(row.original)
               }
             ]}
           />
@@ -286,15 +277,30 @@ function FamilyInfo() {
       {selectedFamilyMember && (
         <CreateOrEditForm
           initialValues={{
-            name: selectedFamilyMember.name || '',
+            firstname: selectedFamilyMember.name?.split(' ')[0] || '',
+            lastname: selectedFamilyMember.name?.split(' ')[1] || '',
             id: selectedFamilyMember.id,
-            familyRelation: selectedFamilyMember.familyRelation || '',
+            familyRelation: selectedFamilyMember.familyRelation,
             nationalCode: selectedFamilyMember.nationalCode || '',
-            birthDate: selectedFamilyMember.birthDate || '',
-            education: selectedFamilyMember.education || '',
-            job: selectedFamilyMember.job || ''
+            fatherName: selectedFamilyMember.fatherName || '',
+            idNumber: selectedFamilyMember.idNumber || '',
+            staffCode: selectedFamilyMember.staffCode || '',
+            address: selectedFamilyMember.address || '',
+            mobile: selectedFamilyMember.mobile || '',
+            religion: selectedFamilyMember.religion as any,
+            birthLocation: selectedFamilyMember.birthLocation,
+            gender: selectedFamilyMember.gender as any,
+            supervisorNationalCode: selectedFamilyMember.supervisorNationalCode || '',
+            degree: selectedFamilyMember.degree as any,
+            serviceStatus: selectedFamilyMember.serviceStatus as any,
+            martialStatus: selectedFamilyMember.maritalStatus as any,
+            educationalField: selectedFamilyMember.educationalField,
+            workLocation: selectedFamilyMember.workLocation,
+            positionDegree: selectedFamilyMember.positionDegree
           }}
           positionDegrees={positionDegrees}
+          cities={cities}
+          educationalFields={[]}
           onSuccess={() => {
             setSelectedFamilyMember(null);
             fetchData();

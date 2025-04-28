@@ -26,18 +26,11 @@ import {RichViewType, StaffInfoRequestType, StaffInfoResponseType} from 'src/typ
 import CreateOrEditForm from '../common/CreateOrEditForm';
 import {filterValidationSchema} from '../common/validationSchema';
 import {ApiResponse} from 'src/types/responses/apiResponse';
+import {AxiosResponse} from 'axios';
 
-interface MockResponse<T> {
-    statusCode: number;
-    content: T;
-}
-
-function isMockResponse<T>(response: any): response is MockResponse<T> {
-    return 'statusCode' in response && 'content' in response;
-}
-
-function isAxiosResponse<T>(response: any): response is ApiResponse<T> {
-    return 'data' in response && 'status' in response;
+interface TableRow extends StaffInfoResponseType {
+    index: number;
+    original: StaffInfoResponseType;
 }
 
 interface FormValues extends Omit<StaffInfoRequestType, 'hireDate'> {
@@ -49,20 +42,11 @@ interface FormValues extends Omit<StaffInfoRequestType, 'hireDate'> {
     staffCode?: string;
     hireDate?: string | Date | DateObject;
     positionDegree?: string;
-    martialStatus?: string;
-    degree?: string;
-    serviceStatus?: string;
+    martialStatus?: MaritalStatus;
+    degree?: Degree;
+    serviceStatus?: ServiceStatus;
     workLocation?: string;
     educationalField?: string;
-}
-
-interface TableRow {
-    index: number;
-    original: {
-        id: string | number;
-        degree: keyof typeof Degree;
-        familyRelation?: string;
-    };
 }
 
 const MaritalStatusOptions = Object.keys(MaritalStatus).map(key => ({
@@ -79,6 +63,10 @@ const ServiceStatusOptions = Object.keys(ServiceStatus).map(key => ({
     id: ServiceStatus[key as keyof typeof ServiceStatus],
     label: i18n.t(key.toLowerCase())
 }));
+
+type StaffInfoResponse = 
+    | { statusCode: number; content: StaffInfoResponseType[] }
+    | AxiosResponse<StaffInfoResponseType[]>;
 
 function StaffInfo() {
     const [cities, setCities] = useState<RichViewType[]>([]);
@@ -138,22 +126,26 @@ function StaffInfo() {
     }, [selectedStaffForEdit, showCreateForm]);
 
     const onSubmit = async (
-        values: StaffInfoRequestType,
-        actions: FormikHelpers<StaffInfoRequestType>
+        values: FormValues,
+        actions: FormikHelpers<FormValues>
     ) => {
         setFilter(values);
         setStaffInfo([]);
         try {
-            const res = await fetchStaffInfoList({ filter: values });
-            if (import.meta.env.VITE_APP_WORK_WITH_MOCK === 'true') {
-                const mockRes = res as { statusCode: number; content: StaffInfoResponseType[] };
-                if (mockRes.statusCode === 200) {
-                    setStaffInfo(mockRes.content);
+            const res = await fetchStaffInfoList({ filter: values }) as StaffInfoResponse;
+            const isMockMode = import.meta.env.VITE_APP_WORK_WITH_MOCK === 'true';
+            
+            if (isMockMode && 'statusCode' in res) {
+                if (res.statusCode === 200) {
+                    setStaffInfo(res.content);
                 }
-            } else {
-                const apiRes = res as { data: StaffInfoResponseType[] };
-                setStaffInfo(apiRes.data);
+            } else if (!isMockMode && 'status' in res) {
+                if (res.status === 200 && Array.isArray(res.data)) {
+                    setStaffInfo(res.data);
+                }
             }
+        } catch (error) {
+            console.error('Error fetching staff info:', error);
         } finally {
             actions.setSubmitting(false);
         }
@@ -262,7 +254,7 @@ function StaffInfo() {
             </Helmet>
             {!selectedStaffForEdit && !showCreateForm && (
                 <Grid display={'flex'} flexDirection={'column'} gap={'20px'}>
-                    <Formik<StaffInfoRequestType>
+                    <Formik<FormValues>
                         onSubmit={onSubmit}
                         initialValues={{
                             hireDate: ''
