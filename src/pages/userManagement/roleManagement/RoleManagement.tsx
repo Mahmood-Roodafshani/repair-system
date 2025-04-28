@@ -17,7 +17,7 @@ import SystemRoles from './components/SystemRoles';
 function RoleManagement() {
   const [title, setTitle] = useState<string>('');
   const [systems, setSystems] = useState<SystemResponseType[]>([]);
-  const [selectedSystemId, setSelectedSystemId] = useState<string | number | undefined>();
+  const [selectedSystemId, setSelectedSystemId] = useState<number | undefined>();
   const [loading, setLoading] = useState(false);
   const [removing, setRemoving] = useState(false);
   const navigate = useNavigate();
@@ -44,7 +44,7 @@ function RoleManagement() {
                 color="primary"
                 onClick={() => {
                   setShowSystemRoles(true);
-                  setSelectedSystemId(row.original.id);
+                  setSelectedSystemId(Number(row.original.id));
                 }}
               >
                 <Add />
@@ -120,7 +120,7 @@ function RoleManagement() {
     if (!selectedSystemId) return;
     setRemoving(true);
     try {
-      await roleManagementService.removeSystem(Number(selectedSystemId));
+      await roleManagementService.removeSystem(selectedSystemId);
       setSystems(systems.filter(system => system.id !== selectedSystemId));
       toast.success(i18n.t('system_removed_successfully'));
     } catch (error) {
@@ -184,7 +184,7 @@ function RoleManagement() {
                     additionalIconButton={
                       <IconButton
                         onClick={() => {
-                          setSelectedSystemId(row.original.id);
+                          setSelectedSystemId(Number(row.original.id));
                           setShowCreateNewRoleDialog(true);
                         }}
                         color="primary"
@@ -193,11 +193,11 @@ function RoleManagement() {
                       </IconButton>
                     }
                     onEdit={() => {
-                      setSelectedSystemId(row.original.id);
+                      setSelectedSystemId(Number(row.original.id));
                       setShowSystemEditPanel(true);
                     }}
                     onDelete={() => {
-                      setSelectedSystemId(row.original.id);
+                      setSelectedSystemId(Number(row.original.id));
                       setShowConfirmationModelForRemove(true);
                     }}
                   />
@@ -208,11 +208,11 @@ function RoleManagement() {
             )}
 
             <CreateNewRoleDialog
-              systemId={selectedSystemId ?? ''}
+              systemId={selectedSystemId ?? 0}
               systemName={selectedSystem?.title ?? ''}
               open={showCreateNewRoleDialog}
               onClose={() => setShowCreateNewRoleDialog(false)}
-              onAdd={() => {
+              onSuccess={() => {
                 setShowCreateNewRoleDialog(false);
                 fetchData();
               }}
@@ -246,6 +246,7 @@ function RoleManagement() {
         {showSystemEditPanel && selectedSystemId && (
           <EditSystem
             systemId={selectedSystemId}
+            systemName={selectedSystem?.title ?? ''}
             onBack={() => setShowSystemEditPanel(false)}
           />
         )}
