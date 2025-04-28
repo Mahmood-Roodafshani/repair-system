@@ -1,4 +1,5 @@
 import axiosInstance from './baseService';
+import { ROUTES } from 'src/constants/routes';
 
 interface Role {
   id: string;
@@ -15,12 +16,12 @@ interface AccessControl {
 
 class AccessControlService {
   async getAccessControlList(): Promise<AccessControl[]> {
-    const response = await axiosInstance.get('/api/access-control/list');
+    const response = await axiosInstance.get(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST);
     return response.data;
   }
 
   async getRoles(): Promise<Role[]> {
-    const response = await axiosInstance.get('/api/access-control/roles');
+    const response = await axiosInstance.get(ROUTES.USER.ACCESS_CONTROL.ROLES);
     return response.data;
   }
 }

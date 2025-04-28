@@ -1,4 +1,5 @@
 import axiosInstance from '../baseService';
+import { ROUTES } from 'src/constants/routes';
 
 interface GetCompaniesRequest {
   page?: number;
@@ -16,29 +17,29 @@ interface Company {
 }
 
 const fetchCompaniesList = async (request: GetCompaniesRequest) => {
-  const response = await axiosInstance.get('/api/repair-panel/companies', {
+  const response = await axiosInstance.get(ROUTES.REPAIR.COMPANY.LIST, {
     params: request
   });
   return response.data;
 };
 
 const fetchCompanyInfo = async (companyId: string) => {
-  const response = await axiosInstance.get(`/api/repair-panel/companies/${companyId}`);
+  const response = await axiosInstance.get(ROUTES.REPAIR.COMPANY.INFO(companyId));
   return response.data;
 };
 
 const createCompany = async (companyData: Omit<Company, 'id'>) => {
-  const response = await axiosInstance.post('/api/repair-panel/companies', companyData);
+  const response = await axiosInstance.post(ROUTES.REPAIR.COMPANY.CREATE, companyData);
   return response.data;
 };
 
 const updateCompany = async (companyId: string, companyData: Partial<Company>) => {
-  const response = await axiosInstance.put(`/api/repair-panel/companies/${companyId}`, companyData);
+  const response = await axiosInstance.put(ROUTES.REPAIR.COMPANY.UPDATE(companyId), companyData);
   return response.data;
 };
 
 const deleteCompany = async (companyId: string) => {
-  await axiosInstance.delete(`/api/repair-panel/companies/${companyId}`);
+  await axiosInstance.delete(ROUTES.REPAIR.COMPANY.DELETE(companyId));
 };
 
 export {

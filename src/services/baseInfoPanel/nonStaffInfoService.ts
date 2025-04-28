@@ -17,7 +17,7 @@ const fetchNonStaffInfoList = async ({
     };
   }
   //todo: build query params from filter
-  const response = await axiosInstance.get(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST);
+  const response = await axiosInstance.get(ROUTES.BASE_INFO.NON_STAFF.FETCH_LIST);
   return response;
 };
 
@@ -28,7 +28,7 @@ const removeNonStaff = async ({ staffId }: { staffId: string | number }) => {
       statusCode: 200
     };
   }
-  const response = await axiosInstance.delete(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST + staffId);
+  const response = await axiosInstance.delete(ROUTES.BASE_INFO.NON_STAFF.REMOVE(staffId));
   return response;
 };
 
@@ -45,7 +45,7 @@ const updateNonStaff = async ({
       statusCode: 200
     };
   }
-  const response = await axiosInstance.put(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST + staffId, staffInfo);
+  const response = await axiosInstance.put(ROUTES.BASE_INFO.NON_STAFF.UPDATE(staffId), staffInfo);
   return response;
 };
 
@@ -60,7 +60,7 @@ const createNonStaff = async ({
       statusCode: 200
     };
   }
-  const response = await axiosInstance.post(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST, staffInfo);
+  const response = await axiosInstance.post(ROUTES.BASE_INFO.NON_STAFF.CREATE, staffInfo);
   return response;
 };
 

@@ -1,73 +1,66 @@
 import { timeout } from 'src/utils/helper';
-import { JobsFullInfoMock, JobsTreeMock } from 'src/mock/jobsPanel/jobsPanelMock';
 import axiosInstance from '../baseService';
 import { ROUTES } from 'src/constants/routes';
+import { JobsFullInfoMock, JobsTreeMock } from 'src/mock/jobsPanel/jobsPanelMock';
 
 interface FetchJobsListParams {
   organizationUnit?: string | number;
 }
 
-const fetchJobsList = async ({ organizationUnit }: FetchJobsListParams = {}) => {
+export const fetchJobsList = async ({ organizationUnit }: { organizationUnit?: string } = {}) => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
-    await timeout(1000);
     return {
       statusCode: 200,
       content: JobsFullInfoMock
     };
   }
-  // TODO: Implement actual API call
-  return {
-    statusCode: 200,
-    content: []
-  };
+  const response = await axiosInstance.get(ROUTES.JOBS.FETCH_LIST, {
+    params: { organizationUnit }
+  });
+  return response.data;
 };
 
-const fetchJobsTree = async () => {
+export const fetchJobsTree = async () => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
-    await timeout(1000);
     return {
       statusCode: 200,
       content: JobsTreeMock
     };
   }
-  // TODO: Implement actual API call
-  return {
-    statusCode: 200,
-    content: []
-  };
+  const response = await axiosInstance.get(ROUTES.JOBS.FETCH_TREE);
+  return response.data;
 };
 
-const createJob = async (data: any) => {
+export const createJob = async ({ data }: { data: { name: string } }) => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
-    await timeout(1000);
     return {
       statusCode: 200
     };
   }
-  const response = await axiosInstance.post(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST, data);
-  return response;
+  const response = await axiosInstance.post(ROUTES.JOBS.CREATE, data);
+  return response.data;
 };
 
-const updateJob = async (id: string | number, data: any) => {
+export const updateJob = async ({ id, data }: { id: string | number; data: { name: string } }) => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
-    await timeout(1000);
     return {
       statusCode: 200
     };
   }
-  const response = await axiosInstance.put(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST + id, data);
-  return response;
+  const response = await axiosInstance.put(ROUTES.JOBS.UPDATE, data, {
+    params: { id }
+  });
+  return response.data;
 };
 
-const removeJob = async (id: string | number) => {
+export const removeJob = async ({ id }: { id: string | number }) => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
-    await timeout(1000);
     return {
       statusCode: 200
     };
   }
-  const response = await axiosInstance.delete(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST + id);
-  return response;
-};
-
-export { fetchJobsList, fetchJobsTree, createJob, updateJob, removeJob }; 
+  const response = await axiosInstance.delete(ROUTES.JOBS.REMOVE, {
+    params: { id }
+  });
+  return response.data;
+}; 

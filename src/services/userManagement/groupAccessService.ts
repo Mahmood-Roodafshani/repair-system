@@ -3,59 +3,50 @@ import { ROUTES } from 'src/constants/routes';
 import axiosInstance from '../baseService';
 import { GroupAccessesMock, GroupAccessRolesMock } from 'src/mock';
 
-const getGroupAccesses = async ({ name }: { name?: string }) => {
+export const getGroupAccesses = async ({ name }: { name?: string }) => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
-    await timeout(1000);
     return {
       statusCode: 200,
-      content: GroupAccessesMock
+      content: []
     };
   }
-  //todo: build query params from filter
-  const response = await axiosInstance.get(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST);
-  return response;
+  const response = await axiosInstance.get(ROUTES.USER.GROUP_ACCESS.FETCH_LIST, {
+    params: { name }
+  });
+  return response.data;
 };
 
-const getGroupAccessRoles = async () => {
+export const getGroupAccessRoles = async ({ groupId }: { groupId: string | number }) => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
-    await timeout(1000);
     return {
       statusCode: 200,
-      content: GroupAccessRolesMock
+      content: []
     };
   }
-  //todo: build query params from filter
-  const response = await axiosInstance.get(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST);
-  return response;
+  const response = await axiosInstance.get(ROUTES.USER.GROUP_ACCESS.FETCH_ROLES, {
+    params: { groupId }
+  });
+  return response.data;
 };
 
-const removeGroupAccess = async ({ groupId }: { groupId: string | number }) => {
+export const removeGroupAccess = async ({ groupId }: { groupId: string | number }) => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
-    await timeout(1000);
     return {
       statusCode: 200
     };
   }
-  //todo: build query params from filter
-  const response = await axiosInstance.delete(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST);
-  return response;
+  const response = await axiosInstance.delete(ROUTES.USER.GROUP_ACCESS.REMOVE, {
+    params: { groupId }
+  });
+  return response.data;
 };
 
-const addGroupAccess = async ({ data }: { data: any }) => {
+export const addGroupAccess = async ({ data }: { data: { name: string } }) => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
-    await timeout(1000);
     return {
       statusCode: 200
     };
   }
-  //todo: build query params from filter
-  const response = await axiosInstance.post(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST, data);
-  return response;
-};
-
-export {
-  getGroupAccesses,
-  removeGroupAccess,
-  addGroupAccess,
-  getGroupAccessRoles
+  const response = await axiosInstance.post(ROUTES.USER.GROUP_ACCESS.ADD, data);
+  return response.data;
 };

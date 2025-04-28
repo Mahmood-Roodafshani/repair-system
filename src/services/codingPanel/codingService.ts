@@ -16,93 +16,80 @@ const fetchCodingList = async () => {
       content: CodingMock
     };
   }
-  const response = await axiosInstance.get(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST);
-  return response;
+  const response = await axiosInstance.get(ROUTES.CODING.FETCH_LIST);
+  return response.data;
 };
 
-const fetchCodingAccessList = async (request: PageableRequest<unknown>) => {
-  console.log('service call');
-
+const fetchCodingAccessList = async () => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
-    await timeout(1000);
     return {
       statusCode: 200,
-      content:
-        request.pageIndex === 0 ? CodingAccessPage1Mock : CodingAccessPage2Mock
+      content: [...CodingAccessPage1Mock, ...CodingAccessPage2Mock]
     };
   }
-  const response = await axiosInstance.get(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST);
-  return response;
+  const response = await axiosInstance.get(ROUTES.CODING.FETCH_ACCESS_LIST);
+  return response.data;
 };
 
-const removeCoding = async ({ codingId }: { codingId: string | number }) => {
+const removeCoding = async ({ id }: { id: string | number }) => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
       statusCode: 200
     };
   }
-
-  const response = await axiosInstance.delete(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST + codingId);
-  return response;
+  const response = await axiosInstance.delete(ROUTES.CODING.REMOVE, {
+    params: { id }
+  });
+  return response.data;
 };
 
-const createCoding = async (data: CodingRequest) => {
+const createCoding = async ({ data }: { data: { name: string } }) => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
       statusCode: 200
     };
   }
-
-  const response = await axiosInstance.post(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST, data);
-  return response;
+  const response = await axiosInstance.post(ROUTES.CODING.CREATE, data);
+  return response.data;
 };
 
-const createCodingAccess = async (data: CodingAccessRequest) => {
+const createCodingAccess = async ({ data }: { data: { name: string } }) => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
       statusCode: 200
     };
   }
-
-  const response = await axiosInstance.post(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST, data);
-  return response;
+  const response = await axiosInstance.post(ROUTES.CODING.CREATE_ACCESS, data);
+  return response.data;
 };
 
-const updateCoding = async ({
-  id,
-  data
-}: {
-  id: string | number;
-  data: CodingRequest;
-}) => {
+const updateCoding = async ({ id, data }: { id: string | number; data: { name: string } }) => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
       statusCode: 200
     };
   }
-
-  const response = await axiosInstance.put(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST + id, data);
-  return response;
+  const response = await axiosInstance.put(ROUTES.CODING.UPDATE, data, {
+    params: { id }
+  });
+  return response.data;
 };
 
-const removeCodingAccess = async ({
-  accessId
-}: {
-  accessId: string | number;
-}) => {
+const removeCodingAccess = async ({ id }: { id: string | number }) => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
       statusCode: 200
     };
   }
-
-  const response = await axiosInstance.delete(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST + accessId);
-  return response;
+  const response = await axiosInstance.delete(ROUTES.CODING.REMOVE_ACCESS, {
+    params: { id }
+  });
+  return response.data;
 };
 
 export {
