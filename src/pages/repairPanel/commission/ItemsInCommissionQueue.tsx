@@ -7,11 +7,20 @@ import commonColumns from './columns';
 import { Formik } from 'formik';
 import { fetchItemsInCommissionQueue } from '@/services/repairPanel/commissionService';
 import CustomDatePicker from '@/components/customDatePicker/CustomDatePicker';
-import { Button, ButtonType, TextFieldFormik } from '@/components/form';
+import { Button, ButtonType } from '@/components/form';
+import { TextFieldFormik } from '@/components/form/TextFieldFormik';
 import { GetItemListInCommissionQueueResponse } from '@/types/responses/repairPanel/commission/getItemListInCommissionQueueResponse';
 import { Box } from '@mui/material';
 import { MyCustomTable } from '@/components/customTable';
 import type { DateObject } from 'react-multi-date-picker';
+
+interface ColumnDef {
+  header: string;
+  accessorKey: keyof CommisionListResponse;
+  size?: number;
+  enableHiding?: boolean;
+  Cell?: ({ row }: { row: unknown }) => JSX.Element;
+}
 
 interface RowType {
   index: number;
@@ -56,17 +65,20 @@ const ItemsInCommissionQueue = () => {
     }
   };
 
-  const columns = useMemo(
+  const columns = useMemo<ColumnDef[]>(
     () => [
       {
         header: i18n.t('row_number'),
+        accessorKey: 'id',
         enableHiding: false,
-        Cell: ({ row }: { row: RowType }) => row.index + 1
+        Cell: ({ row }: { row: unknown }) => <>{(row as RowType).index + 1}</>
       },
       ...commonColumns.map((column) => ({
-        ...column,
-        Cell: ({ row }: { row: RowType }) => (
-          <Cell row={row.original} field={column.accessorKey as keyof CommisionListResponse} />
+        header: column.header,
+        accessorKey: column.accessorKey as keyof CommisionListResponse,
+        size: column.size,
+        Cell: ({ row }: { row: unknown }) => (
+          <Cell row={(row as RowType).original} field={column.accessorKey as keyof CommisionListResponse} />
         )
       }))
     ],
