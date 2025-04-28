@@ -7,7 +7,7 @@ import { SystemRolesResponse as NewSystemRolesResponse } from 'src/types/respons
 
 export const SystemsMock: SystemResponseType[] = [
   {
-    id: '1',
+    id: 1,
     status: 'فعال',
     title: 'سامانه تعمیرات'
   }
@@ -15,64 +15,64 @@ export const SystemsMock: SystemResponseType[] = [
 
 export const SystemFullRolesMock: SystemRolesResponse[] = [
   {
-    id: '11',
-    label: 'درخواست تعمیر',
+    id: 11,
+    name: 'درخواست تعمیر',
     children: [
       {
-        id: '111',
-        label: 'ثبت'
+        id: 111,
+        name: 'ثبت'
       },
       {
-        id: '112',
-        label: 'ویرایش'
+        id: 112,
+        name: 'ویرایش'
       },
       {
-        id: '113',
-        label: 'حذف'
+        id: 113,
+        name: 'حذف'
       },
       {
-        id: '114',
-        label: 'جستجو'
+        id: 114,
+        name: 'جستجو'
       },
       {
-        id: '115',
-        label: 'مشاهده'
+        id: 115,
+        name: 'مشاهده'
       }
     ]
   },
   {
-    id: '1',
-    label: 'فرم کمیسیون',
+    id: 1,
+    name: 'فرم کمیسیون',
     status: true
   },
   {
-    id: '2',
-    label: 'فرم تعمیر بعثه',
+    id: 2,
+    name: 'فرم تعمیر بعثه',
     status: true
   },
   {
-    id: '3',
-    label: 'کارتابل',
+    id: 3,
+    name: 'کارتابل',
     children: [
       {
-        id: '331',
-        label: 'ثبت'
+        id: 331,
+        name: 'ثبت'
       },
       {
-        id: '332',
-        label: 'ویرایش'
+        id: 332,
+        name: 'ویرایش'
       },
       {
-        id: '333',
-        label: 'حذف'
+        id: 333,
+        name: 'حذف'
       },
       {
-        id: '334',
-        label: 'جستجو'
+        id: 334,
+        name: 'جستجو'
       },
       {
-        id: '335',
-        label: 'مشاهده'
+        id: 335,
+        name: 'مشاهده'
       }
     ],
     status: false
