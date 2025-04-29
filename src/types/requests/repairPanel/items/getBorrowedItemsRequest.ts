@@ -7,4 +7,5 @@ export type GetBorrowedItemsRequest = {
   deliverAt?: string | Date | DateObject;
   receiveAt?: string | Date | DateObject;
   itemCategories?: string[];
+  organizationUnit?: string;
 };
