@@ -18,25 +18,21 @@ const ItemsMock: ItemsResponse[] = [
 const BorrowedItemsMock: BorrowedItemsResponse[] = [
   {
     id: 1,
-    receiver: 'میلاد رستمی',
-    deliverer: 'محمد بابایی',
-    deliverAt: '1401/12/15',
-    assetNumber: '14789654',
-    category: 'فناوری/رایانه/کیس',
-    submitter: 'حسین مهدوی فر',
-    submitAt: '1401/12/16',
-    receiveAt: '-'
+    itemName: 'صندلی',
+    borrowerName: 'میلاد رستمی',
+    borrowDate: '1401/12/15',
+    returnDate: '1401/12/16',
+    organizationUnit: 'واحد فناوری اطلاعات',
+    itemCategory: 'غیرفناوری - اداری'
   },
   {
     id: 2,
-    receiver: 'میلاد رستمی',
-    deliverer: 'محمد بابایی',
-    deliverAt: '1401/12/15',
-    assetNumber: '14789654',
-    category: 'فناوری/رایانه/کیس',
-    submitter: 'حسین مهدوی فر',
-    submitAt: '1401/12/16',
-    receiveAt: '-'
+    itemName: 'میز',
+    borrowerName: 'محمد بابایی',
+    borrowDate: '1401/12/15',
+    returnDate: '1401/12/16',
+    organizationUnit: 'واحد فناوری اطلاعات',
+    itemCategory: 'فناوری - رایانه'
   }
 ];
 

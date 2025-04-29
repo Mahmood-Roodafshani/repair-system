@@ -1,6 +1,5 @@
 import axiosInstance from '../baseService';
 import { ROUTES } from 'src/constants/routes';
-import { timeout } from 'src/utils/helper';
 import { ApiResponse } from 'src/types/responses/apiResponse';
 
 export interface OtherInfoItem {

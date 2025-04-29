@@ -1,7 +1,6 @@
 import { createTheme, responsiveFontSizes } from '@mui/material/styles';
 import type {} from '@mui/x-date-pickers/themeAugmentation';
 import { ExtendedThemeOptions } from '../types';
-import { grey, blue } from '@mui/material/colors';
 import { ThemeOptions } from '@mui/material/styles';
 
 const baseThemeOptions: ExtendedThemeOptions = {

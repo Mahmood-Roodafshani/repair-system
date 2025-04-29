@@ -1,7 +1,6 @@
 import React from 'react';
-import { Theme, createTheme, ThemeOptions } from '@mui/material';
+import { Theme } from '@mui/material';
 import { themeMap, ThemeName } from './themes';
-import { ExtendedThemeOptions } from './types';
 
 /**
  * Theme creator function that returns the requested theme

@@ -9,6 +9,7 @@ const fetchNonStaffInfoList = async ({
 }: {
   filter: StaffInfoRequestType;
 }) => {
+  console.log('filter', filter);
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {

@@ -6,7 +6,7 @@ import {i18n} from 'src/localization';
 import {Button, ButtonType, TextFieldFormik} from '@/components/form';
 import {createCoding, updateCoding} from 'src/services';
 import {CodingResponse, RichViewType} from 'src/types';
-import {findItemById, mapAllIdsInNestedArray} from 'src/utils/helper';
+import {findItemById} from 'src/utils/helper';
 import {NewCodingType} from './newCodingType';
 import validationSchema from './validationSchema';
 

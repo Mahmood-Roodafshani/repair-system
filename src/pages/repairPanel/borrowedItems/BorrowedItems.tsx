@@ -1,274 +1,247 @@
-import { useMemo, useState, useEffect } from 'react';
+import { Grid, Typography } from '@mui/material';
 import { Form, Formik, FormikHelpers } from 'formik';
-import { Grid } from '@mui/material';
+import { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router';
-import { i18n } from 'src/localization';
+import { toast } from 'react-toastify';
 import {
-  CustomDatePicker,
   CustomRichTreeView,
   InlineLoader,
   Loader,
   MyCustomTable,
-  OpGrid
+  OpGrid,
+  TableRowAction
 } from 'src/components';
+import { i18n } from 'src/localization';
+import { ConfirmationDialog } from '@/components/form';
 import {
-  BorrowedItemsResponse,
-  GetBorrowedItemsRequest,
-  RichViewType
-} from 'src/types';
-import { Button, ButtonType, TextFieldFormik } from '@/components/form';
-import { getBorrowedItemsList } from '../../../services/repairPanel/borrowedItemsService';
-import validationSchema from './validationSchema';
-import { mapAllIdsInNestedArray } from 'src/utils/helper';
+  fetchBorrowedItemsList,
+  removeBorrowedItem
+} from 'src/services/repairPanel/borrowedItemsService';
 import CommonService from 'src/services/CommonService';
-import { SyntheticEvent } from 'react';
+import { BorrowedItemsResponse, RichViewType } from 'src/types/responses/repairPanel/borrowedItemsResponse';
 
-interface BorrowedItem {
-  id: string;
-  itemName: string;
-  borrowerName: string;
-  borrowDate: string;
-  returnDate?: string;
-}
+type FormFilter = {
+  organizationUnits?: string[];
+};
 
-interface ApiResponse<T> {
-  statusCode: number;
-  content: T;
+interface TableRow {
+  index: number;
+  original: BorrowedItemsResponse;
 }
 
 function BorrowedItems() {
-  const navigate = useNavigate();
   const [data, setData] = useState<BorrowedItemsResponse[]>([]);
-  const [clearFlag, setClearFlag] = useState(false);
-  const [itemCategories, setItemCategories] = useState<RichViewType[]>([]);
+  const [selectedItemForEdit, setSelectedItemForEdit] = useState<BorrowedItemsResponse>();
+  const [selectedItemIdForDelete, setSelectedItemIdForDelete] = useState<string | number>();
+  const navigate = useNavigate();
+  const [showCreateForm, setShowCreateForm] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [organizationUnits, setOrganizationUnits] = useState<RichViewType[]>([]);
+  const [itemCategories, setItemCategories] = useState<RichViewType[]>([]);
 
-  const initialValues: GetBorrowedItemsRequest = {
-    assetNumber: '',
-    receiver: '',
-    deliverer: '',
-    deliverAt: undefined,
-    receiveAt: undefined,
-    itemCategories: []
-  };
+  const columns = useMemo(
+    () => [
+      {
+        header: i18n.t('row_number'),
+        enableHiding: false,
+        Cell: ({ row }: { row: TableRow }) => {
+          return (
+            <Typography sx={{ textAlign: 'right' }} key={'row_' + row.index}>
+              {row.index + 1}
+            </Typography>
+          );
+        },
+        size: 40
+      },
+      {
+        header: i18n.t('item_name'),
+        accessorKey: 'itemName',
+        size: 150
+      },
+      {
+        header: i18n.t('borrower_name'),
+        accessorKey: 'borrowerName',
+        size: 100
+      },
+      {
+        header: i18n.t('borrow_date'),
+        accessorKey: 'borrowDate',
+        size: 120
+      },
+      {
+        header: i18n.t('return_date'),
+        accessorKey: 'returnDate',
+        size: 120
+      }
+    ],
+    []
+  );
+
+  useEffect(() => {
+    setLoading(true);
+    CommonService.getOrganizationUnits()
+      .then((res) => {
+        setOrganizationUnits(res);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    CommonService.getItemCategoryFields()
+      .then((res) => {
+        setItemCategories(res);
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   const onSubmit = async (
-    values: GetBorrowedItemsRequest,
-    actions: FormikHelpers<GetBorrowedItemsRequest>
+    values: FormFilter,
+    actions: FormikHelpers<FormFilter>
   ) => {
-    setData([]);
     try {
-      const requestParams: GetBorrowedItemsRequest = {
-        assetNumber: values.assetNumber || undefined,
-        deliverer: values.deliverer || undefined,
-        receiver: values.receiver || undefined,
-        deliverAt: values.deliverAt,
-        receiveAt: values.receiveAt,
-        itemCategories: values.itemCategories?.length ? values.itemCategories : undefined
-      };
-      const res = await getBorrowedItemsList(requestParams);
+      const res = await fetchBorrowedItemsList({
+        organizationUnit:
+          values.organizationUnits && values.organizationUnits.length > 0
+            ? values.organizationUnits[0]
+            : undefined
+      });
       actions.setSubmitting(false);
       if (res.statusCode === 200) {
         setData(res.content);
       }
     } catch (error) {
       actions.setSubmitting(false);
-      console.error('Error fetching borrowed items:', error);
+      toast.error(i18n.t('error_occurred').toString());
     }
   };
-
-  useEffect(() => {
-    setLoading(true);
-    CommonService.getItemCategoryFields()
-      .then((response: unknown) => {
-        const res = response as ApiResponse<RichViewType[]>;
-        if (res.statusCode === 200) {
-          setItemCategories(res.content);
-        }
-      })
-      .catch((error) => {
-        console.error('Error fetching item categories:', error);
-      })
-      .finally(() => setLoading(false));
-  }, []);
-
-  const columns = useMemo(
-    () => [
-      {
-        field: 'assetNumber',
-        headerName: i18n.t('asset_number'),
-        width: 150
-      },
-      {
-        field: 'category',
-        headerName: i18n.t('category'),
-        width: 200
-      },
-      {
-        field: 'deliverer',
-        headerName: i18n.t('deliverer'),
-        width: 150
-      },
-      {
-        field: 'receiver',
-        headerName: i18n.t('receiver'),
-        width: 150
-      },
-      {
-        field: 'deliverAt',
-        headerName: i18n.t('deliver_at'),
-        width: 150
-      },
-      {
-        field: 'receiveAt',
-        headerName: i18n.t('receive_at'),
-        width: 150
-      },
-      {
-        field: 'submitter',
-        headerName: i18n.t('submitter'),
-        width: 150
-      },
-      {
-        field: 'submitAt',
-        headerName: i18n.t('submit_at'),
-        width: 150
-      }
-    ],
-    []
-  );
 
   return (
     <>
       <Helmet>
         <title>{i18n.t('borrowed_items').toString()}</title>
       </Helmet>
-      {loading && <Loader />}
-      {!loading && (
-        <Formik
-          onSubmit={onSubmit}
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          validateOnBlur={false}
-          validateOnChange={false}
-          validateOnMount={false}
-        >
-          {({
-            isSubmitting,
-            values,
-            setValues,
-            submitForm,
-            resetForm,
-            errors
-          }) => (
-            <Form>
-              <Grid
-                display={'flex'}
-                flexDirection={'column'}
-                gap={'30px'}
-                mb={'20px'}
-              >
-                <Grid display={'flex'} gap={'30px'} flexWrap={'wrap'}>
-                  <TextFieldFormik
-                    name="assetNumber"
-                    label={i18n.t('asset_number')}
-                    sx={{ width: '330px' }}
-                  />
-                  <TextFieldFormik
-                    name="receiver"
-                    label={i18n.t('receiver')}
-                    sx={{ width: '330px' }}
-                  />
-                  <TextFieldFormik
-                    name="deliverer"
-                    label={i18n.t('deliverer')}
-                    sx={{ width: '330px' }}
-                  />
+      {!selectedItemForEdit && !showCreateForm && (
+        <Grid display={'flex'} flexDirection={'column'} gap={'20px'}>
+          <Formik
+            onSubmit={onSubmit}
+            initialValues={{ organizationUnit: undefined }}
+            validateOnBlur={false}
+            validateOnChange={false}
+            validateOnMount={false}
+          >
+            {({ setValues, isSubmitting, submitForm, resetForm }) => (
+              <Form>
+                <Grid display={'flex'} flexDirection={'column'} gap={'30px'}>
+                  {organizationUnits.length > 0 && (
+                    <CustomRichTreeView
+                      onSelectedItemsChange={(_, itemIds) =>
+                        setValues((prevValues) => ({
+                          ...prevValues,
+                          organizationUnit: itemIds[0]
+                        }))
+                      }
+                      label={i18n.t('organization_unit')}
+                      items={organizationUnits}
+                      sx={{ width: '500px' }}
+                    />
+                  )}
+
+                  {isSubmitting && <InlineLoader />}
+                  {!isSubmitting && (
+                    <OpGrid
+                      onClose={() => navigate('/repair-panel')}
+                      onCreateOrEdit={() => setShowCreateForm(true)}
+                      createOrEditLabel={i18n.t('new_borrowed_item')}
+                      onSearch={submitForm}
+                      onClear={resetForm}
+                    />
+                  )}
                 </Grid>
-                <Grid display={'flex'} gap={'30px'} flexWrap={'wrap'}>
-                  <CustomDatePicker
-                    label={i18n.t('deliver_at')}
-                    value={values.deliverAt}
-                    onChange={(date) => {
-                      setValues((prevValues) => ({
-                        ...prevValues,
-                        deliverAt: date
-                      }));
-                    }}
-                    error={errors.deliverAt}
-                    width="330px"
-                  />
-                  <CustomDatePicker
-                    label={i18n.t('receive_at')}
-                    value={values.receiveAt}
-                    onChange={(date) => {
-                      setValues((prevValues) => ({
-                        ...prevValues,
-                        receiveAt: date
-                      }));
-                    }}
-                    error={errors.receiveAt}
-                    width="330px"
-                  />
-                  <CustomRichTreeView
-                    label={i18n.t('choose_item_category')}
-                    sx={{
-                      width: '330px'
-                    }}
-                    items={mapAllIdsInNestedArray(
-                      'item_category_',
-                      itemCategories
-                    )}
-                    multiSelect={true}
-                    checkboxSelection={true}
-                    onSelectedItemsChange={(
-                      _: SyntheticEvent<Element, Event>,
-                      itemIds: string | string[]
-                    ) => {
-                      const selectedIds = Array.isArray(itemIds)
-                        ? itemIds
-                        : [itemIds];
-                      const selectedCategories = selectedIds.map((id) =>
-                        id.toString().replace('item_category_', '')
-                      );
-                      setValues((prevValues) => ({
-                        ...prevValues,
-                        itemCategories: selectedCategories
-                      }));
-                    }}
-                    clearFlag={clearFlag}
-                  />
-                </Grid>
-                {isSubmitting && <InlineLoader />}
-                {!isSubmitting && (
-                  <OpGrid
-                    onClear={() => {
-                      setClearFlag(true);
-                      setTimeout(() => {
-                        setClearFlag(false);
-                      }, 300);
-                      resetForm();
-                    }}
-                    onClose={() => navigate('/repair-panel')}
-                    onSearch={submitForm}
-                    additionalBtn={
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        buttonType={ButtonType.SEARCH}
-                        showIcon={false}
-                        text={i18n.t('give_back_borrowed_items')}
-                      />
-                    }
-                  />
-                )}
-              </Grid>
-            </Form>
+              </Form>
+            )}
+          </Formik>
+          {data.length > 0 && (
+            <MyCustomTable
+              enableRowActions={true}
+              rowActions={({
+                row
+              }: {
+                row: { original: { id: string | number } };
+              }) => (
+                <TableRowAction
+                  onEdit={() =>
+                    setSelectedItemForEdit(
+                      data.find((e) => e.id === row.original.id)
+                    )
+                  }
+                  onDelete={() => setSelectedItemIdForDelete(row.original.id)}
+                />
+              )}
+              data={data}
+              columns={columns}
+            />
           )}
-        </Formik>
+          <ConfirmationDialog
+            id="remove_modal"
+            open={selectedItemIdForDelete !== undefined}
+            onClose={() => setSelectedItemIdForDelete(undefined)}
+            closeOnEsc={true}
+            dialogTitle={i18n.t('confirm_remove')}
+            dialogOkBtnAction={() => {
+              if (!selectedItemIdForDelete) return;
+              setLoading(true);
+              removeBorrowedItem({ id: selectedItemIdForDelete })
+                .then((res) => {
+                  if (res.statusCode === 200) {
+                    setData(data.filter((e) => e.id !== selectedItemIdForDelete));
+                    toast.success(i18n.t('item_removed').toString());
+                  }
+                })
+                .finally(() => setLoading(false));
+            }}
+          />
+        </Grid>
       )}
-      <MyCustomTable data={data} columns={columns} />
+
+      {(selectedItemForEdit || showCreateForm) && (
+        <CreateOrEditForm
+          initialValues={
+            showCreateForm
+              ? {}
+              : selectedItemForEdit
+              ? {
+                  title: selectedItemForEdit.itemName,
+                  id: selectedItemForEdit.id,
+                  borrowerName: selectedItemForEdit.borrowerName,
+                  borrowDate: selectedItemForEdit.borrowDate,
+                  returnDate: selectedItemForEdit.returnDate,
+                  organizationUnit: selectedItemForEdit.organizationUnit,
+                  itemCategory: selectedItemForEdit.itemCategory
+                }
+              : {}
+          }
+          organizationUnits={organizationUnits}
+          itemCategories={itemCategories}
+          onSuccess={async () => {
+            setLoading(true);
+            const res = await fetchBorrowedItemsList({
+              organizationUnit:
+                values.organizationUnits && values.organizationUnits.length > 0
+                  ? values.organizationUnits[0]
+                  : undefined
+            });
+            setLoading(false);
+            if (res.statusCode === 200) setData(res.content);
+          }}
+          onClose={() => {
+            setSelectedItemForEdit(undefined);
+            setShowCreateForm(false);
+          }}
+        />
+      )}
+      {loading && <Loader />}
     </>
   );
 }

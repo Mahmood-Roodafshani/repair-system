@@ -10,7 +10,7 @@ import {
   Cartable,
   ChooseReplacement,
   Coding,
-  CodingAccess,
+  Access,
   CodingHomePage,
   Commission,
   Companies,
@@ -259,7 +259,7 @@ const routes: RouteObject[] = [
           },
           {
             path: 'access',
-            element: <CodingAccess />
+            element: <Access />
           }
         ]
       },

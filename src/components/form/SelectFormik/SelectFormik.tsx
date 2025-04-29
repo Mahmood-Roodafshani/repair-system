@@ -43,7 +43,7 @@ const SelectWithFormik = (props: SelectProps) => {
     clearFlag = false,
     ...otherProps
   } = props;
-  const { setFieldValue, values } = useFormikContext();
+  const { setFieldValue } = useFormikContext();
   const [field, meta] = useField(name);
 
   const handleChange = (event: any) => {

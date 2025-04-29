@@ -1,12 +1,7 @@
-import { timeout } from 'src/utils/helper';
 import axiosInstance from '../baseService';
 import { ROUTES } from 'src/constants/routes';
 import { JobsFullInfoMock, JobsTreeMock } from 'src/mock/jobsPanel/jobsPanelMock';
 import { JobRequestType } from 'src/types/requests/jobsPanel/jobRequestType';
-
-interface FetchJobsListParams {
-  organizationUnit?: string | number;
-}
 
 export const fetchJobsList = async ({ organizationUnit }: { organizationUnit?: string } = {}) => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {

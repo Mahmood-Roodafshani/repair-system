@@ -25,7 +25,6 @@ import CommonService from 'src/services/CommonService';
 import {RichViewType, StaffInfoRequestType, StaffInfoResponseType} from 'src/types';
 import CreateOrEditForm from '../common/CreateOrEditForm';
 import {filterValidationSchema} from '../common/validationSchema';
-import {AxiosResponse} from 'axios';
 
 interface TableRow extends StaffInfoResponseType {
     index: number;
@@ -62,10 +61,6 @@ const ServiceStatusOptions = Object.keys(ServiceStatus).map(key => ({
     id: ServiceStatus[key as keyof typeof ServiceStatus],
     label: i18n.t(key.toLowerCase())
 }));
-
-type StaffInfoResponse = 
-    | { statusCode: number; content: StaffInfoResponseType[] }
-    | AxiosResponse<StaffInfoResponseType[]>;
 
 function StaffInfo() {
     const [cities, setCities] = useState<RichViewType[]>([]);

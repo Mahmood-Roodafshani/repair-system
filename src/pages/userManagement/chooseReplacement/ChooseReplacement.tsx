@@ -2,12 +2,9 @@ import { Grid, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { MyCustomTable } from 'src/components';
-import { grantsMock } from 'src/mock';
-import { i18n } from 'src/localization';
 
 function ChooseReplacement() {
     const { t } = useTranslation();
-    const [selectedTab, setSelectedTab] = useState(0);
     const [selectedGrants, setSelectedGrants] = useState<any[]>([]);
 
     const columns = [

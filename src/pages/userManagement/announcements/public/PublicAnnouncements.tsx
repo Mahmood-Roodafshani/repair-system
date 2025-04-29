@@ -3,43 +3,36 @@ import { Helmet } from 'react-helmet-async';
 import { i18n } from 'src/localization';
 import AnnouncementForm from '../AnnouncementForm';
 import { useState } from 'react';
-import { AnnouncementRequestType } from 'src/types';
+import { AnnouncementRequestType } from 'src/types/requests/userManagement/announcements/announcementRequestType';
 import { Loader, OpGrid } from 'src/components';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { sendPublicAnnouncement } from 'src/services/userManagement/announcementService';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 import { validationSchema } from '../validationSchema';
-import { AxiosResponse } from 'axios';
-
-type MockResponse = {
-  statusCode: number;
-};
-
-function isMockResponse(response: any): response is MockResponse {
-  return 'statusCode' in response;
-}
-
-function isAxiosResponse(response: any): response is AxiosResponse {
-  return 'status' in response;
-}
 
 function PublicAnnouncements() {
-  const [showForm, setShowForm] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const onSubmit = async (
     values: AnnouncementRequestType,
     actions: FormikHelpers<AnnouncementRequestType>
   ) => {
-    const response = await sendPublicAnnouncement({ request: values });
-    actions.setSubmitting(false);
-    if ((isMockResponse(response) && response.statusCode === 200) || 
-        (isAxiosResponse(response) && response.status === 200)) {
-      toast(i18n.t('op_done_successfully').toString(), { type: 'success' });
+    setLoading(true);
+    try {
+      const response = await sendPublicAnnouncement({ announcement: values });
+      if ('statusCode' in response && response.statusCode === 200) {
+        toast.success(i18n.t('op_done_successfully').toString());
+        navigate('/user-management/announcements');
+      }
+    } catch (error) {
+      toast.error(i18n.t('op_failed').toString());
+    } finally {
+      setLoading(false);
+      actions.setSubmitting(false);
     }
   };
-
-  const navigate = useNavigate();
 
   return (
     <>
@@ -48,54 +41,42 @@ function PublicAnnouncements() {
       </Helmet>
 
       <Formik
-        onSubmit={onSubmit}
-        initialValues={{}}
+        initialValues={{
+          title: '',
+          message: '',
+          from: '',
+          to: ''
+        }}
         validationSchema={validationSchema}
-        validateOnBlur={false}
-        validateOnChange={false}
-        validateOnMount={false}
+        onSubmit={onSubmit}
       >
-        {({
-          values,
-          setValues,
-          isSubmitting,
-          submitForm,
-          resetForm,
-          errors
-        }) => (
+        {({ errors, submitForm }) => (
           <Form>
-            <Grid
-              mr={'50px'}
-              ml={'50px'}
-              display={'flex'}
-              flexDirection={'column'}
-              gap={'10px'}
-            >
-              {showForm && (
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
                 <AnnouncementForm
-                  announcementRequest={values}
-                  setAnnouncementRequest={setValues}
+                  announcementRequest={{
+                    title: '',
+                    message: '',
+                    from: '',
+                    to: ''
+                  }}
+                  setAnnouncementRequest={() => {}}
                   errors={errors}
                 />
-              )}
-              {isSubmitting && <Loader />}
-              {!isSubmitting && (
+              </Grid>
+              <Grid item xs={12}>
                 <OpGrid
-                  onClear={() => {
-                    setShowForm(false);
-                    resetForm(undefined);
-                    setTimeout(() => {
-                      setShowForm(true);
-                    }, 200);
-                  }}
                   onCreateOrEdit={submitForm}
-                  onClose={() => navigate('usermanagement')}
+                  createOrEditLabel={i18n.t('send')}
+                  onClose={() => navigate('/user-management/announcements')}
                 />
-              )}
+              </Grid>
             </Grid>
           </Form>
         )}
       </Formik>
+      {loading && <Loader />}
     </>
   );
 }

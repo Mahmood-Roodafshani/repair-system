@@ -2,7 +2,6 @@ import { Grid, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { MyCustomTable } from 'src/components';
-import { i18n } from 'src/localization';
 import { SampleSignitureRequestType } from 'src/types/requests/userManagement/signiture/sampleSignitureRequestType';
 
 function Signiture() {

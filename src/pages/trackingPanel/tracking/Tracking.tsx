@@ -28,7 +28,6 @@ import { OptionType } from 'src/constant/options';
 import { useTranslation } from 'react-i18next';
 
 function Tracking() {
-  const { t } = useTranslation();
   const [organizationUnits, setOrganizationUnits] = useState<RichViewType[]>();
   const [activities, setActivities] = useState<OptionType[]>();
   const [systems, setSystems] = useState<RichViewType[]>();

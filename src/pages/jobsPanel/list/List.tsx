@@ -27,28 +27,30 @@ type FormFilter = {
   organizationUnits?: string[];
 };
 
+interface TableRow {
+  index: number;
+  original: JobResponseType;
+}
+
 function List() {
-  const [jobs, setJobs] = useState<JobResponseType[]>();
-  const [selectedJobForEdit, setSelectedJobForEdit] =
-    useState<JobResponseType>();
-  const [selectedJobIdForDelete, setSelectedJobIdForDelete] = useState<
-    string | number
-  >();
+  const [jobs, setJobs] = useState<JobResponseType[]>([]);
+  const [selectedJobForEdit, setSelectedJobForEdit] = useState<JobResponseType>();
+  const [selectedJobIdForDelete, setSelectedJobIdForDelete] = useState<string | number>();
   const navigate = useNavigate();
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [organizationUnits, setOrganizationUnits] = useState<RichViewType[]>();
-  const [fields, setFields] = useState();
-  const [courses, setCourses] = useState();
-  const [positionDegrees, setPositionDegrees] = useState();
-  const [selectedOrganizationUnits, setSelectedOrganizationUnits] =
-    useState<string[]>();
+  const [organizationUnits, setOrganizationUnits] = useState<RichViewType[]>([]);
+  const [fields, setFields] = useState<RichViewType[]>([]);
+  const [courses, setCourses] = useState<RichViewType[]>([]);
+  const [positionDegrees, setPositionDegrees] = useState<RichViewType[]>([]);
+  const [selectedOrganizationUnits, setSelectedOrganizationUnits] = useState<string[]>([]);
+
   const columns = useMemo(
     () => [
       {
         header: i18n.t('row_number'),
         enableHiding: false,
-        Cell: ({ row }) => {
+        Cell: ({ row }: { row: TableRow }) => {
           return (
             <Typography sx={{ textAlign: 'right' }} key={'row_' + row.index}>
               {row.index + 1}
@@ -69,7 +71,7 @@ function List() {
       },
       {
         header: i18n.t('job_level'),
-        accessorFn: (row) =>
+        accessorFn: (row: JobResponseType) =>
           row.jobLevel
             ? i18n.t('job_level_' + row.jobLevel.toString().toLowerCase())
             : '',
@@ -77,7 +79,7 @@ function List() {
       },
       {
         header: i18n.t('status'),
-        accessorFn: (row) =>
+        accessorFn: (row: JobResponseType) =>
           row.jobStatus ? i18n.t(row.jobStatus.toString().toLowerCase()) : '',
         size: 120
       }
@@ -86,13 +88,13 @@ function List() {
   );
 
   useEffect(() => {
-    if ((selectedJobForEdit || showCreateForm) && !fields) {
+    if ((selectedJobForEdit || showCreateForm) && fields.length === 0) {
       setLoading(true);
       Promise.all([CommonService.getFields(), CommonService.getCourses(), CommonService.getPositionDegrees()])
-        .then((res) => {
-          if (res[0].statusCode === 200) setFields(res[0].content);
-          if (res[1].statusCode === 200) setCourses(res[1].content);
-          if (res[2].statusCode === 200) setPositionDegrees(res[2].content);
+        .then(([fieldsRes, coursesRes, positionDegreesRes]) => {
+          setFields(fieldsRes);
+          setCourses(coursesRes);
+          setPositionDegrees(positionDegreesRes);
         })
         .finally(() => setLoading(false));
     }
@@ -100,9 +102,9 @@ function List() {
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([CommonService.getOrganizationUnits()])
+    CommonService.getOrganizationUnits()
       .then((res) => {
-        if (res[0].statusCode === 200) setOrganizationUnits(res[0].content);
+        setOrganizationUnits(res);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -112,11 +114,10 @@ function List() {
     actions: FormikHelpers<FormFilter>
   ) => {
     setJobs([]);
-    setSelectedOrganizationUnits(values.organizationUnits);
-    // todo: pass correct filter
+    setSelectedOrganizationUnits(values.organizationUnits || []);
     const res = await fetchJobsList({
       organizationUnit:
-        values.organizationUnits?.length > 0
+        values.organizationUnits && values.organizationUnits.length > 0
           ? values.organizationUnits[0]
           : undefined
     });
@@ -141,7 +142,7 @@ function List() {
             {({ setValues, isSubmitting, submitForm, resetForm }) => (
               <Form>
                 <Grid display={'flex'} flexDirection={'column'} gap={'30px'}>
-                  {organizationUnits && (
+                  {organizationUnits.length > 0 && (
                     <CustomRichTreeView
                       onSelectedItemsChange={(_, itemIds) =>
                         setValues((prevValues) => ({
@@ -169,7 +170,7 @@ function List() {
               </Form>
             )}
           </Formik>
-          {jobs && (
+          {jobs.length > 0 && (
             <MyCustomTable
               enableRowActions={true}
               rowActions={({
@@ -197,8 +198,9 @@ function List() {
             closeOnEsc={true}
             dialogTitle={i18n.t('confirm_remove')}
             dialogOkBtnAction={() => {
+              if (!selectedJobIdForDelete) return;
               setLoading(true);
-              removeJob({ jobId: selectedJobIdForDelete })
+              removeJob({ id: selectedJobIdForDelete })
                 .then((res) => {
                   if (res.statusCode === 200) {
                     setJobs(
@@ -214,18 +216,19 @@ function List() {
       )}
 
       {(selectedJobForEdit || showCreateForm) &&
-        fields &&
-        courses &&
-        positionDegrees && (
+        fields.length > 0 &&
+        courses.length > 0 &&
+        positionDegrees.length > 0 && (
           <CreateOrEditForm
             initialValues={
               showCreateForm
                 ? {}
-                : {
+                : selectedJobForEdit
+                ? {
                     title: selectedJobForEdit.title,
                     id: selectedJobForEdit.id,
-                    jobStatus: JobStatus[selectedJobForEdit.jobStatus],
-                    jobLevel: JobLevel[selectedJobForEdit.jobLevel],
+                    jobStatus: selectedJobForEdit.jobStatus as JobStatus,
+                    jobLevel: selectedJobForEdit.jobLevel as JobLevel,
                     jobDescription: selectedJobForEdit.jobDescription,
                     responsibilityDescription:
                       selectedJobForEdit.responsibilityDescription,
@@ -235,25 +238,26 @@ function List() {
                     neededFields: selectedJobForEdit.neededFields,
                     organizationUnit: selectedJobForEdit.organizationUnit
                   }
+                : {}
             }
             organizationUnits={organizationUnits}
+            positionDegrees={positionDegrees}
+            fields={fields}
+            courses={courses}
             onSuccess={async () => {
               setLoading(true);
               const res = await fetchJobsList({
                 organizationUnit:
-                  selectedOrganizationUnits?.length > 0
+                  selectedOrganizationUnits.length > 0
                     ? selectedOrganizationUnits[0]
                     : undefined
               });
               setLoading(false);
               if (res.statusCode === 200) setJobs(res.content);
             }}
-            positionDegrees={positionDegrees}
-            fields={fields}
-            courses={courses}
             onClose={() => {
-              setShowCreateForm(false);
               setSelectedJobForEdit(undefined);
+              setShowCreateForm(false);
             }}
           />
         )}

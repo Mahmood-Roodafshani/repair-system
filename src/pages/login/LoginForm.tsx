@@ -108,6 +108,27 @@ const validationSchema = Yup.object().shape({
     .max(50, 'رمز عبور نمی‌تواند بیشتر از 50 کاراکتر باشد')
 });
 
+const StyledForm = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`;
+
+const StyledButton = styled(Button)`
+  padding: 10px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+`;
+
+const StyledInput = styled(TextField)`
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+`;
+
 function LoginForm() {
   const { keycloak, initialized } = useKeycloak();
   const navigate = useNavigate();

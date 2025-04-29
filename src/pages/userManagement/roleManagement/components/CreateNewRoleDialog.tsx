@@ -18,12 +18,17 @@ interface CreateNewRoleDialogProps {
   onSuccess: () => void;
 }
 
+interface RoleFormData {
+  name: string;
+  systemId: number;
+}
+
 function CreateNewRoleDialog({ systemId, systemName, open, onClose, onSuccess }: CreateNewRoleDialogProps) {
   const [loading, setLoading] = useState(false);
   const [fetchingRoles, setFetchingRoles] = useState(false);
   const [roles, setRoles] = useState<SystemRolesResponse[]>([]);
-  const [roleName, setRoleName] = useState('');
-  const [selectedRole, setSelectedRole] = useState<number>();
+  const [roleName, setRoleName] = useState<string>('');
+  const [selectedRole, setSelectedRole] = useState<number | null>(null);
 
   useEffect(() => {
     if (systemId) {
@@ -32,29 +37,37 @@ function CreateNewRoleDialog({ systemId, systemName, open, onClose, onSuccess }:
         .then((roles) => {
           setRoles(roles);
         })
+        .catch((error) => {
+          console.error('Error fetching roles:', error);
+          toast.error(i18n.t('error_fetching_roles').toString());
+        })
         .finally(() => setFetchingRoles(false));
     }
   }, [systemId]);
 
   const handleCreate = async () => {
-    if (!roleName || roleName?.length < 2) {
+    if (!roleName || roleName.length < 2) {
       toast.error(i18n.t('role_title_is_req').toString());
       return;
     }
-    if (selectedRole === undefined) {
+    if (selectedRole === null) {
       toast.error(i18n.t('role_is_req').toString());
       return;
     }
+
+    const formData: RoleFormData = {
+      name: roleName,
+      systemId: systemId
+    };
+
     setLoading(true);
     try {
-      await roleManagementService.storeNewRole({
-        name: roleName,
-        systemId: systemId
-      });
+      await roleManagementService.storeNewRole(formData);
       toast.success(i18n.t('role_created').toString());
       onSuccess();
       onClose();
     } catch (error) {
+      console.error('Error creating role:', error);
       toast.error(i18n.t('error_creating_role').toString());
     } finally {
       setLoading(false);
@@ -67,7 +80,7 @@ function CreateNewRoleDialog({ systemId, systemName, open, onClose, onSuccess }:
     children: role.children?.map(child => ({
       id: child.id.toString(),
       label: child.name
-    }))
+    })) ?? []
   }));
 
   return (
@@ -84,13 +97,15 @@ function CreateNewRoleDialog({ systemId, systemName, open, onClose, onSuccess }:
           label={i18n.t('role_name')}
           value={roleName}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRoleName(e.target.value)}
+          error={!roleName || roleName.length < 2}
+          helperText={!roleName || roleName.length < 2 ? i18n.t('role_title_is_req').toString() : ''}
         />
         {!fetchingRoles && systemId && (
           <CustomRichTreeView
             sx={{
               mt: '10px'
             }}
-            onSelectedItemsChange={(_, itemIds) => setSelectedRole(Number(itemIds[0]))}
+            onSelectedItemsChange={(_, itemIds) => setSelectedRole(itemIds[0] ? Number(itemIds[0]) : null)}
             items={mapAllIdsInNestedArray('system_', mappedRoles)}
           />
         )}
@@ -103,6 +118,7 @@ function CreateNewRoleDialog({ systemId, systemName, open, onClose, onSuccess }:
             variant="contained"
             color="success"
             onClick={handleCreate}
+            disabled={!roleName || roleName.length < 2 || selectedRole === null}
           >
             {i18n.t('save').toString()}
           </LoadingButton>

@@ -1,4 +1,3 @@
-import { DateObject } from 'react-multi-date-picker';
 
 export interface GetItemListInCommissionQueueRequest {
   assetNumber?: string;

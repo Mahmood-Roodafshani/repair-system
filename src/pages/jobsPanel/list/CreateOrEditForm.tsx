@@ -65,7 +65,7 @@ function CreateOrEditForm({
         throw new Error('Job ID is required for update');
       }
       const res = await (isInEditMode
-        ? updateJob({ id: values.id, data: values })
+        ? updateJob({ id: values.id || '', data: values })
         : createJob({ data: values }));
       
       actions.setSubmitting(false);

@@ -1,1 +1,1 @@
-export { default as CodingAccess } from './Access';
+export { default as Access } from './Access';

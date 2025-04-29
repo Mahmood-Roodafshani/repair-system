@@ -9,14 +9,6 @@ interface GetItemsRequest {
   categoryId?: string;
 }
 
-interface Item {
-  id: string;
-  name: string;
-  categoryId: string;
-  serialNumber: string;
-  status: string;
-}
-
 const getItemsList = async (request: GetItemsRequest) => {
   const response = await axiosInstance.get(ROUTES.REPAIR.ITEMS.LIST, {
     params: request

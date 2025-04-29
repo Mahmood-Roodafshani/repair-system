@@ -16,4 +16,9 @@ const getBorrowedItemsList = async (request: GetBorrowedItemsRequest): Promise<A
   return response.data;
 };
 
-export { getBorrowedItemsList };
+const removeBorrowedItem = async ({ id }: { id: string | number }): Promise<ApiResponse<void>> => {
+  const response = await axiosInstance.delete(`${ROUTES.REPAIR.BORROWED_ITEMS.LIST}/${id}`);
+  return response.data;
+};
+
+export { getBorrowedItemsList, removeBorrowedItem };

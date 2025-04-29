@@ -13,7 +13,6 @@ import {
 import { i18n } from '@/localization';
 import { createNewCommission, updateCommission } from '@/services';
 import { CommissionFormDto } from '@/types/responses/repairPanel/commission/commissionDto';
-import { CommissionMember } from '@/types/requests/repairPanel/commission/commissionMember';
 import { CreateNewCommissionRequest } from '@/types/requests/repairPanel/commission/createNewCommissionRequest';
 import createNewCommissionRequestInitialValues from '@/types/requests/repairPanel/commission/createNewCommissionRequest';
 import { Grid, TextField } from '@mui/material';

@@ -10,7 +10,7 @@ import {createCodingAccess, fetchCodingAccessList, removeCodingAccess} from 'src
 import {CodingAccessRequest, CodingAccessResponse, Pagination} from 'src/types';
 import validationSchema from './validationSchema';
 import {Box} from '@mui/material';
-import {Add} from '@mui/icons-material';
+import {CircularProgress} from '@mui/material';
 
 interface CreateOrEditFormProps {
     initialValues: CodingAccessRequest;
@@ -61,14 +61,13 @@ function CreateOrEditForm({ initialValues, onSubmit, onClose }: CreateOrEditForm
 function Access() {
     const [loading, setLoading] = useState(false);
     const [codingAccessList, setCodingAccessList] = useState<CodingAccessResponse[]>([]);
-    const [selectedAccess, setSelectedAccess] = useState<string | number | undefined>();
-    const [selectedAccessForEdit, setSelectedAccessForEdit] = useState<CodingAccessResponse | undefined>();
-    const [pagination, setPagination] = useState<Pagination>({
+    const [pagination] = useState<Pagination>({
         pageIndex: 0,
         pageSize: 10
     });
     const [totalCount, setTotalCount] = useState<number>(0);
-    const [refetchingData, setRefetchingData] = useState(false);
+    const [showCreateOrEditForm, setShowCreateOrEditForm] = useState(false);
+    const [selectedCodingAccessForDelete, setSelectedCodingAccessForDelete] = useState<string | number | undefined>();
 
     const columns = useMemo(
         () => [
@@ -92,7 +91,7 @@ function Access() {
             {
                 header: i18n.t('coding_name'),
                 accessorKey: 'codingName',
-                size: 100
+                size: 150
             }
         ],
         []
@@ -105,15 +104,13 @@ function Access() {
     const refetchData = useCallback(() => {
         if (totalCount === 0) return;
         setCodingAccessList([]);
-        setRefetchingData(true);
         fetchCodingAccessList()
             .then((res) => {
                 if (res.statusCode === 200) {
                     setCodingAccessList(res.content.content);
                     setTotalCount(res.content.totalCount);
                 }
-            })
-            .finally(() => setRefetchingData(false));
+            });
     }, [pagination, totalCount]);
 
     useEffect(() => {
@@ -132,25 +129,27 @@ function Access() {
         values: CodingAccessRequest,
         actions: FormikHelpers<CodingAccessRequest>
     ) => {
-        const res = await createCodingAccess({
-            data: values
-        });
+        const res = await createCodingAccess({ data: values });
         actions.setSubmitting(false);
-        if (res.statusCode === 200) {
-            toast(i18n.t('new_access_created').toString(), {type: 'success'});
-            actions.resetForm();
+        if ('statusCode' in res && res.statusCode === 200) {
+            toast.success(i18n.t('coding_access_created').toString());
+            setShowCreateOrEditForm(false);
             refetchData();
         }
     };
 
     const handleDelete = async () => {
-        if (!selectedAccess) return;
+        if (!selectedCodingAccessForDelete) return;
+        setLoading(true);
         try {
-            await removeCodingAccess({id: selectedAccess});
-            setCodingAccessList(codingAccessList.filter((e) => e.id !== selectedAccess));
-            setSelectedAccess(undefined);
-        } catch (error) {
-            console.error('Error deleting coding access:', error);
+            const res = await removeCodingAccess({ id: selectedCodingAccessForDelete });
+            if ('statusCode' in res && res.statusCode === 200) {
+                setCodingAccessList(codingAccessList.filter((e) => e.id !== selectedCodingAccessForDelete));
+                toast.success(i18n.t('coding_access_removed').toString());
+            }
+        } finally {
+            setLoading(false);
+            setSelectedCodingAccessForDelete(undefined);
         }
     };
 
@@ -159,68 +158,52 @@ function Access() {
             <Helmet>
                 <title>{i18n.t('coding_access').toString()}</title>
             </Helmet>
-            <Box>
-                <Grid container spacing={2} alignItems="center" mb={2}>
-                    <Grid item xs>
-                        <Typography variant="h3">Coding Access</Typography>
-                    </Grid>
-                    <Grid item>
-                        <Button
-                            variant="contained"
-                            startIcon={<Add />}
-                            onClick={() => setSelectedAccessForEdit({} as CodingAccessResponse)}
-                            buttonType={ButtonType.ADD}
-                        >
-                            {i18n.t('add_new_access')}
-                        </Button>
-                    </Grid>
-                </Grid>
-
-                {loading ? (
-                    <Typography>Loading...</Typography>
-                ) : (
-                    <>
-                        <MyCustomTable
-                            rowCount={totalCount}
-                            pagination={pagination}
-                            onPaginationChange={setPagination}
-                            enablePagination={true}
-                            enableRowActions={true}
-                            isRefetching={refetchingData}
-                            rowActions={({
-                                row
-                            }: {
-                                row: { original: CodingAccessResponse };
-                            }) => (
-                                <TableRowAction
-                                    onDelete={() => setSelectedAccess(row.original.id)}
-                                />
-                            )}
-                            columns={columns}
-                            data={codingAccessList}
-                        />
-                    </>
-                )}
-
-                {selectedAccessForEdit && (
-                    <CreateOrEditForm
-                        initialValues={{
-                            username: selectedAccessForEdit.username || '',
-                            codingName: selectedAccessForEdit.codingName || ''
-                        }}
-                        onSubmit={onSubmit}
-                        onClose={() => setSelectedAccessForEdit(undefined)}
+            {loading && <Box sx={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(255, 255, 255, 0.7)', zIndex: 9999 }}><CircularProgress /></Box>}
+            {!loading && codingAccessList.length > 0 && !showCreateOrEditForm && (
+                <Grid>
+                    <Button
+                        buttonType={ButtonType.ADD}
+                        showIcon={false}
+                        text={i18n.t('new_coding_access').toString()}
+                        sx={{ marginBottom: '20px' }}
+                        onClick={() => setShowCreateOrEditForm(true)}
                     />
-                )}
-
-                <ConfirmationDialog
-                    open={!!selectedAccess}
-                    onClose={() => setSelectedAccess(undefined)}
-                    onConfirm={handleDelete}
-                    title={i18n.t('delete_access')}
-                    description={i18n.t('delete_access_confirm')}
+                    <MyCustomTable
+                        rowActions={({
+                            row
+                        }: {
+                            row: { original: { id: string | number } };
+                        }) => (
+                            <TableRowAction
+                                onDelete={() => setSelectedCodingAccessForDelete(row.original.id)}
+                            />
+                        )}
+                        enableRowActions={true}
+                        columns={columns}
+                        data={codingAccessList}
+                    />
+                </Grid>
+            )}
+            {showCreateOrEditForm && (
+                <CreateOrEditForm
+                    initialValues={{
+                        username: '',
+                        codingName: ''
+                    }}
+                    onSubmit={onSubmit}
+                    onClose={() => setShowCreateOrEditForm(false)}
                 />
-            </Box>
+            )}
+            {selectedCodingAccessForDelete && (
+                <ConfirmationDialog
+                    id="remove_modal"
+                    open={selectedCodingAccessForDelete !== undefined}
+                    onClose={() => setSelectedCodingAccessForDelete(undefined)}
+                    closeOnEsc={true}
+                    dialogTitle={i18n.t('confirm_remove')}
+                    dialogOkBtnAction={handleDelete}
+                />
+            )}
         </>
     );
 }
