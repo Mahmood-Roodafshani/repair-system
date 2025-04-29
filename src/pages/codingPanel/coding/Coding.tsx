@@ -46,7 +46,7 @@ function Coding() {
       {
         header: i18n.t('row_number'),
         enableHiding: false,
-        Cell: ({ row }) => {
+        Cell: ({ row }: { row: { index: number } }) => {
           return (
             <Typography sx={{ textAlign: 'right' }} key={'row_' + row.index}>
               {row.index + 1}
@@ -87,10 +87,11 @@ function Coding() {
             }) => (
               <TableRowAction
                 onEdit={() => {
-                  setSelectedCodingForEdit(
-                    data.find((e) => e.id === row.original.id).id
-                  );
-                  setShowCreateOrEditForm(true);
+                  const coding = data?.find((e) => e.id === row.original.id);
+                  if (coding) {
+                    setSelectedCodingForEdit(coding.id);
+                    setShowCreateOrEditForm(true);
+                  }
                 }}
                 onDelete={() => setSelectedCodingForDelete(row.original.id)}
               />
@@ -106,7 +107,7 @@ function Coding() {
           existForm={
             selectedCodingForEdit === undefined
               ? undefined
-              : data.find((e) => e.id === selectedCodingForEdit)
+              : data?.find((e) => e.id === selectedCodingForEdit)
           }
           treeView={workLocations}
           onSuccess={() => {
@@ -128,10 +129,10 @@ function Coding() {
           dialogTitle={i18n.t('confirm_remove')}
           dialogOkBtnAction={() => {
             setLoading(true);
-            removeCoding({ codingId: selectedCodingForDelete })
+            removeCoding({ id: selectedCodingForDelete })
               .then((res) => {
-                if (res.statusCode === 200) {
-                  setData(data.filter((e) => e.id !== selectedCodingForDelete));
+                if ('statusCode' in res && res.statusCode === 200) {
+                  setData(data?.filter((e) => e.id !== selectedCodingForDelete) ?? []);
                   toast.success(i18n.t('coding_removed').toString());
                 }
               })

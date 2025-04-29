@@ -1,10 +1,11 @@
 import { styled } from '@mui/material/styles';
 import { Box } from '@mui/material';
+import { Theme } from '@mui/material/styles';
 
 const SIDEBAR_WIDTH = 240;
 const SIDEBAR_WIDTH_COLLAPSED = 64;
 
-export const MainWrapper = styled(Box)(({ theme }) => ({
+export const MainWrapper = styled(Box)(({ theme }: { theme: Theme }) => ({
   flexGrow: 1,
   minHeight: '100vh',
   display: 'flex',
@@ -23,7 +24,7 @@ export const MainWrapper = styled(Box)(({ theme }) => ({
   }
 }));
 
-export const MainContent = styled(Box)(({ theme }) => ({
+export const MainContent = styled(Box)(({ theme }: { theme: Theme }) => ({
   flexGrow: 1,
   paddingTop: theme.spacing(3),
   paddingLeft: theme.spacing(3),

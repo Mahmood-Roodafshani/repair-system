@@ -87,39 +87,36 @@ function CreateOrEditForm({
     try {
       const res = await (isInEditMode
         ? mode === 'staff'
-          ? updateStaff({ staffId: values.id, staffInfo: values })
+          ? updateStaff({ staffId: values.id ?? 0, staffInfo: values })
           : mode === 'nonStaff'
-            ? updateNonStaff({ staffId: values.id, staffInfo: values })
-            : updateFamilyInfo({ memberId: values.id, memberInfo: values })
+            ? updateNonStaff({ staffId: values.id ?? 0, staffInfo: values })
+            : updateFamilyInfo({ memberId: values.id ?? 0, memberInfo: values })
         : mode === 'staff'
           ? createStaff({ staffInfo: values })
           : mode === 'nonStaff'
             ? createNonStaff({ staffInfo: values })
             : createFamilyInfo({ memberInfo: values }));
       actions.setSubmitting(false);
-      if (res.statusCode === 200) {
+      
+      const isSuccess = 'statusCode' in res 
+        ? res.statusCode === 200 
+        : res.status === 200;
+        
+      if (isSuccess) {
         toast(
           isInEditMode
-            ? mode === 'staff'
-              ? i18n.t('staff_updated').toString()
-              : mode === 'nonStaff'
-                ? i18n.t('non_staff_updated').toString()
-                : i18n.t('family_member_updated').toString()
-            : mode === 'staff'
-              ? i18n.t('staff_created').toString()
-              : mode === 'nonStaff'
-                ? i18n.t('non_staff_created').toString()
-                : i18n.t('family_member_created').toString(),
-          { type: 'success' }
+            ? i18n.t('update_successful')
+            : i18n.t('create_successful')
         );
         onSuccess();
+        onClose();
       }
     } catch (error) {
-      console.error('Error updating staff info:', error);
+      console.error('Error submitting form:', error);
+      actions.setSubmitting(false);
     } finally {
       setLoading(false);
     }
-    onClose();
   };
 
   return (

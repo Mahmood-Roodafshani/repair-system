@@ -40,7 +40,7 @@ function CreateOrEditCoding({
                 priority: values.priority
             });
         actions.setSubmitting(false);
-        if (res.statusCode === 200) {
+        if ('statusCode' in res && res.statusCode === 200) {
             toast(
                 existForm
                     ? i18n.t('coding_updated').toString()
@@ -49,111 +49,69 @@ function CreateOrEditCoding({
             );
             onSuccess();
         }
-        onClose();
+    };
+
+    const initialValues: NewCodingType = {
+        parentName: existForm ? findItemById(treeView, existForm.parentId.toString())?.label ?? '' : '',
+        childName: existForm?.name ?? '',
+        priority: existForm?.priority ?? 1,
+        parentId: existForm?.parentId ?? ''
     };
 
     return (
         <Formik
-            onSubmit={onSubmit}
-            initialValues={
-                existForm
-                    ? {
-                        parentName: findItemById(treeView, existForm.parentId.toString())?.label || '',
-                        childName: existForm.name,
-                        priority: existForm.priority,
-                        parentId: existForm.parentId
-                    }
-                    : {
-                        parentName: '',
-                        childName: '',
-                        priority: 0,
-                        parentId: ''
-                    }
-            }
+            initialValues={initialValues}
             validationSchema={validationSchema}
-            validateOnBlur={false}
-            validateOnChange={false}
-            validateOnMount={false}
+            onSubmit={onSubmit}
         >
-            {({values, setValues, isSubmitting, submitForm}) => (
+            {({isSubmitting, setFieldValue, values}) => (
                 <Form>
-                    <Grid display={'flex'} flexDirection={'row'} gap={'40px'}>
-                        <CustomRichTreeView
-                            onSelectedItemsChange={(_, itemIds) => {
-                                if (typeof itemIds === 'string') {
-                                    const cleanId = itemIds.replace('tree_view_', '');
-                                    const item = findItemById(treeView, cleanId);
-                                    setValues({
-                                        ...values,
-                                        parentId: cleanId,
-                                        parentName: item?.label || ''
-                                    });
-                                }
-                            }}
-                            defaultValue={
-                                existForm && values.parentId === existForm.parentId
-                                    ? ['tree_view_' + existForm.parentId]
-                                    : undefined
-                            }
-                            items={mapAllIdsInNestedArray('tree_view_', treeView)}
-                            label={i18n.t('choose_coding').toString()}
-                        />
-                        <Grid
-                            display={'flex'}
-                            flexDirection={'column'}
-                            width={'300px'}
-                            gap={'10px'}
-                        >
-                            <TextFieldFormik
-                                name="parentName"
-                                value={values.parentName}
-                                disabled={true}
-                                label={i18n.t('father_name').toString()}
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <CustomRichTreeView
+                                items={treeView}
+                                defaultValue={values.parentId ? ['tree_view_' + values.parentId] : undefined}
+                                onSelectedItemsChange={(_, itemIds) => {
+                                    if (typeof itemIds === 'string') {
+                                        const cleanId = itemIds.replace('tree_view_', '');
+                                        const item = findItemById(treeView, cleanId);
+                                        setFieldValue('parentId', cleanId);
+                                        setFieldValue('parentName', item?.label ?? '');
+                                    }
+                                }}
+                                label={i18n.t('choose_coding').toString()}
                             />
+                        </Grid>
+                        <Grid item xs={12}>
                             <TextFieldFormik
                                 name="childName"
-                                label={i18n.t('child_name').toString()}
+                                label={i18n.t('child_name')}
+                                fullWidth
                             />
+                        </Grid>
+                        <Grid item xs={12}>
                             <TextFieldFormik
                                 name="priority"
+                                label={i18n.t('priority')}
                                 type="number"
-                                label={i18n.t('show_priority').toString()}
+                                fullWidth
                             />
-                            {isSubmitting && <InlineLoader/>}
-                            {!isSubmitting && (
-                                <Grid
-                                    display={'flex'}
-                                    flexDirection={'row'}
-                                    justifyContent={'space-between'}
-                                >
-                                    {existForm && (
-                                        <Button
-                                            buttonType={ButtonType.EDIT}
-                                            showIcon={false}
-                                            text={i18n.t('edit')}
-                                            onClick={submitForm}
-                                        />
-                                    )}
-                                    {!existForm && (
-                                        <Button
-                                            buttonType={ButtonType.CREATE}
-                                            showIcon={false}
-                                            text={i18n.t('create')}
-                                            onClick={submitForm}
-                                        />
-                                    )}
-
-                                    <Button
-                                        buttonType={ButtonType.CLOSE}
-                                        color="error"
-                                        showIcon={false}
-                                        text={i18n.t('close')}
-                                        onClick={onClose}
-                                    />
-                                </Grid>
-                            )}
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Button
+                                buttonType={existForm ? ButtonType.EDIT : ButtonType.CREATE}
+                                text={existForm ? i18n.t('edit') : i18n.t('create')}
+                                disabled={isSubmitting}
+                                sx={{marginRight: '10px'}}
+                            />
+                            <Button
+                                buttonType={ButtonType.CLOSE}
+                                text={i18n.t('close')}
+                                onClick={onClose}
+                            />
                         </Grid>
                     </Grid>
+                    {isSubmitting && <InlineLoader />}
                 </Form>
             )}
         </Formik>
