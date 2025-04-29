@@ -15,11 +15,13 @@ import {
 import { i18n } from 'src/localization';
 import { ConfirmationDialog } from '@/components/form';
 import {
-  fetchBorrowedItemsList,
+  getBorrowedItemsList,
   removeBorrowedItem
 } from 'src/services/repairPanel/borrowedItemsService';
 import CommonService from 'src/services/CommonService';
-import { BorrowedItemsResponse, RichViewType } from 'src/types/responses/repairPanel/borrowedItemsResponse';
+import { BorrowedItemsResponse } from 'src/types/responses/repairPanel/borrowedItemsResponse';
+import { RichViewType } from 'src/types';
+import CreateOrEditForm from './CreateOrEditForm';
 
 type FormFilter = {
   organizationUnits?: string[];
@@ -39,6 +41,7 @@ function BorrowedItems() {
   const [loading, setLoading] = useState(false);
   const [organizationUnits, setOrganizationUnits] = useState<RichViewType[]>([]);
   const [itemCategories, setItemCategories] = useState<RichViewType[]>([]);
+  const [selectedOrganizationUnit, setSelectedOrganizationUnit] = useState<string>();
 
   const columns = useMemo(
     () => [
@@ -101,7 +104,7 @@ function BorrowedItems() {
     actions: FormikHelpers<FormFilter>
   ) => {
     try {
-      const res = await fetchBorrowedItemsList({
+      const res = await getBorrowedItemsList({
         organizationUnit:
           values.organizationUnits && values.organizationUnits.length > 0
             ? values.organizationUnits[0]
@@ -110,6 +113,7 @@ function BorrowedItems() {
       actions.setSubmitting(false);
       if (res.statusCode === 200) {
         setData(res.content);
+        setSelectedOrganizationUnit(values.organizationUnits?.[0]);
       }
     } catch (error) {
       actions.setSubmitting(false);
@@ -226,11 +230,8 @@ function BorrowedItems() {
           itemCategories={itemCategories}
           onSuccess={async () => {
             setLoading(true);
-            const res = await fetchBorrowedItemsList({
-              organizationUnit:
-                values.organizationUnits && values.organizationUnits.length > 0
-                  ? values.organizationUnits[0]
-                  : undefined
+            const res = await getBorrowedItemsList({
+              organizationUnit: selectedOrganizationUnit
             });
             setLoading(false);
             if (res.statusCode === 200) setData(res.content);
