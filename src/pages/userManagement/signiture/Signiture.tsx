@@ -6,7 +6,7 @@ import { SampleSignitureRequestType } from 'src/types/requests/userManagement/si
 
 function Signiture() {
     const { t } = useTranslation();
-    const [signiture, setSigniture] = useState<SampleSignitureRequestType>({
+    const [signiture] = useState<SampleSignitureRequestType>({
         staffCode: '',
         digitalSigniture: '',
         file: undefined

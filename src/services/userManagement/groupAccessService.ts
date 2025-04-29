@@ -70,7 +70,7 @@ export const updateGroupAccess = async (id: string, data: GroupAccess): Promise<
 };
 
 export const deleteGroupAccess = async (id: string): Promise<ApiResponse<void>> => {
-  const response = await axiosInstance.delete(`${ROUTES.GROUP_ACCESS}/${id}`);
+  const response = await axiosInstance.delete(`${ROUTES.USER.GROUP_ACCESS.REMOVE}/${id}`);
   return {
     statusCode: response.status,
     content: undefined

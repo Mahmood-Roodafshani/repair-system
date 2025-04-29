@@ -42,7 +42,8 @@ export const createNewAccessControl = async ({
 }): Promise<ApiResponse<void>> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     return {
-      statusCode: 200
+      statusCode: 200,
+      content: undefined
     };
   }
   const response = await axiosInstance.post(ROUTES.USER.ACCESS_CONTROL.FETCH_LIST, {

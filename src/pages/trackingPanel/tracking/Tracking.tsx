@@ -25,7 +25,6 @@ import {
 import { mapAllIdsInNestedArray } from 'src/utils/helper';
 import validationSchema from './validationSchema';
 import { OptionType } from 'src/constant/options';
-import { useTranslation } from 'react-i18next';
 
 function Tracking() {
   const [organizationUnits, setOrganizationUnits] = useState<RichViewType[]>();

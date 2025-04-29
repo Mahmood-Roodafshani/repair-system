@@ -5,7 +5,7 @@ import { MyCustomTable } from 'src/components';
 
 function ChooseReplacement() {
     const { t } = useTranslation();
-    const [selectedGrants, setSelectedGrants] = useState<any[]>([]);
+    const [selectedGrants] = useState<any[]>([]);
 
     const columns = [
         {

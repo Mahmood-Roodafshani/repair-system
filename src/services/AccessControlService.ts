@@ -21,7 +21,7 @@ class AccessControlService {
   }
 
   async getRoles(): Promise<Role[]> {
-    const response = await axiosInstance.get(ROUTES.USER.ACCESS_CONTROL.ROLES);
+    const response = await axiosInstance.get(ROUTES.ROLE.FETCH_ALL);
     return response.data;
   }
 }

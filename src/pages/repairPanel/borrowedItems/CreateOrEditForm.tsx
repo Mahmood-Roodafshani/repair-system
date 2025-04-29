@@ -32,7 +32,7 @@ function CreateOrEditForm({
 }: CreateOrEditFormProps) {
   const navigate = useNavigate();
 
-  const onSubmit = async (values: typeof initialValues) => {
+  const onSubmit = async () => {
     try {
       // TODO: Implement create/update API call
       onSuccess();
@@ -57,7 +57,7 @@ function CreateOrEditForm({
               <Grid display={'flex'} flexDirection={'column'} gap={'30px'}>
                 {organizationUnits.length > 0 && (
                   <CustomRichTreeView
-                    onSelectedItemsChange={(_, itemIds) =>
+                    onSelectedItemsChange={() =>
                       submitForm()
                     }
                     label={i18n.t('organization_unit')}
@@ -68,7 +68,7 @@ function CreateOrEditForm({
 
                 {itemCategories.length > 0 && (
                   <CustomRichTreeView
-                    onSelectedItemsChange={(_, itemIds) =>
+                    onSelectedItemsChange={() =>
                       submitForm()
                     }
                     label={i18n.t('item_category')}

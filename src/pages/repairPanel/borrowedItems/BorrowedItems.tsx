@@ -1,5 +1,5 @@
 import { Grid, Typography } from '@mui/material';
-import { Form, Formik, FormikHelpers } from 'formik';
+import { Form, Formik } from 'formik';
 import { useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router';
@@ -41,11 +41,6 @@ function BorrowedItems() {
   const [loading, setLoading] = useState(false);
   const [organizationUnits, setOrganizationUnits] = useState<RichViewType[]>([]);
   const [itemCategories, setItemCategories] = useState<RichViewType[]>([]);
-  const [selectedItems, setSelectedItems] = useState<BorrowedItemsResponse[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isCreateOrEditFormOpen, setIsCreateOrEditFormOpen] = useState(false);
-  const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<BorrowedItemsResponse | null>(null);
 
   const columns = useMemo(
     () => [
@@ -105,16 +100,17 @@ function BorrowedItems() {
 
   const onSubmit = async (values: FormFilter) => {
     try {
-      setIsLoading(true);
+      setLoading(true);
       const response = await getBorrowedItemsList({
-        organizationUnitId: values.organizationUnitId,
-        itemCategoryId: values.itemCategoryId,
+        organizationUnit: values.organizationUnit
       });
-      setData(response);
+      if (response.statusCode === 200) {
+        setData(response.content);
+      }
     } catch (error) {
       console.error('Error fetching borrowed items:', error);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
@@ -152,7 +148,7 @@ function BorrowedItems() {
                 <Grid display={'flex'} flexDirection={'column'} gap={'30px'}>
                   {organizationUnits.length > 0 && (
                     <CustomRichTreeView
-                      onSelectedItemsChange={(_, itemIds) =>
+                      onSelectedItemsChange={() =>
                         submitForm()
                       }
                       label={i18n.t('organization_unit')}

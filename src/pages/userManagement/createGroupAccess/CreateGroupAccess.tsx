@@ -7,15 +7,15 @@ import { toast } from 'react-toastify';
 import { Loader, MyCustomTable, OpGrid, TableRowAction } from 'src/components';
 import { i18n } from 'src/localization';
 import { ConfirmationDialog } from '@/components/form';
-import { addGroupAccess, getGroupAccesses, getGroupAccessRoles, removeGroupAccess } from 'src/services/userManagement/groupAccessService';
+import { createGroupAccess, getGroupAccessList, getGroupAccessRoles, deleteGroupAccess } from 'src/services/userManagement/groupAccessService';
 
 interface System {
-  id: number;
+  id: string;
   name: string;
 }
 
 interface Group {
-  id: number;
+  id: string | number;
   name: string;
 }
 
@@ -23,7 +23,7 @@ function CreateGroupAccess() {
   const [name, setName] = useState<string>('');
   const [systems, setSystems] = useState<System[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
-  const [selectedGroupId, setSelectedGroupId] = useState<number>();
+  const [selectedGroupId, setSelectedGroupId] = useState<string | number>();
   const [loading, setLoading] = useState(false);
   const [showConfirmationForRemove, setShowConfirmationForRemove] =
     useState(false);
@@ -43,13 +43,13 @@ function CreateGroupAccess() {
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([getGroupAccesses({}), getGroupAccessRoles()])
+    Promise.all([getGroupAccessList({}), getGroupAccessRoles({ groupId: selectedGroupId || 0 })])
       .then((res) => {
         if (res[0].statusCode === 200) setGroups(res[0].content);
         if (res[1].statusCode === 200) setSystems(res[1].content);
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [selectedGroupId]);
 
   return (
     <>
@@ -132,7 +132,7 @@ function CreateGroupAccess() {
                 return;
               }
               setLoading(true);
-              const res = await addGroupAccess({ data: { name: name } });
+              const res = await createGroupAccess({ id: 0, name });
               setLoading(false);
               if (res.statusCode === 200) {
                 toast(i18n.t('group_created_successfully'), { type: 'success' });
@@ -149,8 +149,9 @@ function CreateGroupAccess() {
           closeOnEsc={true}
           dialogTitle={i18n.t('confirm_remove')}
           dialogOkBtnAction={() => {
+            if (!selectedGroupId) return;
             setLoading(true);
-            removeGroupAccess({ groupId: selectedGroupId })
+            deleteGroupAccess(selectedGroupId.toString())
               .then((res) => {
                 if (res.statusCode === 200) {
                   setGroups(groups.filter((e) => e.id !== selectedGroupId));

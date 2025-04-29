@@ -5,10 +5,10 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import { Helmet } from 'react-helmet-async';
 import { toast } from 'react-toastify';
 import { CircularProgress } from '@mui/material';
-import { MyCustomTable, TableRowAction } from 'src/components';
+import { MyCustomTable } from 'src/components';
 import { Button, ButtonType, ConfirmationDialog, TextFieldFormik } from '@/components/form';
 import { createCodingAccess, fetchCodingAccessList, removeCodingAccess } from 'src/services';
-import { CodingAccessRequest, CodingAccessResponse, Pagination } from 'src/types';
+import { CodingAccessRequest, CodingAccessResponse } from 'src/types';
 import validationSchema from './validationSchema';
 
 interface CreateOrEditFormProps {

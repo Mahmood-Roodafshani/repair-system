@@ -58,10 +58,17 @@ const ButtonNotify = styled(Button)(
 `
 );
 
+interface TimeLeft {
+  days?: number;
+  hours?: number;
+  minutes?: number;
+  seconds?: number;
+}
+
 function StatusComingSoon() {
-  const calculateTimeLeft = () => {
+  const calculateTimeLeft = (): TimeLeft => {
     const difference = +new Date(`2023`) - +new Date();
-    let timeLeft = {};
+    let timeLeft: TimeLeft = {};
 
     if (difference > 0) {
       timeLeft = {
@@ -75,7 +82,7 @@ function StatusComingSoon() {
     return timeLeft;
   };
 
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft());
 
   useEffect(() => {
     setTimeout(() => {
@@ -83,15 +90,15 @@ function StatusComingSoon() {
     }, 1000);
   });
 
-  const timerComponents = [];
+  const timerComponents: JSX.Element[] = [];
 
-  Object.keys(timeLeft).forEach((interval) => {
+  (Object.keys(timeLeft) as Array<keyof TimeLeft>).forEach((interval) => {
     if (!timeLeft[interval]) {
       return;
     }
 
     timerComponents.push(
-      <Box textAlign="center" px={3}>
+      <Box key={interval} textAlign="center" px={3}>
         <TypographyH1 variant="h1">{timeLeft[interval]}</TypographyH1>
         <TypographyH3 variant="h3">{interval}</TypographyH3>
       </Box>

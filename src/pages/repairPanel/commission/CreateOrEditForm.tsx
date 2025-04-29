@@ -21,7 +21,6 @@ import { toast } from 'react-toastify';
 import { createNewCommissionValidationSchema } from './validationSchema';
 import { CommissionFixDecisionOptions } from '@/constant';
 import { useMemo, useState } from 'react';
-import { CameraAltTwoTone } from '@mui/icons-material';
 
 function CreateOrEditForm({
   selectedItemForEdit,
@@ -140,9 +139,6 @@ function CreateOrEditForm({
               <Grid width={'400px'}>
                 <DropzoneArea
                   dropzoneText={i18n.t('add_attach')}
-                  dropzoneClass={'cusorm-dropzone-container'}
-                  clearOnUnmount={true}
-                  Icon={CameraAltTwoTone}
                   filesLimit={1}
                   maxFileSize={5000000}
                   onChange={(e) =>
