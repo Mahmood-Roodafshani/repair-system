@@ -3,7 +3,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { KeycloakProvider } from './providers/KeycloakProvider';
-import {ThemeProvider as CustomThemeProvider} from './theme/ThemeProvider';
+import { ThemeProvider } from './theme/ThemeProvider';
 import AppRoutes from './routes';
 import { setupAxiosInterceptors } from './services/baseService';
 import { useKeycloakInstance } from './hooks/useKeycloakInstance';
@@ -41,29 +41,29 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <KeycloakProvider>
         <KeycloakInitializer />
-        <CustomThemeProvider>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <SidebarProvider>
-                <MenuProvider>
-                  <CssBaseline />
-                  <AppRoutes />
-                  <ToastContainer
-                    position="bottom-right"
-                    autoClose={5000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                    theme="light"
-                  />
-                  <ReactQueryDevtools initialIsOpen={false} />
-                </MenuProvider>
-              </SidebarProvider>
-            </LocalizationProvider>
-        </CustomThemeProvider>
+        <ThemeProvider>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <SidebarProvider>
+              <MenuProvider>
+                <CssBaseline />
+                <AppRoutes />
+                <ToastContainer
+                  position="bottom-right"
+                  autoClose={5000}
+                  hideProgressBar={false}
+                  newestOnTop={false}
+                  closeOnClick
+                  rtl={false}
+                  pauseOnFocusLoss
+                  draggable
+                  pauseOnHover
+                  theme="light"
+                />
+                <ReactQueryDevtools initialIsOpen={false} />
+              </MenuProvider>
+            </SidebarProvider>
+          </LocalizationProvider>
+        </ThemeProvider>
       </KeycloakProvider>
     </QueryClientProvider>
   );

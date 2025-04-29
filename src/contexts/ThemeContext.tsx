@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext } from 'react';
 import { ThemeName } from '../theme/types';
+import { useThemeContext as useCustomThemeContext } from '../theme/ThemeProvider';
 
 interface ThemeContextType {
   theme: ThemeName;
@@ -8,23 +9,23 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType>({
   theme: 'PureLightTheme',
-  setTheme: () => {},
+  setTheme: () => {
+  }
 });
 
-export const useThemeContext = () => useContext(ThemeContext);
+export const useThemeContext = () => {
+  const customThemeContext = useCustomThemeContext();
+  return {
+    theme: customThemeContext.themeName,
+    setTheme: customThemeContext.setTheme
+  };
+};
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [theme, setTheme] = useState<ThemeName>(() => {
-    const savedTheme = localStorage.getItem('theme');
-    return (savedTheme as ThemeName) || 'PureLightTheme';
-  });
-
-  useEffect(() => {
-    localStorage.setItem('theme', theme);
-  }, [theme]);
+  const themeContext = useThemeContext();
 
   return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
+    <ThemeContext.Provider value={themeContext}>
       {children}
     </ThemeContext.Provider>
   );
