@@ -36,7 +36,6 @@ const AppMenuItem: React.FC<AppMenuItemProps> = props => {
     const { item } = props;
     const navigate = useNavigate();
     const isExpandable = item.items && item.items.length > 0;
-    const [open, setOpen] = React.useState(item.isOpen);
 
     function handleClick() {
         if (props.drawerOpen == undefined || !!props.drawerOpen) {
@@ -44,7 +43,6 @@ const AppMenuItem: React.FC<AppMenuItemProps> = props => {
                 item.isOpen = !!item.isOpen;
             }
             item.isOpen = !item.isOpen;
-            setOpen(item.isOpen);
         }
     }
 

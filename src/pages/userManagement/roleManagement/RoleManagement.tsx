@@ -103,7 +103,7 @@ function RoleManagement() {
         status: (role.status ?? true).toString()
       }));
       setSystems(transformedSystems);
-    } catch (error) {
+    } catch {
       toast.error(i18n.t('error_fetching_systems'));
     } finally {
       setLoading(false);
@@ -120,11 +120,13 @@ function RoleManagement() {
     if (!selectedSystemId) return;
     setRemoving(true);
     try {
+      const selectedSystemId = Number(this.selectedSystemId);
       await roleManagementService.removeSystem(selectedSystemId);
       setSystems(systems.filter(system => system.id !== selectedSystemId));
       toast.success(i18n.t('system_removed_successfully'));
     } catch (error) {
       toast.error(i18n.t('error_removing_system'));
+      console.log(error)
     } finally {
       setRemoving(false);
       setShowConfirmationModelForRemove(false);

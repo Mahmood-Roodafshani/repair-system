@@ -34,13 +34,6 @@ const StyledDrawer = styled(Drawer, {
   },
 }));
 
-const SidebarContent = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(2),
-  height: '100%',
-  overflow: 'auto',
-  overflowX: 'hidden'
-}));
-
 const Sidebar: React.FC = () => {
   const { sidebarToggle } = useSidebarContext();
 

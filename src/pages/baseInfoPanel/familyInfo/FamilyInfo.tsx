@@ -22,7 +22,6 @@ import CreateOrEditForm from '../common/CreateOrEditForm';
 import { Add, Delete, Edit } from '@mui/icons-material';
 import { ApiResponse } from 'src/types/responses/apiResponse';
 import { AxiosResponse } from 'axios';
-import { StaffInfoRequestType } from 'src/types/requests/baseInfoPanel/staffInfo/staffInfoRequestType';
 
 interface TableRow extends ExtendedStaffInfoResponseType {
   index: number;

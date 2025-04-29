@@ -1,8 +1,8 @@
 import { Box, Button, Grid } from '@mui/material';
 import { Formik, Form } from 'formik';
-import { TextFieldFormik } from '@/components/formik/TextFieldFormik';
+import { TextFieldFormik } from '@/components/form/TextFieldFormik';
 import { GetItemListInCommissionQueueRequest } from '@/types/requests/repairPanel/commission/getItemListInCommissionQueueRequest';
-import { filterValidationSchema } from '@/validation/repairPanel/commission/validationSchema';
+import { filterValidationSchema } from '@/validation/commission/filterValidationSchema';
 
 interface FilterFormProps {
   onSubmit: (values: GetItemListInCommissionQueueRequest) => void;
@@ -12,14 +12,12 @@ export const FilterForm = ({ onSubmit }: FilterFormProps) => {
   const initialValues: GetItemListInCommissionQueueRequest = {
     assetNumber: '',
     submitNumber: '',
-    submitFrom: undefined,
-    submitTo: undefined,
-    referFrom: undefined,
-    referTo: undefined,
+    submitAt: undefined,
+    date: undefined,
     description: '',
     category: '',
     submitter: '',
-    organizationUnit: ''
+    submitterUnit: ''
   };
 
   return (
@@ -48,19 +46,13 @@ export const FilterForm = ({ onSubmit }: FilterFormProps) => {
                 <TextFieldFormik name="submitter" label="Submitter" />
               </Grid>
               <Grid item xs={12} sm={6} md={3}>
-                <TextFieldFormik name="organizationUnit" label="Organization Unit" />
+                <TextFieldFormik name="submitterUnit" label="Organization Unit" />
               </Grid>
               <Grid item xs={12} sm={6} md={3}>
-                <TextFieldFormik name="submitFrom" label="Submit From" type="date" />
+                <TextFieldFormik name="submitAt" label="Submit From" type="date" />
               </Grid>
               <Grid item xs={12} sm={6} md={3}>
-                <TextFieldFormik name="submitTo" label="Submit To" type="date" />
-              </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <TextFieldFormik name="referFrom" label="Refer From" type="date" />
-              </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <TextFieldFormik name="referTo" label="Refer To" type="date" />
+                <TextFieldFormik name="date" label="Submit To" type="date" />
               </Grid>
             </Grid>
             <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>

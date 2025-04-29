@@ -6,17 +6,17 @@ export interface ButtonProps extends MButtonProps {
   buttonType: ButtonType;
   showIcon?: boolean;
   text?: string;
-  showText?: boolean;
 }
 const Button = (props: ButtonProps) => {
   const {
     buttonType,
     showIcon = true,
-    showText = true,
     variant = 'outlined',
     ...otherProps
   } = props;
-  const text = props.text || buttonType.text || buttonType.defaultMessage ? i18n.t(props.text || buttonType.text || buttonType.defaultMessage) : '';
+  const text = props.text || buttonType.text || buttonType.defaultMessage 
+    ? i18n.t(String(props.text || buttonType.text || buttonType.defaultMessage)) 
+    : '';
   let BProps = { ...otherProps };
   if (showIcon) BProps = { ...otherProps, endIcon: buttonType.icon };
   return (

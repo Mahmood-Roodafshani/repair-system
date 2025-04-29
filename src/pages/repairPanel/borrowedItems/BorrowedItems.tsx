@@ -24,13 +24,17 @@ import { mapAllIdsInNestedArray } from 'src/utils/helper';
 import CommonService from 'src/services/CommonService';
 import { SyntheticEvent } from 'react';
 
+interface BorrowedItem {
+  id: string;
+  itemName: string;
+  borrowerName: string;
+  borrowDate: string;
+  returnDate?: string;
+}
+
 interface ApiResponse<T> {
   statusCode: number;
   content: T;
-  data?: {
-    statusCode: number;
-    content: T;
-  };
 }
 
 function BorrowedItems() {
@@ -65,8 +69,8 @@ function BorrowedItems() {
       };
       const res = await getBorrowedItemsList(requestParams);
       actions.setSubmitting(false);
-      if (res.data?.statusCode === 200) {
-        setData(res.data.content);
+      if (res.statusCode === 200) {
+        setData(res.content);
       }
     } catch (error) {
       actions.setSubmitting(false);

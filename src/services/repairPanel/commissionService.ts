@@ -24,6 +24,7 @@ const fetchCommissionList = async (request: GetCommissionListRequest): Promise<A
 const fetchItemsInCommissionQueue = async (
   request: GetItemListInCommissionQueueRequest
 ): Promise<GetItemListInCommissionQueueResponse[]> => {
+  console.log(request);
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(ItemsInCommissionQueueListMock);
@@ -53,7 +54,8 @@ const updateCommission = async ({
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
-      statusCode: 200
+      statusCode: 200,
+      content: undefined
     };
   }
   const response = await axiosInstance.put(ROUTES.REPAIR.COMMISSION.UPDATE(id), form);
@@ -64,6 +66,7 @@ export class CommissionService {
   static async fetchItemsInCommissionQueue(
     request: GetItemListInCommissionQueueRequest
   ): Promise<GetItemListInCommissionQueueResponse[]> {
+    console.log(request);
     return [];
   }
 }

@@ -10,23 +10,6 @@ import { Slide } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import { Typography } from '@mui/material';
 
-const options = [
-  'None',
-  'Atria',
-  'Callisto',
-  'Dione',
-  'Ganymede',
-  'Hangouts Call',
-  'Luna',
-  'Oberon',
-  'Phobos',
-  'Pyxis',
-  'Sedna',
-  'Titania',
-  'Triton',
-  'Umbriel'
-];
-
 export interface ConfirmationDialogRawProps extends DialogProps {
   id?: string;
   closeOnEsc?: boolean;

@@ -9,7 +9,6 @@ import {
   Box,
   useTheme,
   Backdrop,
-  Button,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
@@ -22,7 +21,7 @@ import {
   Person as PersonIcon,
   Business as BusinessIcon,
 } from '@mui/icons-material';
-import { useThemeContext } from '../../../theme/ThemeProvider';
+import { useThemeContext } from 'src/contexts/ThemeContext';
 import { ThemeName } from '../../../theme/themes';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -37,7 +36,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ onMenuClick, isCollapsed }) => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const { theme: currentTheme, setTheme, themeName } = useThemeContext();
+  const { theme: currentTheme, setTheme } = useThemeContext();
   const [themeAnchorEl, setThemeAnchorEl] = useState<null | HTMLElement>(null);
   const [userAnchorEl, setUserAnchorEl] = useState<null | HTMLElement>(null);
   const { keycloak } = useKeycloak();
@@ -59,10 +58,15 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, isCollapsed }) => {
   };
 
   const handleLogout = async () => {
-    await logout(keycloak);
-    toast.success('خروج موفقیت‌آمیز');
-    handleUserMenuClose();
-    navigate('/login');
+    try {
+      await logout(keycloak);
+      toast.success('خروج موفقیت‌آمیز');
+      handleUserMenuClose();
+      navigate('/login');
+    } catch (error) {
+      toast.error('خطا در خروج از سیستم');
+      console.log(error);
+    }
   };
 
   const handleThemeChange = (newTheme: ThemeName) => {
@@ -71,16 +75,13 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick, isCollapsed }) => {
   };
 
   const getThemeIcon = () => {
-    // Map theme names to their corresponding icons
     const themeIconMap = {
       PureLightTheme: <LightModeIcon />,
       PureDarkTheme: <DarkModeIcon />,
       MilitaryTheme: <MilitaryIcon />,
-      CorporateTheme: <BusinessIcon />,
+      CorporateTheme: <BusinessIcon />
     } as const;
-    
-    // Return the corresponding icon or fallback to LightModeIcon
-    return themeIconMap[themeName] || <LightModeIcon />;
+    return themeIconMap[currentTheme] || <LightModeIcon />;
   };
 
   return (

@@ -3,7 +3,6 @@ import { Box } from '@mui/material';
 
 const SIDEBAR_WIDTH = 240;
 const SIDEBAR_WIDTH_COLLAPSED = 64;
-const CONTENT_PADDING = 20;
 
 export const MainWrapper = styled(Box)(({ theme }) => ({
   flexGrow: 1,

@@ -63,7 +63,7 @@ const CustomSelect = (props: SelectProps) => {
           انتخاب
         </MenuItem>
       ) : null}
-      {options.map((item, index) => (
+      {options.map((item) => (
         <MenuItem key={item.id} value={item.id}>
           {item.label}
         </MenuItem>

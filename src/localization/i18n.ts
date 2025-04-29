@@ -349,5 +349,5 @@ i18next
       }
     }
   })
-  .then(function (t) {});
+  .then(function () {});
 export default i18next;

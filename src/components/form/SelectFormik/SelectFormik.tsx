@@ -74,7 +74,6 @@ const SelectWithFormik = (props: SelectProps) => {
     <TextField
       size={size}
       type={type}
-      value={(values as any).name}
       {...configSelect}
       onChange={handleChange}
       variant={variant}
@@ -133,7 +132,7 @@ const SelectWithoutFormik = (props: SelectProps) => {
           انتخاب
         </MenuItem>
       ) : null}
-      {options.map((item, index) => (
+      {options.map((item) => (
         <MenuItem key={item.id} value={item.id}>
           {item.label}
         </MenuItem>

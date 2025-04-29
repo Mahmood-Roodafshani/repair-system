@@ -4,7 +4,7 @@ import AppMenuItem from './AppMenuItem';
 import { MenuService } from "./MenuService";
 import { List } from '@mui/material';
 
-const AppMenuRoot = styled(List)(({ theme }) => ({
+const AppMenuRoot = styled(List)(() => ({
     width: '100%',
     padding: 0,
 }));

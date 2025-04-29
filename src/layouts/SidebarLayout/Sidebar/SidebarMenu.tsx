@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { List, ListItemButton, ListItemIcon, ListItemText, Collapse, Tooltip, Box } from '@mui/material';
+import { List, ListItemButton, ListItemIcon, ListItemText, Collapse, Tooltip } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { MenuService } from '../../components/Menu/MenuService';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { useMenu } from '../../../contexts/MenuContext';
 
-const SIDEBAR_WIDTH = 240;
 const MENU_PADDING = 20;
 
 interface SidebarMenuProps {

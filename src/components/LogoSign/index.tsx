@@ -1,9 +1,8 @@
+import { styled } from '@mui/material/styles';
 import {
-  Box,
   Tooltip,
   TooltipProps,
-  tooltipClasses,
-  styled
+  tooltipClasses
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 import logoImage from '@/assets/images/logo/material-ui.svg';

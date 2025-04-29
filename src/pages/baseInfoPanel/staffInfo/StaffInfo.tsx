@@ -133,14 +133,10 @@ function StaffInfo() {
         try {
             const res = await fetchStaffInfoList({ filter: values });
             
-            if ('statusCode' in res) {
-                if (res.statusCode === 200) {
-                    setStaffInfo(res.content);
-                }
-            } else if ('status' in res) {
-                if (res.status === 200) {
-                    setStaffInfo(res.data);
-                }
+            if ('statusCode' in res && res.statusCode === 200) {
+                setStaffInfo(res.content);
+            } else if ('status' in res && res.status === 200) {
+                setStaffInfo(res.data);
             }
         } catch (error) {
             console.error('Error fetching staff info:', error);
@@ -243,6 +239,19 @@ function StaffInfo() {
     const getDateValue = (value: string | Date | DateObject | undefined): string | Date | DateObject => {
         if (!value) return '';
         return value;
+    };
+
+    const onSuccess = async () => {
+        setStaffInfo([]);
+        if (filter) {
+            const res = await fetchStaffInfoList({filter});
+            setLoading(false);
+            if ('statusCode' in res && res.statusCode === 200) {
+                setStaffInfo(res.content);
+            } else if ('status' in res && res.status === 200) {
+                setStaffInfo(res.data);
+            }
+        }
     };
 
     return (
@@ -456,14 +465,7 @@ function StaffInfo() {
                     positionDegrees={positionDegrees}
                     workLocations={workLocations}
                     educationalFields={educationalFields}
-                    onSuccess={async () => {
-                        setStaffInfo([]);
-                        if (filter) {
-                            const res = await fetchStaffInfoList({filter});
-                            setLoading(false);
-                            if (res.data) setStaffInfo(res.data);
-                        }
-                    }}
+                    onSuccess={onSuccess}
                     onClose={() => {
                         setShowCreateForm(false);
                         setSelectedStaffForEdit(null);

@@ -3,10 +3,10 @@ import { FormikErrors } from 'formik';
 import { Dispatch, SetStateAction } from 'react';
 import DatePicker from 'react-multi-date-picker';
 import { i18n } from 'src/localization';
-import { AnnouncementRequestType } from 'src/types/requests/userManagement/announcements/announcementRequestType';
+import { AnnouncementRequestType } from '../../../types/requests/userManagement/announcements/announcementRequestType';
 import { TextFieldFormik } from '@/components/form';
 import { CKEditorToolbar } from 'src/utils/helper';
-import { Editor } from '@ckeditor/ckeditor5-react';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 function AnnouncementForm({
@@ -66,7 +66,7 @@ function AnnouncementForm({
                     />
                 </Grid>
                 <Grid item xs={12}>
-                    <Editor
+                    <CKEditor
                         editor={ClassicEditor}
                         config={{
                             toolbar: CKEditorToolbar
