@@ -1,36 +1,244 @@
-import { Grid, Typography } from '@mui/material';
-import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
-import { MyCustomTable } from 'src/components';
+import { Delete } from '@mui/icons-material';
+import { TabContext, TabPanel } from '@mui/lab';
+import { Grid, IconButton, Tab, Tabs, Typography, useTheme } from '@mui/material';
+import { useMemo, useState } from 'react';
+import persian from 'react-date-object/calendars/persian';
+import persian_fa from 'react-date-object/locales/persian_fa';
+import { Helmet } from 'react-helmet-async';
+import DatePicker, { DateObject } from 'react-multi-date-picker';
+import { useNavigate } from 'react-router';
+import { CustomRichTreeView, Loader, MyCustomTable, OpGrid } from 'src/components';
+import { i18n } from 'src/localization';
+import { jobsMock } from 'src/mock';
+import { mapAllIdsInNestedArray } from 'src/utils/helper';
+import { TakenGrants } from './takenGrants';
+
+interface FormData {
+  from: DateObject | null;
+  to: DateObject | null;
+}
 
 function ChooseReplacement() {
-    const { t } = useTranslation();
-    const [selectedGrants] = useState<any[]>([]);
+  const [formData, setFormData] = useState<FormData>({
+    from: null,
+    to: null
+  });
+  const [selectedTab, setSelectedTab] = useState<
+    'JOB_REPLACEMENT' | 'ROLE_REPLACEMENT'
+  >('JOB_REPLACEMENT');
+  const theme = useTheme();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [takenJobsGrants] = useState<any[]>([
+    { name: 'سازمانی' }
+  ]);
+  const [takenGrants] = useState<TakenGrants[]>([]);
+  const [replacementJobs] = useState<any[]>(jobsMock);
 
-    const columns = [
+  // don't use mock and use service instead
+
+  const [rolesColumns, jobsColumns] = useMemo(() => {
+    return [
+      [
         {
-            header: t('grant_name'),
-            accessorKey: 'name'
+          header: i18n.t('job_replacement'),
+          accessorKey: 'job_replacement',
+          size: 300
         },
         {
-            header: t('description'),
-            accessorKey: 'description'
+          header: i18n.t('replacement_name'),
+          accessorKey: 'replacementName',
+          size: 200
+        },
+        {
+          header: i18n.t('from'),
+          accessorKey: 'from',
+          size: 120
+        },
+        {
+          header: i18n.t('to'),
+          accessorKey: 'to',
+          size: 120
+        },
+        {
+          header: i18n.t('taken_grants'),
+          accessorKey: 'takenGrants',
+          size: 200
         }
+      ],
+      [
+        {
+          header: i18n.t('name'),
+          accessorKey: 'name',
+          size: 200
+        }
+      ]
     ];
+  }, []);
 
-    return (
-        <Grid container spacing={2}>
-            <Grid item xs={12}>
-                <Typography variant="h4">{t('choose_replacement')}</Typography>
-            </Grid>
-            <Grid item xs={12}>
-                <MyCustomTable
-                    data={selectedGrants}
-                    columns={columns}
-                />
-            </Grid>
+  return (
+    <>
+      <Helmet>
+        <title>{i18n.t('choose_replacement').toString()}</title>
+      </Helmet>
+      <Grid display={'flex'} flexDirection={'column'} gap={'10px'}>
+        <Grid display={'flex'} flexDirection={'row'} gap={'20px'}>
+          <DatePicker
+            calendar={persian}
+            locale={persian_fa}
+            maxDate={new Date()}
+            value={formData.from}
+            placeholder={i18n.t('from')}
+            onChange={(e) => {
+              setFormData((prevValues) => ({
+                ...prevValues,
+                from: e
+              }));
+            }}
+          />
+          <DatePicker
+            calendar={persian}
+            locale={persian_fa}
+            maxDate={new Date()}
+            value={formData.to}
+            placeholder={i18n.t('to')}
+            onChange={(e) => {
+              setFormData((prevValues) => ({
+                ...prevValues,
+                to: e
+              }));
+            }}
+          />
         </Grid>
-    );
+        <TabContext value={selectedTab}>
+          <Tabs
+            onChange={(_, selectedTab) => setSelectedTab(selectedTab)}
+            sx={{ marginTop: '10px' }}
+            value={selectedTab}
+          >
+            <Tab
+              sx={{ backgroundColor: theme.colors.secondary.dark }}
+              value={'JOB_REPLACEMENT'}
+              label={i18n.t('job_replacement').toString()}
+            />
+            <Tab
+              sx={{ backgroundColor: theme.colors.secondary.dark }}
+              value={'ROLE_REPLACEMENT'}
+              label={i18n.t('role_replacement').toString()}
+            />
+          </Tabs>
+          <TabPanel value={'JOB_REPLACEMENT'}>
+            <Grid display={'flex'} flexDirection={'column'} gap={'10px'}>
+              <Grid
+                display={'flex'}
+                flexDirection={'row'}
+                sx={{
+                  border: `3px solid ${theme.colors.secondary.dark}`,
+                  padding: '10px'
+                }}
+              >
+                <CustomRichTreeView
+                  label=""
+                  sx={{
+                    width: '500px'
+                  }}
+                  items={mapAllIdsInNestedArray('role_', replacementJobs)}
+                  // onSelectedItemsChange={(event, itemIds) => setSelectedRole(itemIds[0])}
+                />
+              </Grid>
+              <MyCustomTable
+                enableRowNumbers={true}
+                enableRowActions={true}
+                rowActions={() => (
+                  <IconButton
+                    color="error"
+                    onClick={() => {
+                      //todo: impl onDelete
+                      console.log('as');
+                    }}
+                  >
+                    <Delete />
+                  </IconButton>
+                )}
+                columns={jobsColumns}
+                data={takenJobsGrants}
+                caption={i18n.t('taken_grants').toString()}
+              />
+            </Grid>
+          </TabPanel>
+          <TabPanel value={'ROLE_REPLACEMENT'}>
+            <Grid display={'flex'} flexDirection={'column'} gap={'10px'}>
+              <Grid
+                display={'flex'}
+                flexDirection={'row'}
+                gap={'20px'}
+                sx={{
+                  border: `3px solid ${theme.colors.secondary.dark}`,
+                  padding: '20px'
+                }}
+              >
+                <Grid display={'flex'} flexDirection={'column'} width={'50%'}>
+                  <Typography
+                    width={'100%'}
+                    sx={{
+                      paddingBottom: '5px',
+                      borderBottom: `1px solid ${theme.colors.primary.dark}`
+                    }}
+                  >
+                    {i18n.t('available_grants').toString()}
+                  </Typography>
+                </Grid>
+                <Grid display={'flex'} flexDirection={'column'} width={'50%'}>
+                  <Typography
+                    width={'100%'}
+                    sx={{
+                      paddingBottom: '5px',
+                      borderBottom: `1px solid ${theme.colors.primary.dark}`
+                    }}
+                  >
+                    {i18n.t('taken_grants').toString()}
+                  </Typography>
+                </Grid>
+              </Grid>
+              <MyCustomTable
+                enableRowNumbers={true}
+                enableRowActions={true}
+                rowActions={() => (
+                  <IconButton
+                    color="error"
+                    onClick={() => {
+                      //todo: impl onDelete
+                      console.log('as');
+                    }}
+                  >
+                    <Delete />
+                  </IconButton>
+                )}
+                columns={rolesColumns}
+                data={takenGrants}
+                caption={i18n.t('taken_grants').toString()}
+              />
+            </Grid>
+          </TabPanel>
+        </TabContext>
+        {!loading && (
+          <OpGrid
+            onClear={() => {
+              setFormData({
+                from: null,
+                to: null
+              });
+            }}
+            onCreateOrEdit={async () => {
+              setLoading(true);
+            }}
+            onClose={() => navigate('/usermanagement')}
+          />
+        )}
+        {loading && <Loader />}
+      </Grid>
+    </>
+  );
 }
 
 export default ChooseReplacement;
