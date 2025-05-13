@@ -1,5 +1,5 @@
-import { Add, PersonAdd, ArrowBackTwoTone } from '@mui/icons-material';
-import { Box, Grid, IconButton, TextField, Typography } from '@mui/material';
+import { Add, PersonAdd } from '@mui/icons-material';
+import { Grid, IconButton, TextField, Typography } from '@mui/material';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router';
@@ -14,20 +14,14 @@ import CreateNewSystemDialog from './components/CreateNewSystemDialog';
 import EditSystem from './components/EditSystem';
 import SystemRoles from './components/SystemRoles';
 
-interface TableRow {
-  index: number;
-  original: SystemResponseType;
-}
-
 interface RoleManagementProps {
-  systemId?: number;
   onBack?: () => void;
 }
 
-function RoleManagement({ systemId, onBack }: RoleManagementProps) {
+function RoleManagement({ onBack }: RoleManagementProps) {
   const [title, setTitle] = useState<string>('');
   const [systems, setSystems] = useState<SystemResponseType[]>([]);
-  const [selectedSystemId, setSelectedSystemId] = useState<number>(systemId ?? 0);
+  const [selectedSystemId, setSelectedSystemId] = useState<number>();
   const [loading, setLoading] = useState(false);
   const [removing, setRemoving] = useState(false);
   const navigate = useNavigate();
@@ -42,7 +36,7 @@ function RoleManagement({ systemId, onBack }: RoleManagementProps) {
       {
         header: ' ',
         enableHiding: false,
-        Cell: ({ row }: { row: TableRow }) => {
+        Cell: ({ row }: { row: { index: number; original: SystemResponseType } }) => {
           return (
             <Grid
               display={'flex'}
@@ -67,7 +61,7 @@ function RoleManagement({ systemId, onBack }: RoleManagementProps) {
       {
         header: i18n.t('row_number'),
         enableHiding: false,
-        Cell: ({ row }: { row: TableRow }) => {
+        Cell: ({ row }) => {
           return (
             <Typography sx={{ textAlign: 'right' }} key={'row_' + row.index}>
               {row.index + 1}
@@ -104,8 +98,8 @@ function RoleManagement({ systemId, onBack }: RoleManagementProps) {
 
   const fetchData = useCallback(async () => {
     if (!title) return;
-    setLoading(true);
     try {
+      setLoading(true);
       const response = await roleManagementService.getSystemRoles(Number(title));
       const transformedSystems: SystemResponseType[] = response.map(role => ({
         id: role.id,
@@ -113,34 +107,30 @@ function RoleManagement({ systemId, onBack }: RoleManagementProps) {
         status: (role.status ?? true).toString()
       }));
       setSystems(transformedSystems);
-    } catch {
-      toast.error(i18n.t('error_fetching_systems'));
+    } catch (error) {
+      toast.error('Failed to fetch system roles');
     } finally {
       setLoading(false);
     }
   }, [title]);
 
   useEffect(() => {
-    if (systemId) {
-      setSelectedSystemId(systemId);
-    }
-  }, [systemId]);
+    setSelectedSystemId(undefined);
+  }, [systems]);
 
-  const selectedSystem = selectedSystemId ? systems.find((e) => e.id === selectedSystemId) : undefined;
+  const selectedSystem = selectedSystemId ? systems.find((e) => e.id === selectedSystemId) : null;
 
   const handleRemoveSystem = async () => {
     if (!selectedSystemId) return;
-    setRemoving(true);
     try {
+      setRemoving(true);
       await roleManagementService.removeSystem(selectedSystemId);
-      setSystems(systems.filter(system => system.id !== selectedSystemId));
-      toast.success(i18n.t('system_removed_successfully'));
+      setSystems(systems.filter((e) => e.id !== selectedSystemId));
+      toast.success('سامانه مورد نظر با موفقیت حذف گردید');
     } catch (error) {
-      toast.error(i18n.t('error_removing_system'));
-      console.error(error);
+      toast.error('Failed to remove system');
     } finally {
       setRemoving(false);
-      setShowConfirmationModelForRemove(false);
     }
   };
 
@@ -149,37 +139,25 @@ function RoleManagement({ systemId, onBack }: RoleManagementProps) {
       <Helmet>
         <title>{i18n.t('roles_management').toString()}</title>
       </Helmet>
-      <Box>
-        {!showSystemRoles && !showSystemEditPanel && (
-          <>
-            <Grid container spacing={2} alignItems="center" mb={2}>
-              <Grid item xs>
-                <Typography variant="h3">Role Management</Typography>
-              </Grid>
-              {onBack && (
-                <Grid item>
-                  <Button
-                    buttonType={ButtonType.CANCEL}
-                    variant="outlined"
-                    onClick={onBack}
-                    startIcon={<ArrowBackTwoTone />}
-                    text={i18n.t('back')}
-                  />
-                </Grid>
-              )}
-              <Grid item>
-                <TextField
-                  label={i18n.t('system_title').toString()}
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                />
-              </Grid>
+      {!showSystemRoles && !showSystemEditPanel && (
+        <>
+          <Grid
+            display={'flex'}
+            flexDirection={'column'}
+            gap={'10px'}
+            padding={'10px'}
+          >
+            <Grid>
+              <TextField
+                label={i18n.t('system_title').toString()}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
             </Grid>
-
             {removing && <Loader />}
             {!loading && (
               <OpGrid
-                onSearch={fetchData}
+                onSearch={() => fetchData()}
                 onClear={() => setTitle('')}
                 additionalBtn={
                   <Button
@@ -191,62 +169,57 @@ function RoleManagement({ systemId, onBack }: RoleManagementProps) {
                     variant="contained"
                   />
                 }
-                onClose={() => navigate('/usermanagement')}
+                onClose={onBack || (() => navigate('/usermanagement'))}
               />
             )}
+          </Grid>
 
-            {!removing && (
-              <MyCustomTable
-                enableRowActions
-                isLoading={loading}
-                rowActions={({
-                  row
-                }: {
-                  row: { original: SystemResponseType };
-                }) => (
-                  <TableRowAction
-                    additionalIconButton={
-                      <IconButton
-                        onClick={() => {
-                          setSelectedSystemId(Number(row.original.id));
-                          setShowCreateNewRoleDialog(true);
-                        }}
-                        color="primary"
-                      >
-                        <PersonAdd />
-                      </IconButton>
-                    }
-                    onEdit={() => {
-                      setSelectedSystemId(Number(row.original.id));
-                      setShowSystemEditPanel(true);
-                    }}
-                    onDelete={() => {
-                      setSelectedSystemId(Number(row.original.id));
-                      setShowConfirmationModelForRemove(true);
-                    }}
-                  />
-                )}
-                data={systems}
-                columns={columns}
-              />
-            )}
-          </>
-        )}
+          {!removing && (
+            <MyCustomTable
+              enableRowActions={true}
+              isLoading={loading}
+              rowActions={({
+                row
+              }: {
+                row: { original: { id: number } };
+              }) => (
+                <TableRowAction
+                  additionalIconButton={
+                    <IconButton
+                      onClick={() => {
+                        setSelectedSystemId(row.original.id);
+                        setShowCreateNewRoleDialog(true);
+                      }}
+                      color="primary"
+                    >
+                      <PersonAdd />
+                    </IconButton>
+                  }
+                  onEdit={() => {
+                    setSelectedSystemId(row.original.id);
+                    setShowSystemEditPanel(true);
+                  }}
+                  onDelete={() => {
+                    setSelectedSystemId(row.original.id);
+                    setShowConfirmationModelForRemove(true);
+                  }}
+                />
+              )}
+              columns={columns}
+              data={systems}
+            />
+          )}
 
-        {showCreateNewRoleDialog && selectedSystemId && selectedSystem && (
           <CreateNewRoleDialog
+            systemId={selectedSystemId ?? 0}
+            systemName={selectedSystem?.title ?? ''}
             open={showCreateNewRoleDialog}
             onClose={() => setShowCreateNewRoleDialog(false)}
-            systemId={selectedSystemId}
-            systemName={selectedSystem.title}
             onSuccess={() => {
               setShowCreateNewRoleDialog(false);
               fetchData();
             }}
           />
-        )}
-
-        {showCreateNewSystemDialog && (
           <CreateNewSystemDialog
             open={showCreateNewSystemDialog}
             onClose={() => setShowCreateNewSystemDialog(false)}
@@ -255,29 +228,31 @@ function RoleManagement({ systemId, onBack }: RoleManagementProps) {
               fetchData();
             }}
           />
-        )}
-
-        {showSystemRoles && selectedSystemId && (
-          <SystemRoles
-            systemId={selectedSystemId}
-            onBack={() => setShowSystemRoles(false)}
+          <ConfirmationDialog
+            id="remove_modal"
+            open={showConfirmationModelForRemove}
+            onClose={() => setShowConfirmationModelForRemove(false)}
+            closeOnEsc={true}
+            dialogTitle={i18n.t('confirm_remove')}
+            dialogOkBtnAction={handleRemoveSystem}
           />
-        )}
-
-        {showSystemEditPanel && selectedSystemId && selectedSystem && (
-          <EditSystem
-            systemId={selectedSystemId}
-            systemName={selectedSystem.title}
-          />
-        )}
-
-        <ConfirmationDialog
-          open={showConfirmationModelForRemove}
-          onClose={() => setShowConfirmationModelForRemove(false)}
-          dialogTitle={i18n.t('remove_system')}
-          dialogOkBtnAction={handleRemoveSystem}
+        </>
+      )}
+      {showSystemRoles && (
+        <SystemRoles
+          onBack={() => {
+            setSelectedSystemId(undefined);
+            setShowSystemRoles(false);
+          }}
+          systemId={selectedSystemId ?? 0}
         />
-      </Box>
+      )}
+      {showSystemEditPanel && (
+        <EditSystem
+          systemId={selectedSystemId ?? 0}
+          systemName={selectedSystem?.title ?? ''}
+        />
+      )}
     </>
   );
 }
