@@ -8,8 +8,8 @@ const JobStatusOptions: OptionType[] = [
     label: i18n.t('active')
   },
   {
-    id: JobStatus.DEACTIVE,
-    label: i18n.t('deactive')
+    id: JobStatus.INACTIVE,
+    label: i18n.t('inactive')
   }
 ];
 

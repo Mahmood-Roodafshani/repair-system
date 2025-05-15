@@ -1,6 +1,6 @@
 export type Pageable<T> = {
-  totalCount: number;
-  pageSize: number;
-  pageIndex: number;
+  totalElements: number;
+  totalPages: number;
+  size: number;
   content: T[];
 };

@@ -1,6 +1,8 @@
 import i18next from 'i18next';
+import { initReactI18next } from 'react-i18next';
 
 i18next
+  .use(initReactI18next) // passes i18n to react-i18next
   .init({
     lng: 'fa',
     debug: true,
@@ -28,6 +30,7 @@ i18next
           borrowed_items: 'اقلام امانی',
           commision: 'کمیسیون',
           in_progress: 'در حال انجام',
+          permissions: 'مدیریت مجوز‌ها',
           // BUTTONS
           add: 'افزودن',
           delete: 'حذف',
@@ -49,7 +52,7 @@ i18next
           show_menu: 'نمایش منو',
           hide_menu: 'عدم نمایش منو',
           active: 'فعال',
-          deactive: 'غیرفعال',
+          inactive: 'غیرفعال',
           user: 'کاربر',
           new_user: 'کاربر جدید',
           requester: 'درخواست کننده',
@@ -64,6 +67,7 @@ i18next
           supervisor_national_code: 'کدملی سرپرست',
           supervisor: 'سرپرست',
           relation: 'نسبت',
+          send: 'ارسال',
           username: 'نام کاربری',
           firstname: 'نام',
           lastname: 'نام خانوادگی',
@@ -148,6 +152,10 @@ i18next
           add_attach: 'افزودن پیوست',
           personal_pay: 'هزینه شخصی',
           inquiry: 'استعلام',
+          operation_type: 'عملکرد',
+          permission_name: 'نام مجوز',
+          permission_identifier: 'شناسه مجوز',
+          url: 'آدرس',
           // TABLE
           operation: 'عملیات',
           row_number: 'ردیف',
@@ -157,6 +165,7 @@ i18next
           go_to_next_page: 'رفتن به صفحه بعد',
           go_to_prev_page: 'رفتن به صفحه قبل',
           of: 'از',
+          id: 'شناسه',
           // FILTER
           from: 'تاریخ شروع',
           to: 'تاریخ پایان',
@@ -240,6 +249,13 @@ i18next
           job_removed: 'شغل مورد نظر با موفقیت حذف گردید',
           job_created: 'شغل مدنظر با موفقیت اضافه گردید',
           job_updated: 'شغل مدنظر با موفقیت ویرایش گردید',
+          permission_removed: 'مجوز مورد نظر با موفقیت حذف گردید',
+          permission_created: 'مجوز مدنظر با موفقیت اضافه گردید',
+          permission_updated: 'مجوز مدنظر با موفقیت ویرایش گردید',
+          error_removing_permission: 'خطایی در حذف مجوز رخ داده است',
+          error_fetching_permissions: 'خطایی در دریافت لیست مجوزها رخ داده است',
+          error_fetching_operation_types:
+            'خطایی در دریافت لیست عملکردها رخ داده است',
           staff_created: 'اطلاعات پرسنل مدنظر با موفقیت ثبت گردید',
           staff_updated: 'اطلاعات پرسنل مدنظر با موفقیت ویرایش گردید',
           non_staff_created: 'اطلاعات فرد غیر پرسنل مدنظر با موفقیت ثبت گردید',
@@ -344,7 +360,23 @@ i18next
           invalid_tel: 'شماره تلفن وارد شده نامعتیر است',
           activity_field_is_req: 'لطفا حوزه فعالیت را وارد نمایید',
           can_be_partner_is_req: 'لطفا فیلد وضعیت را مشخص نمایید',
-          'سامانه جدید': 'سامانه جدید'
+          'سامانه جدید': 'سامانه جدید',
+          permission_name_is_req: 'لطفا فیلد عنوان مجوز را وارد نمایید',
+          permission_name_min_length: 'عنوان مجوز باید حداقل 2 کاراکتر باشد',
+          permission_name_max_length: 'عنوان مجوز باید حداکثر 50 کاراکتر باشد',
+          permission_operation_type_is_req: 'لطفا فیلد عملکرد را وارد نمایید',
+          permission_state_is_req: 'لطفا فیلد وضعیت را وارد نمایید',
+          permission_identifier_is_req: 'لطفا فیلد شناسه مجوز را وارد نمایید',
+          permission_identifier_min_length:
+            'شناسه مجوز باید حداقل 2 کاراکتر باشد',
+          permission_identifier_max_length:
+            'شناسه مجوز باید حداکثر 36 کاراکتر باشد',
+          permission_description_max_length:
+            'شرح مجوز باید حداکثر 255 کاراکتر باشد',
+          permission_incorrect_url: 'آدرس مجوز صحیح نمی باشد',
+          permission_url_max_length: 'آدرس مجوز باید حداکثر 255 کاراکتر باشد',
+          permission_url_is_req: 'لطفا فیلد آدرس مجوز را وارد نمایید',
+          permission_url_min_length: 'آدرس مجوز باید حداقل 7 کاراکتر باشد'
         }
       }
     }

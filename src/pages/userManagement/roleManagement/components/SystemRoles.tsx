@@ -53,12 +53,18 @@ function SystemRoles({ systemId, onBack }: SystemRolesProps) {
         muiTableBodyCellProps: {
           align: 'right'
         },
-        Cell: ({ row, cell }: { row: { index: number }; cell: { getValue: () => boolean } }) => {
+        Cell: ({
+          row,
+          cell
+        }: {
+          row: { index: number };
+          cell: { getValue: () => boolean };
+        }) => {
           return (
             <Typography sx={{ textAlign: 'right' }} key={'row_' + row.index}>
               {cell.getValue()
                 ? i18n.t('active').toString()
-                : i18n.t('deactive').toString()}
+                : i18n.t('inactive').toString()}
             </Typography>
           );
         }
@@ -69,7 +75,8 @@ function SystemRoles({ systemId, onBack }: SystemRolesProps) {
 
   useEffect(() => {
     setLoading(true);
-    roleManagementService.getSystemRoles(systemId)
+    roleManagementService
+      .getSystemRoles(systemId)
       .then((roles) => {
         setRoles(roles);
       })
@@ -87,11 +94,7 @@ function SystemRoles({ systemId, onBack }: SystemRolesProps) {
         enableRowActions={true}
         enableHiding={false}
         enableFilters={false}
-        rowActions={({
-          row
-        }: {
-          row: { original: { id: number } };
-        }) => (
+        rowActions={({ row }: { row: { original: { id: number } } }) => (
           //todo: impl onEdit
           <TableRowAction
             onEdit={() => console.info('Edit')}
@@ -111,7 +114,8 @@ function SystemRoles({ systemId, onBack }: SystemRolesProps) {
         dialogOkBtnAction={() => {
           if (!selectedRole) return;
           setLoading(true);
-          roleManagementService.removeRole(selectedRole)
+          roleManagementService
+            .removeRole(selectedRole)
             .then(() => {
               setRoles(roles.filter((e) => e.id !== selectedRole));
               toast.success('سامانه مورد نظر با موفقیت حذف گردید');

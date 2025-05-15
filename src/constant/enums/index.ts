@@ -1,4 +1,5 @@
 export { Degree } from './degree';
+export { ActivityStatus } from './activityStatus';
 export { MilitaryServiceStatus } from './militaryServiceStatus';
 export { ServiceStatus } from './serviceStatus';
 export { MaritalStatus } from './maritalStatus';

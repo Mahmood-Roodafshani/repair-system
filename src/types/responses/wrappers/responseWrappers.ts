@@ -1,4 +1,4 @@
-import { PermissionDto } from '../userManagement/roleManagement/permissionDto';
+import { PermissionDto } from '../userManagement/roleManagement/permissionManagementDto';
 
 export interface JSonResponseEntityPermissionDto {
   responseCode: string;
@@ -8,4 +8,4 @@ export interface JSonResponseEntityPermissionDto {
 export interface JSonResponseEntityListPermissionDto {
   responseCode: string;
   data: PermissionDto[];
-} 
+}

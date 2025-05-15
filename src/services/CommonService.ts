@@ -8,19 +8,23 @@ import {
   ActivityMock,
   ActivityFieldsMock,
   ItemCategoryFieldsMock,
-  CitiesMock
+  CitiesMock,
+  OperationTypesMock
 } from '../mock/common/commonMock';
 import { timeout } from '../utils/helper';
 
 class CommonService {
-  private static async fetchWithMock<T>(mockData: T[], apiCall: () => Promise<any>): Promise<T[]> {
+  private static async fetchWithMock<T>(
+    mockData: T[],
+    apiCall: () => Promise<any>
+  ): Promise<T[]> {
     if (import.meta.env.VITE_APP_WORK_WITH_MOCK === 'true') {
       await timeout(1000);
       return mockData;
     }
     try {
       const response = await apiCall();
-      return response.data;
+      return response.data.data;
     } catch (error) {
       console.error('Error fetching data:', error);
       throw error;
@@ -28,9 +32,8 @@ class CommonService {
   }
 
   static async getCities() {
-    return this.fetchWithMock(
-      CitiesMock,
-      () => axiosInstance.get(ROUTES.COMMON.CITIES)
+    return this.fetchWithMock(CitiesMock, () =>
+      axiosInstance.get(ROUTES.COMMON.CITIES)
     );
   }
 
@@ -42,30 +45,26 @@ class CommonService {
   }
 
   static async getOrganizationUnits() {
-    return this.fetchWithMock(
-      OrganizationUnitsMock,
-      () => axiosInstance.get(ROUTES.JOBS.ORGANIZATION_UNITS.FETCH_ALL)
+    return this.fetchWithMock(OrganizationUnitsMock, () =>
+      axiosInstance.get(ROUTES.JOBS.ORGANIZATION_UNITS.FETCH_ALL)
     );
   }
 
   static async getRoles() {
-    return this.fetchWithMock(
-      RolesMock,
-      () => axiosInstance.get(ROUTES.ROLE.FETCH_ALL)
+    return this.fetchWithMock(RolesMock, () =>
+      axiosInstance.get(ROUTES.ROLE.FETCH_ALL)
     );
   }
 
   static async getFields() {
-    return this.fetchWithMock(
-      FieldsMock,
-      () => axiosInstance.get(ROUTES.COMMON.FIELDS)
+    return this.fetchWithMock(FieldsMock, () =>
+      axiosInstance.get(ROUTES.COMMON.FIELDS)
     );
   }
 
   static async getCourses() {
-    return this.fetchWithMock(
-      CoursesMock,
-      () => axiosInstance.get(ROUTES.COMMON.COURSES)
+    return this.fetchWithMock(CoursesMock, () =>
+      axiosInstance.get(ROUTES.COMMON.COURSES)
     );
   }
 
@@ -84,25 +83,28 @@ class CommonService {
   }
 
   static async getActivities() {
-    return this.fetchWithMock(
-      ActivityMock,
-      () => axiosInstance.get(ROUTES.COMMON.ACTIVITIES)
+    return this.fetchWithMock(ActivityMock, () =>
+      axiosInstance.get(ROUTES.COMMON.ACTIVITIES)
     );
   }
 
   static async getActivityFields() {
-    return this.fetchWithMock(
-      ActivityFieldsMock,
-      () => axiosInstance.get(ROUTES.COMMON.ACTIVITY_FIELDS)
+    return this.fetchWithMock(ActivityFieldsMock, () =>
+      axiosInstance.get(ROUTES.COMMON.ACTIVITY_FIELDS)
     );
   }
 
   static async getItemCategoryFields() {
-    return this.fetchWithMock(
-      ItemCategoryFieldsMock,
-      () => axiosInstance.get(ROUTES.COMMON.ITEM_CATEGORY_FIELDS)
+    return this.fetchWithMock(ItemCategoryFieldsMock, () =>
+      axiosInstance.get(ROUTES.COMMON.ITEM_CATEGORY_FIELDS)
+    );
+  }
+
+  static async getOperationTypes() {
+    return this.fetchWithMock(OperationTypesMock, () =>
+      axiosInstance.get(ROUTES.COMMON.OPERATION_TYPES)
     );
   }
 }
 
-export default CommonService; 
+export default CommonService;

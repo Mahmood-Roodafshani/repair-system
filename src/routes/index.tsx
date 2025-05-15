@@ -1,5 +1,10 @@
 import { Suspense, lazy, ComponentType } from 'react';
-import { RouteObject, Navigate, useRoutes, useLocation } from 'react-router-dom';
+import {
+  RouteObject,
+  Navigate,
+  useRoutes,
+  useLocation
+} from 'react-router-dom';
 import { useKeycloak } from '@react-keycloak/web';
 
 import SidebarLayout from 'src/layouts/SidebarLayout';
@@ -37,7 +42,9 @@ import {
   TechnicalInterface,
   Tracking,
   TrackingHomePage,
-  UserManagementHomePage
+  UserManagementHomePage,
+  PermissionsManagement,
+  Permissions
 } from 'src/pages';
 import {
   BaseInfoHomePage,
@@ -45,7 +52,6 @@ import {
   OtherInfo,
   StaffInfo
 } from 'src/pages/baseInfoPanel';
-import Permission from '../pages/userManagement/permission/Permission';
 
 const Loader =
   <P extends object>(Component: ComponentType<P>) =>
@@ -89,7 +95,7 @@ const StatusMaintenance = Loader(
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { keycloak, initialized } = useKeycloak();
   const location = useLocation();
-  
+
   // If Keycloak is not initialized yet, show loading
   if (!initialized) {
     return <SuspenseLoader />;
@@ -293,10 +299,18 @@ const routes: RouteObject[] = [
             element: <Signiture />
           },
           {
-            path: 'permission',
+            path: 'manage-permissions',
             element: (
               <ProtectedRoute>
-                <Permission />
+                <PermissionsManagement />
+              </ProtectedRoute>
+            )
+          },
+          {
+            path: 'permissions',
+            element: (
+              <ProtectedRoute>
+                <Permissions />
               </ProtectedRoute>
             )
           }

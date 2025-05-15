@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
-import { i18n } from 'src/localization';
+import { useTranslation } from 'react-i18next';
 import { AnnouncementRequestType } from 'src/types/requests/userManagement/announcements/announcementRequestType';
 import { validationSchema } from '../validationSchema';
 import AnnouncementForm from '../AnnouncementForm';
@@ -14,6 +14,7 @@ import { sendSecurityAnnouncement } from 'src/services/userManagement/announceme
 function SecurityAnnouncements() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const onSubmit = async (
     values: AnnouncementRequestType,
@@ -23,11 +24,11 @@ function SecurityAnnouncements() {
     try {
       const response = await sendSecurityAnnouncement({ announcement: values });
       if ('statusCode' in response && response.statusCode === 200) {
-        toast.success(i18n.t('op_done_successfully').toString());
+        toast.success(t('op_done_successfully').toString());
         navigate('/user-management/announcements');
       }
     } catch (error) {
-      toast.error(i18n.t('op_failed').toString());
+      toast.error(t('op_failed').toString());
     } finally {
       setLoading(false);
       actions.setSubmitting(false);
@@ -37,7 +38,7 @@ function SecurityAnnouncements() {
   return (
     <>
       <Helmet>
-        <title>{i18n.t('security_announcement').toString()}</title>
+        <title>{t('security_announcement').toString()}</title>
       </Helmet>
 
       <Formik
@@ -68,7 +69,7 @@ function SecurityAnnouncements() {
               <Grid item xs={12}>
                 <OpGrid
                   onCreateOrEdit={submitForm}
-                  createOrEditLabel={i18n.t('send')}
+                  createOrEditLabel={t('send')}
                   onClose={() => navigate('/user-management/announcements')}
                 />
               </Grid>

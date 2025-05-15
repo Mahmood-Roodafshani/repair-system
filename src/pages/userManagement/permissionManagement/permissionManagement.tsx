@@ -6,17 +6,18 @@ import { toast } from 'react-toastify';
 import { Loader, MyCustomTable, OpGrid, TableRowAction } from 'src/components';
 import { i18n } from 'src/localization';
 import { Button, ButtonType, ConfirmationDialog } from '@/components/form';
-import { permissionService } from 'src/services/userManagement/permissionService';
-import { PermissionDto } from 'src/types/responses/userManagement/roleManagement/permissionDto';
 import CreatePermissionDialog from './components/CreatePermissionDialog';
 import EditPermissionDialog from './components/EditPermissionDialog';
+import { permissionManagementService } from '@/services';
+import { PermissionManagementDto } from '@/types';
 
-function Permission() {
+function ManagePermissions() {
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [permissions, setPermissions] = useState<PermissionDto[]>([]);
+  const [permissions, setPermissions] = useState<PermissionManagementDto[]>([]);
   const [loading, setLoading] = useState(false);
   const [removing, setRemoving] = useState(false);
-  const [selectedPermission, setSelectedPermission] = useState<PermissionDto>();
+  const [selectedPermission, setSelectedPermission] =
+    useState<PermissionManagementDto>();
   const navigate = useNavigate();
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
@@ -76,7 +77,7 @@ function Permission() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await permissionService.getAll();
+      const data = await permissionManagementService.getAll();
       setPermissions(data);
     } catch (error) {
       console.error('Error fetching permissions:', error);
@@ -92,9 +93,10 @@ function Permission() {
 
   const filteredPermissions = useMemo(() => {
     if (!searchTerm) return permissions;
-    return permissions.filter(permission =>
-      permission.id.toString().includes(searchTerm) ||
-      permission.name.toLowerCase().includes(searchTerm.toLowerCase())
+    return permissions.filter(
+      (permission) =>
+        permission.id.toString().includes(searchTerm) ||
+        permission.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [permissions, searchTerm]);
 
@@ -141,9 +143,9 @@ function Permission() {
           enableRowActions={true}
           isLoading={loading}
           rowActions={({
-                         row
-                       }: {
-            row: { original: PermissionDto };
+            row
+          }: {
+            row: { original: PermissionManagementDto };
           }) => (
             <TableRowAction
               onEdit={() => {
@@ -191,12 +193,15 @@ function Permission() {
         dialogOkBtnAction={() => {
           if (!selectedPermission) return;
           setRemoving(true);
-          permissionService.delete(selectedPermission.id.toString())
+          permissionManagementService
+            .delete(selectedPermission.id.toString())
             .then(() => {
-              setPermissions(permissions.filter(p => p.id !== selectedPermission.id));
+              setPermissions(
+                permissions.filter((p) => p.id !== selectedPermission.id)
+              );
               toast.success(i18n.t('permission_deleted_successfully'));
             })
-            .catch(error => {
+            .catch((error) => {
               console.error('Error deleting permission:', error);
               toast.error(i18n.t('error_deleting_permission'));
             })
@@ -207,4 +212,4 @@ function Permission() {
   );
 }
 
-export default Permission; 
+export default ManagePermissions;

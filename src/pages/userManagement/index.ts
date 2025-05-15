@@ -5,3 +5,5 @@ export * from './homePage';
 export * from './chooseReplacement';
 export * from './createGroupAccess';
 export * from './signiture';
+export * from './permissions';
+export * from './permissionManagement';

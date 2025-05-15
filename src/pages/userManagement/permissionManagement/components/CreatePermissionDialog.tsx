@@ -1,10 +1,17 @@
-import { Dialog, DialogTitle, DialogContent, DialogActions, Grid, TextField } from '@mui/material';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Grid,
+  TextField
+} from '@mui/material';
 import { Form, Formik } from 'formik';
 import { Button, ButtonType } from '@/components/form';
 import { i18n } from 'src/localization';
-import { permissionService } from 'src/services/userManagement/permissionService';
 import { toast } from 'react-toastify';
-import { PermissionDto } from 'src/types/responses/userManagement/roleManagement/permissionDto';
+import { permissionManagementService } from '@/services';
+import { PermissionManagementDto } from '@/types';
 
 interface CreatePermissionDialogProps {
   open: boolean;
@@ -12,16 +19,20 @@ interface CreatePermissionDialogProps {
   onAdd: () => void;
 }
 
-function CreatePermissionDialog({ open, onClose, onAdd }: CreatePermissionDialogProps) {
-  const initialValues: Omit<PermissionDto, 'id'> = {
+function CreatePermissionDialog({
+  open,
+  onClose,
+  onAdd
+}: CreatePermissionDialogProps) {
+  const initialValues: Omit<PermissionManagementDto, 'id'> = {
     name: '',
     description: ''
   };
 
-  const handleSubmit = async (values: Omit<PermissionDto, 'id'>) => {
+  const handleSubmit = async (values: Omit<PermissionManagementDto, 'id'>) => {
     try {
-      console.log("Mahmood")
-      await permissionService.create(values);
+      console.log('Mahmood');
+      await permissionManagementService.create(values);
       toast.success(i18n.t('permission_created_successfully'));
       onAdd();
     } catch (error) {
@@ -33,10 +44,7 @@ function CreatePermissionDialog({ open, onClose, onAdd }: CreatePermissionDialog
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>{i18n.t('new_permission')}</DialogTitle>
-      <Formik
-        initialValues={initialValues}
-        onSubmit={handleSubmit}
-      >
+      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
         {({ values, handleChange, handleSubmit, isSubmitting }) => (
           <Form>
             <DialogContent>
@@ -64,10 +72,7 @@ function CreatePermissionDialog({ open, onClose, onAdd }: CreatePermissionDialog
               </Grid>
             </DialogContent>
             <DialogActions>
-              <Button
-                buttonType={ButtonType.CLOSE}
-                onClick={onClose}
-              />
+              <Button buttonType={ButtonType.CLOSE} onClick={onClose} />
               <Button
                 buttonType={ButtonType.ACCEPT}
                 onClick={() => handleSubmit()}
@@ -81,4 +86,4 @@ function CreatePermissionDialog({ open, onClose, onAdd }: CreatePermissionDialog
   );
 }
 
-export default CreatePermissionDialog; 
+export default CreatePermissionDialog;

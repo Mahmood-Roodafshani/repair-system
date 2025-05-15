@@ -17,7 +17,10 @@ import { RichViewType } from '../../../types/richViewType';
 import { StaffInfoResponseType } from '../../../types/responses/baseInfoPanel/staffInfo/staffInfoResponseType';
 import { i18n } from '../../../localization';
 import CommonService from '../../../services/CommonService';
-import { fetchFamilyInfoList, removeFamilyInfo } from '../../../services/baseInfoPanel';
+import {
+  fetchFamilyInfoList,
+  removeFamilyInfo
+} from '../../../services/baseInfoPanel';
 import CreateOrEditForm from '../common/CreateOrEditForm';
 import { Add, Delete, Edit } from '@mui/icons-material';
 import { ApiResponse } from 'src/types/responses/apiResponse';
@@ -45,9 +48,14 @@ interface ExtendedStaffInfoResponseType extends StaffInfoResponseType {
 
 function FamilyInfo() {
   const [loading, setLoading] = useState(false);
-  const [familyInfo, setFamilyInfo] = useState<ExtendedStaffInfoResponseType[]>([]);
-  const [selectedFamilyMember, setSelectedFamilyMember] = useState<ExtendedStaffInfoResponseType | null>(null);
-  const [selectedMemberIdForDelete, setSelectedMemberIdForDelete] = useState<string | number>();
+  const [familyInfo, setFamilyInfo] = useState<ExtendedStaffInfoResponseType[]>(
+    []
+  );
+  const [selectedFamilyMember, setSelectedFamilyMember] =
+    useState<ExtendedStaffInfoResponseType | null>(null);
+  const [selectedMemberIdForDelete, setSelectedMemberIdForDelete] = useState<
+    string | number
+  >();
   const [cities, setCities] = useState<RichViewType[]>([]);
 
   useEffect(() => {
@@ -70,7 +78,9 @@ function FamilyInfo() {
     try {
       const response = await fetchFamilyInfoList({ filter: {} });
       if (import.meta.env.VITE_APP_WORK_WITH_MOCK === 'true') {
-        const mockRes = response as ApiResponse<ExtendedStaffInfoResponseType[]>;
+        const mockRes = response as ApiResponse<
+          ExtendedStaffInfoResponseType[]
+        >;
         if (mockRes.statusCode === 200) {
           const mappedData = mockRes.content?.map((item, index) => ({
             ...item,
@@ -84,7 +94,9 @@ function FamilyInfo() {
           setFamilyInfo(mappedData || []);
         }
       } else {
-        const apiRes = response as AxiosResponse<ExtendedStaffInfoResponseType[]>;
+        const apiRes = response as AxiosResponse<
+          ExtendedStaffInfoResponseType[]
+        >;
         if (apiRes.data) {
           const mappedData = apiRes.data.map((item, index) => ({
             ...item,
@@ -165,9 +177,12 @@ function FamilyInfo() {
         accessorKey: 'job'
       },
       {
-        accessorKey: 'actions',
-        header: 'Actions',
-        Cell: ({ row }: { row: { original: ExtendedStaffInfoResponseType & { index: number } } }) => (
+        header: i18n.t('operation'),
+        Cell: ({
+          row
+        }: {
+          row: { original: ExtendedStaffInfoResponseType & { index: number } };
+        }) => (
           <Box>
             <IconButton onClick={() => handleEdit(row.original)}>
               <Edit />
@@ -194,7 +209,9 @@ function FamilyInfo() {
           <Button
             variant="contained"
             startIcon={<Add />}
-            onClick={() => setSelectedFamilyMember({} as ExtendedStaffInfoResponseType)}
+            onClick={() =>
+              setSelectedFamilyMember({} as ExtendedStaffInfoResponseType)
+            }
           >
             {i18n.t('add_new_member')}
           </Button>
@@ -236,7 +253,8 @@ function FamilyInfo() {
             religion: selectedFamilyMember.religion as any,
             birthLocation: selectedFamilyMember.birthLocation,
             gender: selectedFamilyMember.gender as any,
-            supervisorNationalCode: selectedFamilyMember.supervisorNationalCode || '',
+            supervisorNationalCode:
+              selectedFamilyMember.supervisorNationalCode || '',
             degree: selectedFamilyMember.degree as any,
             serviceStatus: selectedFamilyMember.serviceStatus as any,
             martialStatus: selectedFamilyMember.maritalStatus as any,

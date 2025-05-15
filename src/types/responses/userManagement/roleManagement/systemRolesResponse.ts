@@ -1,4 +1,4 @@
-import { PermissionDto } from './permissionDto';
+import { PermissionDto } from './permissionManagementDto';
 
 export type SystemRolesResponse = {
   id: number;

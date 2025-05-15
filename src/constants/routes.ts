@@ -54,6 +54,14 @@ export const ROUTES = {
       DELETE: (id: string) => `${BASE_URL}/users/${id}`,
       CURRENT: `${BASE_URL}/api/users/me`,
       UPDATE_CURRENT: `${BASE_URL}/api/users/me`
+    },
+    // Permission
+    PERMISSION: {
+      // FETCH_ALL: `${BASE_URL}/um/permissions/page?`,
+      FETCH_ALL: `${BASE_URL}/um/permissions`,
+      CREATE: `${BASE_URL}/um/permissions`,
+      UPDATE: (code: number) => `${BASE_URL}/um/permissions/${code}`,
+      DELETE: (code: number) => `${BASE_URL}/um/permissions/${code}`
     }
   },
 
@@ -114,7 +122,8 @@ export const ROUTES = {
     WORK_LOCATIONS: `${BASE_URL}/common/work-locations`,
     ACTIVITIES: `${BASE_URL}/common/activities`,
     ACTIVITY_FIELDS: `${BASE_URL}/common/activity-fields`,
-    ITEM_CATEGORY_FIELDS: `${BASE_URL}/common/item-category-fields`
+    ITEM_CATEGORY_FIELDS: `${BASE_URL}/common/item-category-fields`,
+    OPERATION_TYPES: `${BASE_URL}/um/operation-type`
   },
 
   // Base Info Management
@@ -158,4 +167,4 @@ export const ROUTES = {
       LIST: `${BASE_URL}/tracking/list`
     }
   }
-} as const; 
+} as const;
