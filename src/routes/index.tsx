@@ -20,7 +20,6 @@ import {
   Commission,
   Companies,
   ContentReport,
-  CreateGroupAccess,
   Dashboard,
   GroupPerformanceReport,
   GroupPropertyCode,
@@ -44,7 +43,8 @@ import {
   TrackingHomePage,
   UserManagementHomePage,
   PermissionsManagement,
-  Permissions
+  Permissions,
+  GroupAccess
 } from 'src/pages';
 import {
   BaseInfoHomePage,
@@ -279,8 +279,8 @@ const routes: RouteObject[] = [
             element: <RoleManagement />
           },
           {
-            path: 'create-group-access',
-            element: <CreateGroupAccess />
+            path: 'group-access',
+            element: <GroupAccess />
           },
           {
             path: 'security-announcement',

@@ -1,4 +1,4 @@
-import { PermissionDto } from '../userManagement/roleManagement/permissionManagementDto';
+import { PermissionDto } from '../userManagement';
 
 export interface JSonResponseEntityPermissionDto {
   responseCode: string;

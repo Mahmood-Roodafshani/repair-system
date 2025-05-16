@@ -31,10 +31,12 @@ export const ROUTES = {
     },
     // Group Access
     GROUP_ACCESS: {
-      FETCH_LIST: `${BASE_URL}/groupAccess/list`,
-      FETCH_ROLES: `${BASE_URL}/groupAccess/roles`,
-      REMOVE: `${BASE_URL}/groupAccess/remove`,
-      ADD: `${BASE_URL}/groupAccess/add`
+      FETCH_LIST_WITH_PAGE: `${BASE_URL}/um/groups/page?`,
+      FETCH_LIST: `${BASE_URL}/um/groups`,
+      FETCH_ROLES: `${BASE_URL}/um/groups`,
+      CREATE: `${BASE_URL}/um/groups`,
+      UPDATE: (id: number) => `${BASE_URL}/um/groups/${id}`,
+      DELETE: (id: number) => `${BASE_URL}/um/groups/${id}`
     },
     // Announcement
     ANNOUNCEMENT: {
@@ -65,7 +67,7 @@ export const ROUTES = {
     },
     // Permission
     PERMISSION: {
-      // FETCH_ALL: `${BASE_URL}/um/permissions/page?`,
+      FETCH_ALL_With_PAGE: `${BASE_URL}/um/permissions/page?`,
       FETCH_ALL: `${BASE_URL}/um/permissions`,
       CREATE: `${BASE_URL}/um/permissions`,
       UPDATE: (code: number) => `${BASE_URL}/um/permissions/${code}`,

@@ -1,5 +1,4 @@
-import { PermissionDto } from './permissionManagementDto';
-import { ApiResponse } from '../../index';
+import { ApiResponse, PermissionDto } from '../../index';
 
 export interface SystemRolesApiResponse
   extends ApiResponse<

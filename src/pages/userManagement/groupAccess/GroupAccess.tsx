@@ -1,36 +1,35 @@
 import { Button, ButtonType, ConfirmationDialog } from '@/components/form';
-import { permissionService, roleManagementService } from '@/services';
+import { groupAccessService, roleManagementService } from '@/services';
+import {
+  GroupAccessDto,
+  groupAccessInitialValues,
+  Pagination,
+  RoleDto
+} from '@/types';
 import { Box, Grid, Typography } from '@mui/material';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-import { MyCustomTable, TableRowAction } from 'src/components';
-import {
-  Pagination,
-  PermissionDto,
-  RoleDto,
-  roleInitialValues
-} from 'src/types';
+import { Loader, MyCustomTable, TableRowAction } from 'src/components';
 import CreateOrEditForm from './components/CreateOrEditForm';
 
-interface TableRow extends RoleDto {
+interface TableRow extends GroupAccessDto {
   index: number;
-  original: RoleDto;
+  original: GroupAccessDto;
 }
 
-function RoleManagement() {
+function GroupAccess() {
   const { t } = useTranslation();
-
-  const [roles, setRoles] = useState<RoleDto[]>([]);
-  const [selectedRoleId, setSelectedRoleId] = useState<number>();
-  const [loading, setLoading] = useState(false);
-  const [removing, setRemoving] = useState(false);
+  const [groups, setGroups] = useState<GroupAccessDto[]>([]);
+  const [selectedRow, setSelectedRow] = useState<GroupAccessDto>();
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [showConfirmationModelForRemove, setShowConfirmationModelForRemove] =
+  const [selectedGroupId, setSelectedGroupId] = useState<number>();
+  const [loading, setLoading] = useState(false);
+  const [showConfirmationForRemove, setShowConfirmationForRemove] =
     useState(false);
-  const [selectedRow, setSelectedRow] = useState<RoleDto>();
-  const [permissions, setPermissions] = useState<PermissionDto[]>();
+  const [removing, setRemoving] = useState(false);
+  const [roles, setRoles] = useState<RoleDto[]>();
   const [pagination, setPagination] = useState<Pagination>({
     pageIndex: 0,
     pageSize: 5
@@ -68,14 +67,14 @@ function RoleManagement() {
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await roleManagementService.getAllWithPage({
+      const response = await groupAccessService.getAllWithPage({
         pageIndex: pagination.pageIndex,
         pageSize: pagination.pageSize
       });
       setTotalCount(response.totalElements);
-      setRoles(response.content);
+      setGroups(response.content);
     } catch (error) {
-      toast.error('Failed to fetch roles');
+      toast.error('Failed to fetch group access list');
     } finally {
       setLoading(false);
     }
@@ -85,21 +84,21 @@ function RoleManagement() {
     fetchData();
   }, []);
 
-  const fetchPermission = useCallback(async () => {
+  const fetchRoles = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await permissionService.getAll();
-      setPermissions(response);
+      const response = await roleManagementService.getAll();
+      setRoles(response);
     } catch (error) {
-      console.error('Error fetching permissions:', error);
-      toast.error(t('error_fetching_permissions'));
+      console.error('Error fetching roles:', error);
+      toast.error(t('error_fetching_roles'));
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    if ((showCreateForm || selectedRow) && !permissions) fetchPermission();
+    if ((showCreateForm || selectedRow) && !roles) fetchRoles();
   }, [selectedRow, showCreateForm]);
 
   const refetchData = useCallback(async () => {
@@ -124,24 +123,10 @@ function RoleManagement() {
     refetchData();
   }, [pagination]);
 
-  const handleRemoveSystem = async () => {
-    if (!selectedRoleId) return;
-    try {
-      setRemoving(true);
-      await roleManagementService.delete(selectedRoleId);
-      setRoles(roles.filter((e) => e.id !== selectedRoleId));
-      toast.success(t('permission_removed'));
-    } catch (error) {
-      toast.error('Failed to remove role');
-    } finally {
-      setRemoving(false);
-    }
-  };
-
   return (
     <>
       <Helmet>
-        <title>{t('roles_management').toString()}</title>
+        <title>{t('manage_group_access')}</title>
       </Helmet>
       <Box>
         {!showCreateForm && !selectedRow && (
@@ -161,7 +146,6 @@ function RoleManagement() {
                 />
               </Box>
             </Grid>
-
             {!removing && (
               <Grid item xs={12}>
                 <MyCustomTable
@@ -171,47 +155,61 @@ function RoleManagement() {
                   enablePagination
                   isRefetching={refetchingData}
                   enableRowActions
-                  isLoading={loading}
-                  rowActions={({ row }: { row: TableRow }) => (
+                  enableHiding={false}
+                  enableFilters={false}
+                  rowActions={({ row }: { row: { original: TableRow } }) => (
                     <TableRowAction
                       onEdit={() => {
                         setSelectedRow(row.original);
                       }}
                       onDelete={() => {
-                        setSelectedRoleId(row.original.id);
-                        setShowConfirmationModelForRemove(true);
+                        setSelectedGroupId(row.original.id);
+                        setShowConfirmationForRemove(true);
                       }}
                     />
                   )}
+                  data={groups}
                   columns={columns}
-                  data={roles}
                 />
               </Grid>
             )}
-
+            {loading && <Loader />}
             <ConfirmationDialog
               id="remove_modal"
-              open={showConfirmationModelForRemove}
-              onClose={() => setShowConfirmationModelForRemove(false)}
+              open={showConfirmationForRemove}
+              onClose={() => setShowConfirmationForRemove(false)}
               closeOnEsc={true}
               dialogTitle={t('confirm_remove')}
-              dialogOkBtnAction={handleRemoveSystem}
+              dialogOkBtnAction={async () => {
+                if (!selectedGroupId) return;
+                setRemoving(true);
+                try {
+                  groupAccessService.delete(selectedGroupId);
+
+                  setGroups(groups.filter((e) => e.id !== selectedGroupId));
+                  toast.success('گروه مورد نظر با موفقیت حذف گردید');
+                } catch (error) {
+                  toast.error('Failed to remove group access');
+                } finally {
+                  setRemoving(false);
+                }
+              }}
             />
           </Grid>
         )}
-        {(showCreateForm || selectedRow) && permissions && (
+        {(showCreateForm || selectedRow) && roles && (
           <CreateOrEditForm
             initialValues={
               selectedRow
                 ? {
                     ...selectedRow
                   }
-                : roleInitialValues
+                : groupAccessInitialValues
             }
-            permissions={permissions}
+            roles={roles}
             onSuccess={(newItem) => {
               if (showCreateForm) {
-                setRoles([newItem, ...roles]);
+                setGroups([newItem, ...groups]);
                 setTotalCount(totalCount + 1);
               } else if (selectedRow !== undefined) {
                 setRoles(
@@ -233,4 +231,4 @@ function RoleManagement() {
   );
 }
 
-export default RoleManagement;
+export default GroupAccess;

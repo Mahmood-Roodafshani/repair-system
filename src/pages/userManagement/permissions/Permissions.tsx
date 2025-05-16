@@ -24,7 +24,7 @@ function Permissions() {
   const [selectedRowForDelete, setSelectedRowForDelete] = useState<number>();
   const [pagination, setPagination] = useState<Pagination>({
     pageIndex: 0,
-    pageSize: 10
+    pageSize: 1
   });
   const [totalCount, setTotalCount] = useState<number>(0);
   const [refetchingData, setRefetchingData] = useState(false);
@@ -32,16 +32,12 @@ function Permissions() {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const response = await permissionService
-        .getAll
-        //   {
-        //   pageIndex: pagination.pageIndex,
-        //   pageSize: pagination.pageSize
-        // }
-        ();
-      // setTotalCount(response.totalElements);
-      // setPermissions(response.content);
-      setPermissions(response);
+      const response = await permissionService.getAllWithPage({
+        pageIndex: pagination.pageIndex,
+        pageSize: pagination.pageSize
+      });
+      setTotalCount(response.totalElements);
+      setPermissions(response.content);
     } catch (error) {
       console.error('Error fetching permissions:', error);
       toast.error(t('error_fetching_permissions'));
@@ -59,14 +55,11 @@ function Permissions() {
     setPermissions([]);
     setRefetchingData(true);
     try {
-      const response = await permissionService
-        .getAll
-        //   {
-        //   pageIndex: pagination.pageIndex,
-        //   pageSize: pagination.pageSize
-        // }
-        ();
-      setPermissions(response);
+      const response = await permissionService.getAllWithPage({
+        pageIndex: pagination.pageIndex,
+        pageSize: pagination.pageSize
+      });
+      setPermissions(response.content);
     } catch (error) {
       console.error('Error fetching permissions:', error);
       toast.error(t('error_fetching_permissions'));

@@ -31,6 +31,7 @@ i18next
           commision: 'کمیسیون',
           in_progress: 'در حال انجام',
           permissions: 'مدیریت مجوز‌ها',
+          manage_group_access: 'مدیریت گروه دسترسی',
           // BUTTONS
           add: 'افزودن',
           delete: 'حذف',
@@ -159,6 +160,9 @@ i18next
           role_name: 'نام نقش',
           role_identifier: 'شناسه نقش',
           permissions_list: 'لیست مجوزها',
+          group_access_name: 'نام گروه دسترسی',
+          group_access_identifier: 'شناسه گروه دسترسی',
+          roles_list: 'لیست نقش‌ها',
           // TABLE
           operation: 'عملیات',
           row_number: 'ردیف',

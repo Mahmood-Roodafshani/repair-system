@@ -108,7 +108,7 @@ function RoleManagement({ onBack }: RoleManagementProps) {
     if (!title) return;
     try {
       setLoading(true);
-      const response = await roleManagementService.getAll();
+      // const response = await roleManagementService.getAll();
       // const transformedSystems: SystemResponseType[] = response.map((role) => ({
       //   id: role.id,
       //   title: role.name,

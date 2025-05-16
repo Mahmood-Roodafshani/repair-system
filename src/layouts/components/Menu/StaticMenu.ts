@@ -49,8 +49,8 @@ export class StaticMenu {
           icon: LockIcon
         },
         {
-          title: 'ایجاد گروه دسترسی',
-          link: '/usermanagement/create-group-access',
+          title: 'مدیریت گروه دسترسی',
+          link: '/usermanagement/group-access',
           icon: GroupIcon
         },
         {

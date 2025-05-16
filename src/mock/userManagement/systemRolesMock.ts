@@ -86,14 +86,20 @@ export const SystemRolesMock: NewSystemRolesResponse[] = [
     description: 'System Administrator',
     permissions: [
       {
-        id: 1,
+        code: 1,
         name: 'user_management',
-        description: 'User Management'
+        description: 'User Management',
+        identifier: '1',
+        operationType: 'GET',
+        state: 'ACTIVE'
       },
       {
-        id: 2,
+        code: 2,
         name: 'role_management',
-        description: 'Role Management'
+        description: 'Role Management',
+        identifier: '2',
+        operationType: 'GET',
+        state: 'ACTIVE'
       }
     ]
   },
@@ -103,9 +109,12 @@ export const SystemRolesMock: NewSystemRolesResponse[] = [
     description: 'Regular User',
     permissions: [
       {
-        id: 3,
+        code: 3,
         name: 'view_profile',
-        description: 'View Profile'
+        description: 'View Profile',
+        identifier: '3',
+        operationType: 'GET',
+        state: 'ACTIVE'
       }
     ]
   },
@@ -115,9 +124,12 @@ export const SystemRolesMock: NewSystemRolesResponse[] = [
     description: 'Department Manager',
     permissions: [
       {
-        id: 4,
+        code: 4,
         name: 'manage_department',
-        description: 'Manage Department'
+        description: 'Manage Department',
+        identifier: '4',
+        operationType: 'GET',
+        state: 'ACTIVE'
       }
     ]
   }

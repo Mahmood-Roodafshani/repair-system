@@ -3,7 +3,7 @@ export * from './roleManagement';
 export * from './accessControl';
 export * from './homePage';
 export * from './chooseReplacement';
-export * from './createGroupAccess';
 export * from './signiture';
 export * from './permissions';
 export * from './permissionManagement';
+export * from './groupAccess';

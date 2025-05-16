@@ -2,9 +2,9 @@ import {
   CodingMock,
   CodingAccessPage1Mock,
   CodingAccessPage2Mock
-} from "src/mock";
+} from 'src/mock';
 import { timeout } from 'src/utils/helper';
-import { ROUTES } from "src/constants/routes";
+import { ROUTES } from 'src/constants/routes';
 import axiosInstance from '../baseService';
 import { CodingResponse } from '@/types/responses/codingPanel/codingResponse';
 import { CodingAccessResponse } from '@/types/responses/codingPanel/codingAccessResponse';
@@ -29,15 +29,20 @@ const fetchCodingList = async (): Promise<ApiResponse<CodingResponse[]>> => {
   return response.data;
 };
 
-const fetchCodingAccessList = async (): Promise<ApiResponse<PageableResponse<CodingAccessResponse>>> => {
+const fetchCodingAccessList = async (): Promise<
+  ApiResponse<PageableResponse<CodingAccessResponse>>
+> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     return {
       statusCode: 200,
       content: {
-        content: [...CodingAccessPage1Mock.content, ...CodingAccessPage2Mock.content],
-        totalCount: CodingAccessPage1Mock.totalCount,
-        pageIndex: CodingAccessPage1Mock.pageIndex,
-        pageSize: CodingAccessPage1Mock.pageSize
+        content: [
+          ...CodingAccessPage1Mock.content,
+          ...CodingAccessPage2Mock.content
+        ],
+        totalCount: CodingAccessPage1Mock.totalElements,
+        pageIndex: 0,
+        pageSize: CodingAccessPage1Mock.size
       }
     };
   }
@@ -45,7 +50,11 @@ const fetchCodingAccessList = async (): Promise<ApiResponse<PageableResponse<Cod
   return response.data;
 };
 
-const removeCoding = async ({ id }: { id: string | number }): Promise<ApiResponse<void>> => {
+const removeCoding = async ({
+  id
+}: {
+  id: string | number;
+}): Promise<ApiResponse<void>> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
@@ -59,7 +68,15 @@ const removeCoding = async ({ id }: { id: string | number }): Promise<ApiRespons
   return response.data;
 };
 
-const createCoding = async ({ parentId, childName, priority }: { parentId: string | number; childName: string; priority: number }): Promise<ApiResponse<CodingResponse>> => {
+const createCoding = async ({
+  parentId,
+  childName,
+  priority
+}: {
+  parentId: string | number;
+  childName: string;
+  priority: number;
+}): Promise<ApiResponse<CodingResponse>> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
@@ -72,11 +89,19 @@ const createCoding = async ({ parentId, childName, priority }: { parentId: strin
       }
     };
   }
-  const response = await axiosInstance.post(ROUTES.CODING.CREATE, { parentId, childName, priority });
+  const response = await axiosInstance.post(ROUTES.CODING.CREATE, {
+    parentId,
+    childName,
+    priority
+  });
   return response.data;
 };
 
-const createCodingAccess = async ({ data }: { data: { username: string; codingName: string } }): Promise<ApiResponse<CodingAccessResponse>> => {
+const createCodingAccess = async ({
+  data
+}: {
+  data: { username: string; codingName: string };
+}): Promise<ApiResponse<CodingAccessResponse>> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
@@ -92,7 +117,13 @@ const createCodingAccess = async ({ data }: { data: { username: string; codingNa
   return response.data;
 };
 
-const updateCoding = async ({ id, data }: { id: string | number; data: { parentId: string | number; childName: string; priority: number } }): Promise<ApiResponse<CodingResponse>> => {
+const updateCoding = async ({
+  id,
+  data
+}: {
+  id: string | number;
+  data: { parentId: string | number; childName: string; priority: number };
+}): Promise<ApiResponse<CodingResponse>> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {
@@ -111,7 +142,11 @@ const updateCoding = async ({ id, data }: { id: string | number; data: { parentI
   return response.data;
 };
 
-const removeCodingAccess = async ({ id }: { id: string | number }): Promise<ApiResponse<void>> => {
+const removeCodingAccess = async ({
+  id
+}: {
+  id: string | number;
+}): Promise<ApiResponse<void>> => {
   if (import.meta.env.VITE_APP_WORK_WITH_MOCK) {
     await timeout(1000);
     return {

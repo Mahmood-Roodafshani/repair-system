@@ -44,9 +44,9 @@ const CodingMock: CodingResponse[] = [
 ];
 
 const CodingAccessPage1Mock: PageableResponse<CodingAccessResponse> = {
-  totalCount: 12,
-  pageSize: 10,
-  pageIndex: 0,
+  totalElements: 12,
+  totalPages: 2,
+  size: 10,
   content: [
     {
       id: 1,
@@ -102,9 +102,9 @@ const CodingAccessPage1Mock: PageableResponse<CodingAccessResponse> = {
 };
 
 const CodingAccessPage2Mock: PageableResponse<CodingAccessResponse> = {
-  totalCount: 12,
-  pageSize: 10,
-  pageIndex: 1,
+  totalElements: 12,
+  size: 10,
+  totalPages: 2,
   content: [
     {
       id: 11,

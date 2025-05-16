@@ -16,7 +16,7 @@ export const permissionService = {
     params.append('page', paginationArgs.pageIndex.toString());
     params.append('size', paginationArgs.pageSize.toString());
     const response = await apiGet<PageableResponse<PermissionDto>>(
-      ROUTES.USER.PERMISSION.FETCH_ALL + params.toString()
+      ROUTES.USER.PERMISSION.FETCH_ALL_With_PAGE + params.toString()
     );
     return response.content;
   },
