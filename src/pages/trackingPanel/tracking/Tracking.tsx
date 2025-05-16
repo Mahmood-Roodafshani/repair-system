@@ -28,8 +28,8 @@ import { OptionType } from 'src/constant/options';
 
 function Tracking() {
   const [organizationUnits, setOrganizationUnits] = useState<RichViewType[]>();
-  const [activities, setActivities] = useState<OptionType[]>();
-  const [systems, setSystems] = useState<RichViewType[]>();
+  const [activities, setActivities] = useState<OptionType[]>([]);
+  const [systems, setSystems] = useState<RichViewType[]>([]);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<TrackingResponseType[]>([]);
   const [clearFlag, setClearFlag] = useState(false);
@@ -44,7 +44,7 @@ function Tracking() {
   };
 
   const onSubmit = async (
-    _: TrackingFilterRequestType,
+    _values: TrackingFilterRequestType,
     actions: FormikHelpers<TrackingFilterRequestType>
   ) => {
     setData([]);

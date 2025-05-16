@@ -1,189 +1,218 @@
-import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Box, Typography, Grid } from '@mui/material';
-import { Form, Formik, FormikHelpers } from 'formik';
+import { Grid, Typography } from '@mui/material';
+import { Form, Formik } from 'formik';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { toast } from 'react-toastify';
-import { CircularProgress } from '@mui/material';
-import { MyCustomTable } from 'src/components';
-import { Button, ButtonType, ConfirmationDialog, TextFieldFormik } from '@/components/form';
-import { createCodingAccess, fetchCodingAccessList, removeCodingAccess } from 'src/services';
-import { CodingAccessRequest, CodingAccessResponse } from 'src/types';
+import { useNavigate } from 'react-router';
+import { InlineLoader, Loader, MyCustomTable, TableRowAction } from 'src/components';
+import { i18n } from 'src/localization';
+import { Button, ButtonType, ConfirmationDialog, SelectFormik, TextFieldFormik } from '@/components/form';
+import { CodingAccessResponse, CodingResponse, Pagination } from 'src/types';
 import validationSchema from './validationSchema';
 
-interface CreateOrEditFormProps {
-    onSubmit: (values: CodingAccessRequest, actions: FormikHelpers<CodingAccessRequest>) => Promise<void>;
-    onCancel: () => void;
-}
+function Access() {
+  const [loading, setLoading] = useState(false);
+  const [codingList, _setCodingList] = useState<CodingResponse[]>();
+  const [codingAccessList, setCodingAccessList] = useState<
+    CodingAccessResponse[]
+  >([]);
+  const [selectedAccess, setSelectedAccess] = useState<string | number>();
+  const navigate = useNavigate();
+  const [pagination, setPagination] = useState<Pagination>({
+    pageIndex: 0,
+    pageSize: 10
+  });
+  const [totalCount, _setTotalCount] = useState<number>(0);
+  const [refetchingData, setRefetchingData] = useState(false);
 
-const CreateOrEditForm: React.FC<CreateOrEditFormProps> = ({ onSubmit, onCancel }) => {
-    const { t } = useTranslation();
-    const initialValues: CodingAccessRequest = {
-        username: '',
-        codingName: ''
-    };
+  const columns = useMemo(
+    () => [
+      {
+        header: i18n.t('row_number'),
+        enableHiding: false,
+        Cell: ({ row }: { row: { index: number } }) => {
+          return (
+            <Typography sx={{ textAlign: 'right' }} key={'row_' + row.index}>
+              {row.index + 1}
+            </Typography>
+          );
+        },
+        size: 40
+      },
+      {
+        header: i18n.t('username'),
+        accessorKey: 'username',
+        size: 150
+      },
+      {
+        header: i18n.t('coding_name'),
+        accessorKey: 'codingName',
+        size: 100
+      }
+    ],
+    []
+  );
 
-    return (
+  useEffect(() => {
+    refetchData();
+  }, [pagination]);
+
+  const refetchData = useCallback(() => {
+    if (totalCount === 0) return;
+    setCodingAccessList([]);
+    setRefetchingData(true);
+    // Promise.all([
+    //     fetchCodingAccessList({
+    //         pageIndex: pagination.pageIndex,
+    //         pageSize: pagination.pageSize
+    //     })
+    // ])
+    //     .then((res) => {
+    //         if (res[0].statusCode === 200)
+    //             setCodingAccessList(res[0].content.content);
+    //     })
+    //     .finally(() => setRefetchingData(false));
+  }, [pagination, totalCount]);
+
+  useEffect(() => {
+    // setLoading(true);
+    // Promise.all([
+    //     fetchCodingList(),
+    //     fetchCodingAccessList({
+    //         pageIndex: pagination.pageIndex,
+    //         pageSize: pagination.pageSize
+    //     })
+    // ])
+    //     .then((res) => {
+    //         if (res[0].statusCode === 200) setCodingList(res[0].content);
+    //         if (res[1].statusCode === 200) {
+    //             setCodingAccessList(res[1].content.content);
+    //             setTotalCount(res[1].content.totalCount);
+    //         }
+    //     })
+    //     .finally(() => setLoading(false));
+  }, []);
+
+  const onSubmit = ()=>{console.log("temp")}/*async (
+    // values: CodingAccessRequest,
+    // actions: FormikHelpers<CodingAccessRequest>
+  ) => {
+    // const res = await createCodingAccess(values);
+    // console.log(values);
+    // actions.setSubmitting(false);
+    // if (res.statusCode === 200) {
+    //     toast(i18n.t('new_access_created').toString(), {type: 'success'});
+    //     actions.resetForm();
+    //     refetchData();
+    // }
+  };*/
+
+  return (
+    <>
+      <Helmet>
+        <title>{i18n.t('coding_access').toString()}</title>
+      </Helmet>
+      {loading && <Loader />}
+      {!loading && codingList && (
         <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={onSubmit}
+          onSubmit={onSubmit}
+          initialValues={{
+            nationalCode: '',
+            codingId: '',
+            username: '',
+            codingName: ''
+          }}
+          validationSchema={validationSchema}
+          validateOnBlur={false}
+          validateOnChange={false}
+          validateOnMount={false}
         >
-            {({ isSubmitting, submitForm }) => (
-                <Form>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <TextFieldFormik
-                                name="username"
-                                label={t('username')}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextFieldFormik
-                                name="codingName"
-                                label={t('coding_name')}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Button
-                                buttonType={ButtonType.SAVE}
-                                onClick={submitForm}
-                                disabled={isSubmitting}
-                                text={t('submit')}
-                            />
-                            <Button
-                                buttonType={ButtonType.CANCEL}
-                                onClick={onCancel}
-                                text={t('cancel')}
-                            />
-                        </Grid>
-                    </Grid>
-                </Form>
-            )}
-        </Formik>
-    );
-};
-
-const Access: React.FC = () => {
-    const { t } = useTranslation();
-    const [accessList, setAccessList] = useState<CodingAccessResponse[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [showCreateOrEditForm, setShowCreateOrEditForm] = useState(false);
-    const [selectedCodingAccessForDelete, setSelectedCodingAccessForDelete] = useState<string | number | undefined>();
-
-    useEffect(() => {
-        fetchAccessList();
-    }, []);
-
-    const fetchAccessList = async () => {
-        try {
-            setIsLoading(true);
-            const response = await fetchCodingAccessList();
-            if (response.statusCode === 200) {
-                setAccessList(response.content.content);
-            }
-        } catch (error) {
-            console.error('Error fetching access list:', error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const onSubmit = async (
-        values: CodingAccessRequest,
-        actions: FormikHelpers<CodingAccessRequest>
-    ) => {
-        const res = await createCodingAccess({ data: values });
-        actions.setSubmitting(false);
-        if ('statusCode' in res && res.statusCode === 200) {
-            toast.success(t('coding_access_created').toString());
-            setShowCreateOrEditForm(false);
-            fetchAccessList();
-        }
-    };
-
-    const handleDelete = async () => {
-        if (!selectedCodingAccessForDelete) return;
-        setIsLoading(true);
-        try {
-            const res = await removeCodingAccess({ id: selectedCodingAccessForDelete });
-            if ('statusCode' in res && res.statusCode === 200) {
-                setAccessList(accessList.filter((e) => e.id !== selectedCodingAccessForDelete));
-                toast.success(t('coding_access_removed').toString());
-            }
-        } finally {
-            setIsLoading(false);
-            setSelectedCodingAccessForDelete(undefined);
-        }
-    };
-
-    const columns = React.useMemo(
-        () => [
-            {
-                header: t('row_number'),
-                enableHiding: false,
-                Cell: ({ row }: { row: { index: number } }) => {
-                    return (
-                        <Typography sx={{ textAlign: 'right' }} key={'row_' + row.index}>
-                            {row.index + 1}
-                        </Typography>
-                    );
-                },
-                size: 40
-            },
-            {
-                header: t('username'),
-                accessorKey: 'username',
-                size: 150
-            },
-            {
-                header: t('coding_name'),
-                accessorKey: 'codingName',
-                size: 150
-            }
-        ],
-        [t]
-    );
-
-    return (
-        <>
-            <Helmet>
-                <title>{t('coding_access').toString()}</title>
-            </Helmet>
-            {isLoading && <Box sx={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(255, 255, 255, 0.7)', zIndex: 9999 }}><CircularProgress /></Box>}
-            {!isLoading && accessList.length > 0 && !showCreateOrEditForm && (
-                <Grid>
-                    <Button
-                        buttonType={ButtonType.ADD}
-                        showIcon={false}
-                        text={t('new_coding_access').toString()}
-                        sx={{ marginBottom: '20px' }}
-                        onClick={() => setShowCreateOrEditForm(true)}
-                    />
-                    <MyCustomTable
-                        enableRowActions={true}
-                        columns={columns}
-                        data={accessList}
-                    />
+          {({ isSubmitting, submitForm }) => (
+            <Form>
+              <Grid display={'flex'} flexDirection={'column'} gap={'10px'}>
+                <Grid display={'flex'} flexDirection={'row'} gap={'20px'}>
+                  <TextFieldFormik
+                    type="number"
+                    placeholder={i18n.t('national_code').toString()}
+                    name="nationalCode"
+                    label={i18n.t('choose_user').toString()}
+                  />
+                  <SelectFormik
+                    label={i18n.t('coding_name').toString()}
+                    name="codingId"
+                    options={codingAccessList.map((item) => ({
+                      id: item.id,
+                      label: item.codingName
+                    }))}
+                  />
                 </Grid>
-            )}
-            {showCreateOrEditForm && (
-                <CreateOrEditForm
-                    onSubmit={onSubmit}
-                    onCancel={() => setShowCreateOrEditForm(false)}
-                />
-            )}
-            {selectedCodingAccessForDelete && (
-                <ConfirmationDialog
-                    open={true}
-                    onClose={() => setSelectedCodingAccessForDelete(undefined)}
-                    closeOnEsc={true}
-                    dialogTitle={t('confirm_remove')}
-                    dialogOkBtnAction={handleDelete}
-                />
-            )}
-        </>
-    );
-};
+                {isSubmitting && <InlineLoader />}
+                {!isSubmitting && (
+                  <Grid display={'flex'} flexDirection={'row'} gap={'20px'}>
+                    <Button
+                      buttonType={ButtonType.ADD}
+                      text={i18n.t('submit').toString()}
+                      onClick={submitForm}
+                      showIcon={false}
+                    />
+                    <Button
+                      buttonType={ButtonType.DELETE}
+                      color="error"
+                      text={i18n.t('close').toString()}
+                      onClick={() => navigate('/coding-panel')}
+                      showIcon={false}
+                    />
+                  </Grid>
+                )}
+              </Grid>
+            </Form>
+          )}
+        </Formik>
+      )}
+      <Grid mt={'20px'}>
+        <MyCustomTable
+          rowCount={totalCount}
+          pagination={pagination}
+          onPaginationChange={setPagination}
+          enablePagination={true}
+          enableRowActions={true}
+          isRefetching={refetchingData}
+          rowActions={({
+                         row
+                       }: {
+            row: { original: { id: string | number } };
+          }) => (
+            <TableRowAction
+              onDelete={() => setSelectedAccess(row.original.id)}
+            />
+          )}
+          columns={columns}
+          data={codingAccessList}
+        />
+      </Grid>
+      {selectedAccess && codingAccessList && (
+        <ConfirmationDialog
+          id="remove_modal"
+          open={selectedAccess !== undefined}
+          onClose={() => setSelectedAccess(undefined)}
+          closeOnEsc={true}
+          dialogTitle={i18n.t('confirm_remove')}
+          dialogOkBtnAction={() => {
+            setLoading(true);
+            // removeCodingAccess({accessId: selectedAccess})
+            //     .then((res) => {
+            //         if (res.statusCode === 200) {
+            //             setCodingAccessList(
+            //                 codingAccessList.filter((e) => e.id !== selectedAccess)
+            //             );
+            //             toast.success(i18n.t('user_removed').toString());
+            //         }
+            //     })
+            //     .finally(() => setLoading(false));
+          }}
+        />
+      )}
+    </>
+  );
+}
 
 export default Access;
