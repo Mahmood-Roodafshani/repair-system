@@ -35,7 +35,7 @@ interface CreateOrEditFormProps {
   cities: RichViewType[];
   educationalFields: RichViewType[];
   workLocations?: RichViewType[];
-  positionDegrees: RichViewType[];
+  positionDegrees?: RichViewType[];
   onSuccess: () => void;
   onClose: () => void;
   mode: 'staff' | 'nonStaff' | 'family';
@@ -238,7 +238,7 @@ function CreateOrEditForm({
                         name="gender"
                         label={i18n.t('gender').toString()}
                       />
-                      {mode === 'staff' && (
+                      {mode === 'staff' && positionDegrees!= undefined && (
                         <SelectFormik
                           options={positionDegrees}
                           name="positionDegree"

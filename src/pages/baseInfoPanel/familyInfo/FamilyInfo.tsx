@@ -1,32 +1,26 @@
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  IconButton,
-  Typography
-} from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid } from '@mui/material';
+import { Form, Formik } from 'formik';
+import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Loader, MyCustomTable } from '../../../components';
-import { FamilyRelation } from '../../../constant/enums';
+import { useNavigate } from 'react-router';
+import { MRT_Cell, MRT_Column, MRT_ColumnDef, MRT_Row, MRT_TableInstance } from 'material-react-table';
+import { InlineLoader, Loader, MyCustomTable, OpGrid, TableRowAction } from '../../../components';
+import { Degree, FamilyRelation, Gender, MaritalStatus, Religion } from '../../../constant/enums';
 import { RichViewType } from '../../../types/richViewType';
-import { StaffInfoResponseType } from '../../../types/responses/baseInfoPanel/staffInfo/staffInfoResponseType';
+import { StaffInfoRequestType } from '../../../types/requests/baseInfoPanel/staffInfo';
+import { StaffInfoResponseType } from '../../../types/responses/baseInfoPanel/staffInfo';
 import { i18n } from '../../../localization';
+import { ConfirmationDialog } from '../../../components/form/ConfirmationDialog';
+import { TextFieldFormik } from '../../../components/form/TextFieldFormik';
 import CommonService from '../../../services/CommonService';
-import {
-  fetchFamilyInfoList,
-  removeFamilyInfo
-} from '../../../services/baseInfoPanel';
+import { fetchFamilyInfoList, removeFamilyInfo } from '../../../services/baseInfoPanel';
 import CreateOrEditForm from '../common/CreateOrEditForm';
-import { Add, Delete, Edit } from '@mui/icons-material';
-import { ApiResponse } from 'src/types/responses/apiResponse';
+import { filterValidationSchema } from '../common/validationSchema';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 import { AxiosResponse } from 'axios';
 
-interface TableRow extends ExtendedStaffInfoResponseType {
+interface TableRow {
   index: number;
   original: ExtendedStaffInfoResponseType;
 }
@@ -36,34 +30,74 @@ interface FamilyInfoItem {
   label: string;
 }
 
-interface ExtendedStaffInfoResponseType extends StaffInfoResponseType {
+interface ExtendedStaffInfoResponseType extends Omit<StaffInfoResponseType, 'familyRelation'> {
   familyInfo?: FamilyInfoItem[];
   familyRelation?: FamilyRelation;
   index: number;
-  original?: ExtendedStaffInfoResponseType;
-  birthDate?: string;
-  education?: string;
-  job?: string;
 }
 
 function FamilyInfo() {
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+  const columns: MRT_ColumnDef<ExtendedStaffInfoResponseType>[] = [
+    {
+      accessorKey: 'index',
+      header: t('common.row'),
+      Cell: (props: {
+        cell: MRT_Cell<ExtendedStaffInfoResponseType, unknown>;
+        column: MRT_Column<ExtendedStaffInfoResponseType, unknown>;
+        row: MRT_Row<ExtendedStaffInfoResponseType>;
+        table: MRT_TableInstance<ExtendedStaffInfoResponseType>;
+      }): string => {
+        return (props.row.index + 1).toString();
+      }
+    },
+    {
+      accessorKey: 'familyRelation',
+      header: t('familyInfo.relation'),
+      Cell: (props: {
+        cell: MRT_Cell<ExtendedStaffInfoResponseType, unknown>;
+        column: MRT_Column<ExtendedStaffInfoResponseType, unknown>;
+        row: MRT_Row<ExtendedStaffInfoResponseType>;
+        table: MRT_TableInstance<ExtendedStaffInfoResponseType>;
+      }): string => {
+        const relation = props.row.original.familyRelation;
+        return relation
+          ? t(`familyInfo.relations.${relation.toLowerCase()}`) || ''
+          : '';
+      }
+    }
+  ];
+  const [filter, setFilter] = useState<StaffInfoRequestType>();
   const [familyInfo, setFamilyInfo] = useState<ExtendedStaffInfoResponseType[]>(
     []
   );
-  const [selectedFamilyMember, setSelectedFamilyMember] =
-    useState<ExtendedStaffInfoResponseType | null>(null);
+  const [selectedMemberForEdit, setSelectedMemberForEdit] =
+    useState<ExtendedStaffInfoResponseType>();
   const [selectedMemberIdForDelete, setSelectedMemberIdForDelete] = useState<
     string | number
   >();
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [cities, setCities] = useState<RichViewType[]>([]);
+  const [educationalFields, setEducationalFields] = useState<RichViewType[]>(
+    []
+  );
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [_richViewData, setRichViewData] = useState<RichViewType[]>([]);
+  const [_tableData, setTableData] = useState<TableRow[]>([]);
 
   useEffect(() => {
-    fetchData();
+    setLoading(true);
+    Promise.all([CommonService.getEducationalFields()])
+      .then((res) => {
+        setEducationalFields(res[0]);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
-    if (selectedFamilyMember && !cities) {
+    if ((selectedMemberForEdit || showCreateForm) && !cities) {
       setLoading(true);
       Promise.all([CommonService.getCities()])
         .then((res) => {
@@ -71,58 +105,72 @@ function FamilyInfo() {
         })
         .finally(() => setLoading(false));
     }
-  }, [selectedFamilyMember]);
+  }, [selectedMemberForEdit, showCreateForm]);
 
-  const fetchData = async () => {
-    setLoading(true);
+  useEffect(() => {
+    if (selectedMemberForEdit?.familyInfo) {
+      const data = selectedMemberForEdit.familyInfo.map(
+        (info: FamilyInfoItem): RichViewType => ({
+          id: info.id.toString(),
+          label: info.label || ''
+        })
+      );
+      setRichViewData(data);
+    } else {
+      setRichViewData([]);
+    }
+  }, [selectedMemberForEdit]);
+
+  useEffect(() => {
+    if (familyInfo) {
+      const mappedData = familyInfo.map((item, index) => ({
+        ...item,
+        index,
+        original: item
+      }));
+      setTableData(mappedData);
+    }
+  }, [familyInfo]);
+
+  const onSubmit = async (
+    values: StaffInfoRequestType
+  ) => {
+    setFilter(values);
+    setFamilyInfo([]);
     try {
-      const response = await fetchFamilyInfoList({ filter: {} });
+      const res = await fetchFamilyInfoList({ filter: values });
       if (import.meta.env.VITE_APP_WORK_WITH_MOCK === 'true') {
-        const mockRes = response as ApiResponse<
-          ExtendedStaffInfoResponseType[]
-        >;
+        const mockRes = res as { statusCode: number; content: StaffInfoResponseType[] };
         if (mockRes.statusCode === 200) {
-          const mappedData = mockRes.content?.map((item, index) => ({
+          const mappedData = mockRes.content.map((item, index) => ({
             ...item,
             index,
+            familyRelation: item.familyRelation as FamilyRelation,
             original: {
               ...item,
               index,
-              familyRelation: item.familyRelation
-            }
-          }));
-          setFamilyInfo(mappedData || []);
-        }
-      } else {
-        const apiRes = response as AxiosResponse<
-          ExtendedStaffInfoResponseType[]
-        >;
-        if (apiRes.data) {
-          const mappedData = apiRes.data.map((item, index) => ({
-            ...item,
-            index,
-            original: {
-              ...item,
-              index,
-              familyRelation: item.familyRelation
+              familyRelation: item.familyRelation as FamilyRelation
             }
           }));
           setFamilyInfo(mappedData);
         }
+      } else {
+        const apiRes = res as AxiosResponse<StaffInfoResponseType[]>;
+        const mappedData = apiRes.data.map((item, index) => ({
+          ...item,
+          index,
+          familyRelation: item.familyRelation as FamilyRelation,
+          original: {
+            ...item,
+            index,
+            familyRelation: item.familyRelation as FamilyRelation
+          }
+        }));
+        setFamilyInfo(mappedData);
       }
     } catch (error) {
-      console.error('Error fetching data:', error);
-    } finally {
-      setLoading(false);
+      toast.error(i18n.t('error'));
     }
-  };
-
-  const handleEdit = (row: ExtendedStaffInfoResponseType) => {
-    setSelectedFamilyMember(row);
-  };
-
-  const handleDelete = (row: ExtendedStaffInfoResponseType) => {
-    setSelectedMemberIdForDelete(row.id);
   };
 
   const dialogOkBtnAction = async () => {
@@ -131,6 +179,7 @@ function FamilyInfo() {
       try {
         await removeFamilyInfo({ memberId: selectedMemberIdForDelete });
         setSelectedMemberIdForDelete(undefined);
+        setShowDeleteDialog(false);
         await fetchData();
       } finally {
         setLoading(false);
@@ -138,146 +187,256 @@ function FamilyInfo() {
     }
   };
 
-  const columns = useMemo(() => {
-    return [
-      {
-        header: i18n.t('row_number'),
-        enableHiding: false,
-        Cell: ({ row }: { row: { index: number } }) => {
-          return (
-            <Typography sx={{ textAlign: 'right' }} key={'row_' + row.index}>
-              {row.index + 1}
-            </Typography>
-          );
-        },
-        size: 40
-      },
-      {
-        header: i18n.t('name'),
-        accessorKey: 'name'
-      },
-      {
-        header: i18n.t('family_relation'),
-        accessorKey: 'familyRelation'
-      },
-      {
-        header: i18n.t('national_code'),
-        accessorKey: 'nationalCode'
-      },
-      {
-        header: i18n.t('birth_date'),
-        accessorKey: 'birthDate'
-      },
-      {
-        header: i18n.t('education'),
-        accessorKey: 'education'
-      },
-      {
-        header: i18n.t('job'),
-        accessorKey: 'job'
-      },
-      {
-        header: i18n.t('operation'),
-        Cell: ({
-          row
-        }: {
-          row: { original: ExtendedStaffInfoResponseType & { index: number } };
-        }) => (
-          <Box>
-            <IconButton onClick={() => handleEdit(row.original)}>
-              <Edit />
-            </IconButton>
-            <IconButton onClick={() => handleDelete(row.original)}>
-              <Delete />
-            </IconButton>
-          </Box>
-        )
+  // const handleSubmit = async (values: StaffInfoRequestType) => {
+  //   if (!selectedMemberForEdit?.id) return;
+  //
+  //   setLoading(true);
+  //   try {
+  //     await updateFamilyInfo({
+  //       memberId: selectedMemberForEdit.id,
+  //       memberInfo: values
+  //     });
+  //     await fetchData();
+  //   } catch (error) {
+  //     console.error('Error submitting form:', error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const response = await fetchFamilyInfoList({ filter: {} });
+      if (import.meta.env.VITE_APP_WORK_WITH_MOCK === 'true') {
+        const mockRes = response as { statusCode: number; content: StaffInfoResponseType[] };
+        if (mockRes.statusCode === 200) {
+          const mappedData = mockRes.content.map((item, index) => ({
+            ...item,
+            index,
+            familyRelation: item.familyRelation as FamilyRelation,
+            original: {
+              ...item,
+              index,
+              familyRelation: item.familyRelation as FamilyRelation
+            }
+          }));
+          setFamilyInfo(mappedData);
+        }
+      } else {
+        const apiRes = response as AxiosResponse<StaffInfoResponseType[]>;
+        const mappedData = apiRes.data.map((item, index) => ({
+          ...item,
+          index,
+          familyRelation: item.familyRelation as FamilyRelation,
+          original: {
+            ...item,
+            index,
+            familyRelation: item.familyRelation as FamilyRelation
+          }
+        }));
+        setFamilyInfo(mappedData);
       }
-    ];
-  }, []);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getEnumValue = <T extends Record<string, string | number>>(
+    enumObj: T,
+    key: string | number | boolean | undefined
+  ): T[keyof T] | undefined => {
+    if (key === undefined || key === false) return undefined;
+    if (typeof key === 'boolean') return undefined;
+    return enumObj[key as keyof T];
+  };
 
   return (
     <>
       <Helmet>
         <title>{i18n.t('family_info').toString()}</title>
       </Helmet>
-      <Grid container spacing={2} alignItems="center" mb={2}>
-        <Grid item xs>
-          <Typography variant="h3">Family Info</Typography>
-        </Grid>
-        <Grid item>
-          <Button
-            variant="contained"
-            startIcon={<Add />}
-            onClick={() =>
-              setSelectedFamilyMember({} as ExtendedStaffInfoResponseType)
-            }
+      {!selectedMemberForEdit && !showCreateForm && (
+        <Grid display={'flex'} flexDirection={'column'} gap={'20px'}>
+          <Formik
+            onSubmit={onSubmit}
+            initialValues={{}}
+            validationSchema={filterValidationSchema}
+            validateOnBlur={false}
+            validateOnChange={false}
+            validateOnMount={false}
           >
-            {i18n.t('add_new_member')}
-          </Button>
-        </Grid>
-      </Grid>
-
-      {loading ? (
-        <Loader />
-      ) : (
-        <>
-          <MyCustomTable
-            data={familyInfo}
-            columns={columns}
-            enableRowActions
-            rowActions={({ row }: { row: { original: TableRow } }) => [
-              {
-                icon: <Edit />,
-                tooltip: i18n.t('edit'),
-                onClick: () => handleEdit(row.original)
-              }
-            ]}
+            {({
+                isSubmitting,
+                submitForm,
+                resetForm
+              }) => (
+              <Form>
+                <Grid display={'flex'} flexDirection={'column'} gap={'30px'}>
+                  <Grid display={'flex'} flexDirection={'column'} gap={'10px'}>
+                    <Grid
+                      display={'flex'}
+                      flexDirection={'row'}
+                      gap={'20px'}
+                      flexWrap="wrap"
+                    >
+                      <TextFieldFormik
+                        name="firstname"
+                        label={i18n.t('firstname').toString()}
+                      />
+                      <TextFieldFormik
+                        name="lastname"
+                        label={i18n.t('lastname').toString()}
+                      />
+                      <TextFieldFormik
+                        name="fatherName"
+                        label={i18n.t('father_name').toString()}
+                      />
+                      <TextFieldFormik
+                        name="idNumber"
+                        label={i18n.t('id_number').toString()}
+                        type="number"
+                      />
+                      <TextFieldFormik
+                        name="nationalCode"
+                        label={i18n.t('national_code').toString()}
+                        type="number"
+                      />
+                      <TextFieldFormik
+                        name="supervisorNationalCode"
+                        label={i18n.t('supervisor_national_code').toString()}
+                        type="number"
+                      />
+                    </Grid>
+                  </Grid>
+                  {isSubmitting && <InlineLoader />}
+                  {!isSubmitting && (
+                    <OpGrid
+                      onClose={() => navigate('/base-info-panel')}
+                      onCreateOrEdit={() => setShowCreateForm(true)}
+                      createOrEditLabel={i18n.t('new_family_member')}
+                      onSearch={submitForm}
+                      onClear={resetForm}
+                    />
+                  )}
+                </Grid>
+              </Form>
+            )}
+          </Formik>
+          {familyInfo && (
+            <MyCustomTable
+              enableRowActions={true}
+              rowActions={({
+                             row
+                           }: {
+                row: { original: { id: string | number } };
+              }) => (
+                <TableRowAction
+                  onEdit={() =>
+                    setSelectedMemberForEdit(
+                      familyInfo.find((e) => e.id === row.original.id)
+                    )
+                  }
+                  onDelete={() => setSelectedMemberIdForDelete(row.original.id)}
+                />
+              )}
+              data={familyInfo}
+              columns={columns}
+            />
+          )}
+          <ConfirmationDialog
+            id="remove_modal"
+            open={selectedMemberIdForDelete !== undefined}
+            onClose={() => setSelectedMemberIdForDelete(undefined)}
+            closeOnEsc={true}
+            dialogTitle={i18n.t('confirm_remove')}
+            dialogOkBtnAction={dialogOkBtnAction}
           />
-        </>
+        </Grid>
       )}
-
-      {selectedFamilyMember && (
+      {(selectedMemberForEdit || showCreateForm) && cities && (
         <CreateOrEditForm
-          initialValues={{
-            firstname: selectedFamilyMember.name?.split(' ')[0] || '',
-            lastname: selectedFamilyMember.name?.split(' ')[1] || '',
-            id: selectedFamilyMember.id,
-            familyRelation: selectedFamilyMember.familyRelation,
-            nationalCode: selectedFamilyMember.nationalCode || '',
-            fatherName: selectedFamilyMember.fatherName || '',
-            idNumber: selectedFamilyMember.idNumber || '',
-            staffCode: selectedFamilyMember.staffCode || '',
-            address: selectedFamilyMember.address || '',
-            mobile: selectedFamilyMember.mobile || '',
-            religion: selectedFamilyMember.religion as any,
-            birthLocation: selectedFamilyMember.birthLocation,
-            gender: selectedFamilyMember.gender as any,
-            supervisorNationalCode:
-              selectedFamilyMember.supervisorNationalCode || '',
-            degree: selectedFamilyMember.degree as any,
-            serviceStatus: selectedFamilyMember.serviceStatus as any,
-            martialStatus: selectedFamilyMember.maritalStatus as any,
-            educationalField: selectedFamilyMember.educationalField,
-            workLocation: selectedFamilyMember.workLocation,
-            positionDegree: selectedFamilyMember.positionDegree
-          }}
-          positionDegrees={[]}
           cities={cities}
-          educationalFields={[]}
-          onSuccess={() => {
-            setSelectedFamilyMember(null);
-            fetchData();
+          educationalFields={educationalFields}
+          mode={'family'}
+          initialValues={
+            showCreateForm
+              ? {}
+              : selectedMemberForEdit
+                ? {
+                  firstname: selectedMemberForEdit.name?.split(' ')[0] || '',
+                  lastname: selectedMemberForEdit.name?.split(' ')[1] || '',
+                  fatherName: selectedMemberForEdit.fatherName || '',
+                  nationalCode: selectedMemberForEdit.nationalCode || '',
+                  idNumber: selectedMemberForEdit.idNumber || '',
+                  degree: getEnumValue(Degree, selectedMemberForEdit.degree),
+                  birthLocation: selectedMemberForEdit.birthLocation || '',
+                  gender: getEnumValue(Gender, selectedMemberForEdit.gender),
+                  martialStatus: getEnumValue(
+                    MaritalStatus,
+                    selectedMemberForEdit.maritalStatus
+                  ),
+                  religion: getEnumValue(
+                    Religion,
+                    selectedMemberForEdit.religion
+                  ),
+                  educationalField:
+                    selectedMemberForEdit.educationalField || '',
+                  familyRelation: getEnumValue(
+                    FamilyRelation,
+                    selectedMemberForEdit.familyRelation
+                  ),
+                  supervisorNationalCode:
+                    selectedMemberForEdit.supervisorNationalCode || ''
+                }
+                : {}
+          }
+          onSuccess={async () => {
+            setLoading(true);
+            setFamilyInfo([]);
+            const res = await fetchFamilyInfoList({ filter: filter || {} });
+            if (import.meta.env.VITE_APP_WORK_WITH_MOCK === 'true') {
+              const mockRes = res as { statusCode: number; content: StaffInfoResponseType[] };
+              if (mockRes.statusCode === 200) {
+                const mappedData = mockRes.content.map((item, index) => ({
+                  ...item,
+                  index,
+                  familyRelation: item.familyRelation as FamilyRelation,
+                  original: {
+                    ...item,
+                    index,
+                    familyRelation: item.familyRelation as FamilyRelation
+                  }
+                }));
+                setFamilyInfo(mappedData);
+              }
+            } else {
+              const apiRes = res as AxiosResponse<StaffInfoResponseType[]>;
+              const mappedData = apiRes.data.map((item, index) => ({
+                ...item,
+                index,
+                familyRelation: item.familyRelation as FamilyRelation,
+                original: {
+                  ...item,
+                  index,
+                  familyRelation: item.familyRelation as FamilyRelation
+                }
+              }));
+              setFamilyInfo(mappedData);
+            }
+            setLoading(false);
           }}
-          onClose={() => setSelectedFamilyMember(null)}
-          mode="family"
+          onClose={() => {
+            setShowCreateForm(false);
+            setSelectedMemberForEdit(undefined);
+          }}
         />
       )}
-
+      {loading && <Loader />}
       <Grid item xs={12}>
         <Dialog
-          open={selectedMemberIdForDelete !== undefined}
-          onClose={() => setSelectedMemberIdForDelete(undefined)}
+          open={showDeleteDialog}
+          onClose={() => setShowDeleteDialog(false)}
           maxWidth="sm"
           fullWidth
         >
@@ -286,7 +445,7 @@ function FamilyInfo() {
             {i18n.t('are_you_sure_to_remove')?.toString()}
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setSelectedMemberIdForDelete(undefined)}>
+            <Button onClick={() => setShowDeleteDialog(false)}>
               {i18n.t('cancel')?.toString()}
             </Button>
             <Button onClick={dialogOkBtnAction} color="error">
