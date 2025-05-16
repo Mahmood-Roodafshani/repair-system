@@ -4,3 +4,5 @@ export type {
   PermissionManagementDto,
   CreatePermissionManagementDto
 } from './permissionManagementDto';
+export type { RoleDto } from './roleDto';
+export { roleInitialValues } from './roleDto';

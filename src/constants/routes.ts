@@ -55,6 +55,14 @@ export const ROUTES = {
       CURRENT: `${BASE_URL}/api/users/me`,
       UPDATE_CURRENT: `${BASE_URL}/api/users/me`
     },
+    // Role
+    ROLE: {
+      FETCH_ALL: `${BASE_URL}/um/roles`,
+      FETCH_ALL_WITH_PAGE: `${BASE_URL}/um/roles/page?`,
+      CREATE: `${BASE_URL}/um/roles`,
+      UPDATE: (id: number) => `${BASE_URL}/um/roles/${id}`,
+      DELETE: (id: number) => `${BASE_URL}/um/roles/${id}`
+    },
     // Permission
     PERMISSION: {
       // FETCH_ALL: `${BASE_URL}/um/permissions/page?`,

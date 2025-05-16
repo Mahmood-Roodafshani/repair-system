@@ -9,24 +9,18 @@ import { Pageable } from '@/types/requests/pageableType';
 import { Pageable as PageableResponse } from '@/types/responses/pageableType';
 
 export const permissionService = {
-  // async getAll(
-  //   paginationArgs: Pageable<PermissionDto>
-  // ): Promise<PageableResponse<PermissionDto>> {
-  //   const params = new URLSearchParams();
-  //   params.append('page', paginationArgs.pageIndex.toString());
-  //   params.append('size', paginationArgs.pageSize.toString());
-  //   const response = await apiGet<PageableResponse<PermissionDto>>(
-  //     // ROUTES.USER.PERMISSION.FETCH_ALL + params.toString()
-  //     ROUTES.USER.PERMISSION.FETCH_ALL
-  //   );
-  //   return response.content;
-  // },
-  async getAll(
+  async getAllWithPage(
     paginationArgs: Pageable<PermissionDto>
-  ): Promise<PermissionDto[]> {
+  ): Promise<PageableResponse<PermissionDto>> {
     const params = new URLSearchParams();
     params.append('page', paginationArgs.pageIndex.toString());
     params.append('size', paginationArgs.pageSize.toString());
+    const response = await apiGet<PageableResponse<PermissionDto>>(
+      ROUTES.USER.PERMISSION.FETCH_ALL + params.toString()
+    );
+    return response.content;
+  },
+  async getAll(): Promise<PermissionDto[]> {
     const response = await apiGet<PermissionDto[]>(
       ROUTES.USER.PERMISSION.FETCH_ALL
     );

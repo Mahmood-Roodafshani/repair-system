@@ -156,6 +156,9 @@ i18next
           permission_name: 'نام مجوز',
           permission_identifier: 'شناسه مجوز',
           url: 'آدرس',
+          role_name: 'نام نقش',
+          role_identifier: 'شناسه نقش',
+          permissions_list: 'لیست مجوزها',
           // TABLE
           operation: 'عملیات',
           row_number: 'ردیف',
@@ -256,6 +259,11 @@ i18next
           error_fetching_permissions: 'خطایی در دریافت لیست مجوزها رخ داده است',
           error_fetching_operation_types:
             'خطایی در دریافت لیست عملکردها رخ داده است',
+          role_removed: 'نقش مورد نظر با موفقیت حذف گردید',
+          role_created: 'نقش مدنظر با موفقیت اضافه گردید',
+          role_updated: 'نقش مدنظر با موفقیت ویرایش گردید',
+          error_removing_role: 'خطایی در حذف نقش رخ داده است',
+          error_fetching_roles: 'خطایی در دریافت لیست نقشها رخ داده است',
           staff_created: 'اطلاعات پرسنل مدنظر با موفقیت ثبت گردید',
           staff_updated: 'اطلاعات پرسنل مدنظر با موفقیت ویرایش گردید',
           non_staff_created: 'اطلاعات فرد غیر پرسنل مدنظر با موفقیت ثبت گردید',
@@ -264,7 +272,6 @@ i18next
           family_member_created: 'اطلاعات عائله مدنظر با موفقیت ثبت گردید',
           family_member_updated: 'اطلاعات عائله مدنظر با موفقیت ویرایش گردید',
           new_access_created: 'دسترسی مدنظر با موفقیت ایجاد گردید',
-          role_created: 'نقش مورد نظر با موفقیت افزوده شد',
           coding_removed: 'کدینگ مدنظر حذف گردید',
           coding_created: 'کدینگ با موفقیت ثبت گردید',
           coding_updated: 'کدینگ مدنظر با موفقیت ویرایش گردید',
@@ -376,7 +383,16 @@ i18next
           permission_incorrect_url: 'آدرس مجوز صحیح نمی باشد',
           permission_url_max_length: 'آدرس مجوز باید حداکثر 255 کاراکتر باشد',
           permission_url_is_req: 'لطفا فیلد آدرس مجوز را وارد نمایید',
-          permission_url_min_length: 'آدرس مجوز باید حداقل 7 کاراکتر باشد'
+          permission_url_min_length: 'آدرس مجوز باید حداقل 7 کاراکتر باشد',
+          role_name_is_req: 'لطفا فیلد عنوان نقش را وارد نمایید',
+          role_name_min_length: 'عنوان نقش باید حداقل 2 کاراکتر باشد',
+          role_name_max_length: 'عنوان نقش باید حداکثر 50 کاراکتر باشد',
+          role_status_is_req: 'لطفا فیلد وضعیت را وارد نمایید',
+          role_identifier_is_req: 'لطفا فیلد شناسه نقش را وارد نمایید',
+          role_identifier_min_length: 'شناسه نقش باید حداقل 2 کاراکتر باشد',
+          role_identifier_max_length: 'شناسه نقش باید حداکثر 36 کاراکتر باشد',
+          role_description_max_length: 'شرح نقش باید حداکثر 255 کاراکتر باشد',
+          role_permission_is_req: 'لطفا مجوزهای نقش را تعیین فرمایید'
         }
       }
     }

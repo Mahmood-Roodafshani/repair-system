@@ -1,78 +1,60 @@
-import { Add, PersonAdd } from '@mui/icons-material';
-import { Grid, IconButton, TextField, Typography } from '@mui/material';
+import { Button, ButtonType, ConfirmationDialog } from '@/components/form';
+import { permissionService, roleManagementService } from '@/services';
+import { Box, Grid, Typography } from '@mui/material';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-import { Loader, MyCustomTable, OpGrid, TableRowAction } from 'src/components';
-import { i18n } from 'src/localization';
-import { Button, ButtonType, ConfirmationDialog } from '@/components/form';
-import { roleManagementService } from 'src/services/userManagement/roleManagementService';
-import { SystemResponseType } from 'src/types';
-import CreateNewRoleDialog from './components/CreateNewRoleDialog';
-import CreateNewSystemDialog from './components/CreateNewSystemDialog';
-import EditSystem from './components/EditSystem';
-import SystemRoles from './components/SystemRoles';
+import { MyCustomTable, TableRowAction } from 'src/components';
+import {
+  Pagination,
+  PermissionDto,
+  RoleDto,
+  roleInitialValues
+} from 'src/types';
+import CreateOrEditForm from './components/CreateOrEditForm';
 
-interface RoleManagementProps {
-  onBack?: () => void;
+interface TableRow extends RoleDto {
+  index: number;
+  original: RoleDto;
 }
 
-function RoleManagement({ onBack }: RoleManagementProps) {
-  const [title, setTitle] = useState<string>('');
-  const [systems, setSystems] = useState<SystemResponseType[]>([]);
-  const [selectedSystemId, setSelectedSystemId] = useState<number>();
+function RoleManagement() {
+  const { t } = useTranslation();
+
+  const [roles, setRoles] = useState<RoleDto[]>([]);
+  const [selectedRoleId, setSelectedRoleId] = useState<number>();
   const [loading, setLoading] = useState(false);
   const [removing, setRemoving] = useState(false);
-  const navigate = useNavigate();
-  const [showCreateNewRoleDialog, setShowCreateNewRoleDialog] = useState(false);
-  const [showCreateNewSystemDialog, setShowCreateNewSystemDialog] = useState(false);
-  const [showSystemRoles, setShowSystemRoles] = useState(false);
-  const [showConfirmationModelForRemove, setShowConfirmationModelForRemove] = useState(false);
-  const [showSystemEditPanel, setShowSystemEditPanel] = useState(false);
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [showConfirmationModelForRemove, setShowConfirmationModelForRemove] =
+    useState(false);
+  const [selectedRow, setSelectedRow] = useState<RoleDto>();
+  const [permissions, setPermissions] = useState<PermissionDto[]>();
+  const [pagination, setPagination] = useState<Pagination>({
+    pageIndex: 0,
+    pageSize: 5
+  });
+  const [totalCount, setTotalCount] = useState<number>(0);
+  const [refetchingData, setRefetchingData] = useState(false);
 
   const columns = useMemo(
     () => [
       {
-        header: ' ',
+        header: t('row_number'),
         enableHiding: false,
-        Cell: ({ row }: { row: { index: number; original: SystemResponseType } }) => {
-          return (
-            <Grid
-              display={'flex'}
-              flexDirection={'row'}
-              justifyContent={'center'}
-            >
-              <IconButton
-                key={'show_btn_' + row.index}
-                color="primary"
-                onClick={() => {
-                  setShowSystemRoles(true);
-                  setSelectedSystemId(Number(row.original.id));
-                }}
-              >
-                <Add />
-              </IconButton>
-            </Grid>
-          );
-        },
-        size: 40
-      },
-      {
-        header: i18n.t('row_number'),
-        enableHiding: false,
-        Cell: ({ row }) => {
+        Cell: ({ row }: { row: TableRow }) => {
           return (
             <Typography sx={{ textAlign: 'right' }} key={'row_' + row.index}>
-              {row.index + 1}
+              {pagination.pageIndex * pagination.pageSize + row.index + 1}
             </Typography>
           );
         },
         size: 40
       },
       {
-        header: i18n.t('system_title'),
-        accessorKey: 'title',
+        header: t('name'),
+        accessorKey: 'name',
         size: 120,
         muiTableHeadCellProps: {
           align: 'left'
@@ -82,51 +64,80 @@ function RoleManagement({ onBack }: RoleManagementProps) {
         }
       },
       {
-        header: i18n.t('status'),
-        accessorKey: 'status',
-        size: 80,
-        muiTableHeadCellProps: {
-          align: 'left'
-        },
-        muiTableBodyCellProps: {
-          align: 'right'
-        }
+        header: t('status'),
+        Cell: ({ row }: { row: TableRow }) =>
+          row.original.status === 'ACTIVE' ? t('active') : t('inactive')
       }
     ],
-    []
+    [pagination]
   );
 
   const fetchData = useCallback(async () => {
-    if (!title) return;
     try {
       setLoading(true);
-      const response = await roleManagementService.getSystemRoles(Number(title));
-      const transformedSystems: SystemResponseType[] = response.map(role => ({
-        id: role.id,
-        title: role.name,
-        status: (role.status ?? true).toString()
-      }));
-      setSystems(transformedSystems);
+      const response = await roleManagementService.getAllWithPage({
+        pageIndex: pagination.pageIndex,
+        pageSize: pagination.pageSize
+      });
+      setTotalCount(response.totalElements);
+      setRoles(response.content);
     } catch (error) {
       toast.error('Failed to fetch system roles');
     } finally {
       setLoading(false);
     }
-  }, [title]);
+  }, []);
 
   useEffect(() => {
-    setSelectedSystemId(undefined);
-  }, [systems]);
+    fetchData();
+  }, []);
 
-  const selectedSystem = selectedSystemId ? systems.find((e) => e.id === selectedSystemId) : null;
+  const fetchPermission = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await permissionService.getAll();
+      setPermissions(response);
+    } catch (error) {
+      console.error('Error fetching permissions:', error);
+      toast.error(t('error_fetching_operation_types'));
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if ((showCreateForm || selectedRow) && !permissions) fetchPermission();
+  }, [selectedRow, showCreateForm]);
+
+  const refetchData = useCallback(async () => {
+    if (totalCount === 0) return;
+    setRoles([]);
+    setRefetchingData(true);
+    try {
+      const response = await roleManagementService.getAllWithPage({
+        pageIndex: pagination.pageIndex,
+        pageSize: pagination.pageSize
+      });
+      setRoles(response.content);
+    } catch (error) {
+      console.error('Error fetching roles:', error);
+      toast.error(t('error_fetching_roles'));
+    } finally {
+      setRefetchingData(false);
+    }
+  }, [pagination, totalCount]);
+
+  useEffect(() => {
+    refetchData();
+  }, [pagination]);
 
   const handleRemoveSystem = async () => {
-    if (!selectedSystemId) return;
+    if (!selectedRoleId) return;
     try {
       setRemoving(true);
-      await roleManagementService.removeSystem(selectedSystemId);
-      setSystems(systems.filter((e) => e.id !== selectedSystemId));
-      toast.success('سامانه مورد نظر با موفقیت حذف گردید');
+      await roleManagementService.delete(selectedRoleId);
+      setRoles(roles.filter((e) => e.id !== selectedRoleId));
+      toast.success(t('permission_removed'));
     } catch (error) {
       toast.error('Failed to remove system');
     } finally {
@@ -137,122 +148,94 @@ function RoleManagement({ onBack }: RoleManagementProps) {
   return (
     <>
       <Helmet>
-        <title>{i18n.t('roles_management').toString()}</title>
+        <title>{t('roles_management').toString()}</title>
       </Helmet>
-      {!showSystemRoles && !showSystemEditPanel && (
-        <>
-          <Grid
-            display={'flex'}
-            flexDirection={'column'}
-            gap={'10px'}
-            padding={'10px'}
-          >
-            <Grid>
-              <TextField
-                label={i18n.t('system_title').toString()}
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
-            </Grid>
-            {removing && <Loader />}
-            {!loading && (
-              <OpGrid
-                onSearch={() => fetchData()}
-                onClear={() => setTitle('')}
-                additionalBtn={
-                  <Button
-                    buttonType={ButtonType.ACCEPT}
-                    text={i18n.t('new_system')}
-                    showIcon={false}
-                    onClick={() => setShowCreateNewSystemDialog(true)}
-                    color="success"
-                    variant="contained"
-                  />
-                }
-                onClose={onBack || (() => navigate('/usermanagement'))}
-              />
-            )}
-          </Grid>
-
-          {!removing && (
-            <MyCustomTable
-              enableRowActions={true}
-              isLoading={loading}
-              rowActions={({
-                row
-              }: {
-                row: { original: { id: number } };
-              }) => (
-                <TableRowAction
-                  additionalIconButton={
-                    <IconButton
-                      onClick={() => {
-                        setSelectedSystemId(row.original.id);
-                        setShowCreateNewRoleDialog(true);
-                      }}
-                      color="primary"
-                    >
-                      <PersonAdd />
-                    </IconButton>
-                  }
-                  onEdit={() => {
-                    setSelectedSystemId(row.original.id);
-                    setShowSystemEditPanel(true);
-                  }}
-                  onDelete={() => {
-                    setSelectedSystemId(row.original.id);
-                    setShowConfirmationModelForRemove(true);
-                  }}
+      <Box>
+        {!showCreateForm && !selectedRow && (
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Typography variant="h6">{t('roles_management')}</Typography>
+                <Button
+                  buttonType={ButtonType.ADD}
+                  variant="contained"
+                  color="primary"
+                  onClick={() => setShowCreateForm(true)}
                 />
-              )}
-              columns={columns}
-              data={systems}
-            />
-          )}
+              </Box>
+            </Grid>
 
-          <CreateNewRoleDialog
-            systemId={selectedSystemId ?? 0}
-            systemName={selectedSystem?.title ?? ''}
-            open={showCreateNewRoleDialog}
-            onClose={() => setShowCreateNewRoleDialog(false)}
-            onSuccess={() => {
-              setShowCreateNewRoleDialog(false);
-              fetchData();
+            {!removing && (
+              <Grid item xs={12}>
+                <MyCustomTable
+                  rowCount={totalCount}
+                  pagination={pagination}
+                  onPaginationChange={setPagination}
+                  enablePagination
+                  isRefetching={refetchingData}
+                  enableRowActions
+                  isLoading={loading}
+                  rowActions={({ row }: { row: TableRow }) => (
+                    <TableRowAction
+                      onEdit={() => {
+                        setSelectedRow(row.original);
+                      }}
+                      onDelete={() => {
+                        setSelectedRoleId(row.original.id);
+                        setShowConfirmationModelForRemove(true);
+                      }}
+                    />
+                  )}
+                  columns={columns}
+                  data={roles}
+                />
+              </Grid>
+            )}
+
+            <ConfirmationDialog
+              id="remove_modal"
+              open={showConfirmationModelForRemove}
+              onClose={() => setShowConfirmationModelForRemove(false)}
+              closeOnEsc={true}
+              dialogTitle={t('confirm_remove')}
+              dialogOkBtnAction={handleRemoveSystem}
+            />
+          </Grid>
+        )}
+        {(showCreateForm || selectedRow) && permissions && (
+          <CreateOrEditForm
+            initialValues={
+              selectedRow
+                ? {
+                    ...selectedRow
+                  }
+                : roleInitialValues
+            }
+            permissions={permissions}
+            onSuccess={(newItem) => {
+              if (showCreateForm) {
+                setRoles([newItem, ...roles]);
+                setTotalCount(totalCount + 1);
+              } else if (selectedRoleId !== undefined) {
+                setRoles(
+                  roles.map((e: RoleDto) => {
+                    if (e.id === selectedRoleId) return newItem;
+                    return e;
+                  })
+                );
+              }
+            }}
+            onClose={() => {
+              setSelectedRow(undefined);
+              setShowCreateForm(false);
             }}
           />
-          <CreateNewSystemDialog
-            open={showCreateNewSystemDialog}
-            onClose={() => setShowCreateNewSystemDialog(false)}
-            onAdd={() => {
-              setShowCreateNewSystemDialog(false);
-              fetchData();
-            }}
-          />
-          <ConfirmationDialog
-            id="remove_modal"
-            open={showConfirmationModelForRemove}
-            onClose={() => setShowConfirmationModelForRemove(false)}
-            closeOnEsc={true}
-            dialogTitle={i18n.t('confirm_remove')}
-            dialogOkBtnAction={handleRemoveSystem}
-          />
-        </>
-      )}
-      {showSystemRoles && (
-        <SystemRoles
-          onBack={() => {
-            setSelectedSystemId(undefined);
-            setShowSystemRoles(false);
-          }}
-          systemId={selectedSystemId ?? 0}
-        />
-      )}
-      {showSystemEditPanel && (
-        <EditSystem
-          systemId={selectedSystemId ?? 0}
-          systemName={selectedSystem?.title ?? ''}
-        />
-      )}
+        )}
+      </Box>
     </>
   );
 }

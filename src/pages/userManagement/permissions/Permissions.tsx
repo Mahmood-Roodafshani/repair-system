@@ -32,10 +32,13 @@ function Permissions() {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const response = await permissionService.getAll({
-        pageIndex: pagination.pageIndex,
-        pageSize: pagination.pageSize
-      });
+      const response = await permissionService
+        .getAll
+        //   {
+        //   pageIndex: pagination.pageIndex,
+        //   pageSize: pagination.pageSize
+        // }
+        ();
       // setTotalCount(response.totalElements);
       // setPermissions(response.content);
       setPermissions(response);
@@ -56,10 +59,13 @@ function Permissions() {
     setPermissions([]);
     setRefetchingData(true);
     try {
-      const response = await permissionService.getAll({
-        pageIndex: pagination.pageIndex,
-        pageSize: pagination.pageSize
-      });
+      const response = await permissionService
+        .getAll
+        //   {
+        //   pageIndex: pagination.pageIndex,
+        //   pageSize: pagination.pageSize
+        // }
+        ();
       setPermissions(response);
     } catch (error) {
       console.error('Error fetching permissions:', error);
